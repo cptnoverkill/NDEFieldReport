@@ -248,6 +248,163 @@ td textarea:placeholder-shown{
 .jt-notes-add{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px dashed var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;font-size:11px;color:var(--color-text-secondary);background:transparent;white-space:nowrap}
 .jt-notes-add:hover{background:var(--color-bg-secondary)}
 
+
+.knack-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1001;align-items:center;justify-content:center}
+.knack-modal-overlay.open{display:flex}
+.knack-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:90%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;gap:10px}
+.knack-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.knack-search{width:100%;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px;font-family:inherit}
+.knack-list{flex:1;overflow-y:auto;border:0.5px solid var(--color-border);border-radius:var(--radius-md);min-height:0}
+.knack-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;border-bottom:0.5px solid var(--color-border);transition:background 0.1s}
+.knack-item:last-child{border-bottom:none}
+.knack-item:hover{background:var(--color-bg-secondary)}
+.knack-item.selected{background:var(--color-info-bg)}
+.knack-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--color-info-text);flex-shrink:0}
+.knack-item-name{font-size:13px;font-weight:500;flex:1}
+.knack-item-meta{font-size:11px;color:var(--color-text-secondary)}
+.knack-item.already-added{opacity:0.45;pointer-events:none}
+.knack-item.already-added .knack-item-meta::after{content:' · already in roster';color:var(--color-success-text);font-weight:500}
+.knack-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.knack-select-count{font-size:12px;color:var(--color-text-secondary)}
+.knack-loading{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:13px}
+
+
+.roster-table{width:100%;border-collapse:collapse;font-size:13px}
+.roster-table th{background:var(--color-bg-secondary);padding:6px 10px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
+.roster-table td{padding:4px 6px;border-bottom:0.5px solid var(--color-border);vertical-align:middle}
+.roster-table tr:last-child td{border-bottom:none}
+.roster-table tr:hover td{background:var(--color-bg-secondary)}
+.roster-table input,.roster-table select{width:100%;padding:4px 7px;font-size:12px;border:0.5px solid transparent;border-radius:5px;background:transparent;color:var(--color-text);font-family:inherit}
+.roster-table input:hover,.roster-table select:hover,
+.roster-table input:focus,.roster-table select:focus{border-color:var(--color-border-secondary);background:var(--color-bg)}
+.roster-table input:focus,.roster-table select:focus{outline:2px solid var(--color-info-border);outline-offset:1px}
+.color-dot-btn{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;display:inline-block;vertical-align:middle}
+.roster-wrap{border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:8px}
+.roster-empty{padding:14px;text-align:center;font-size:12px;color:var(--color-text-tertiary)}
+
+
+.tp-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1002;align-items:center;justify-content:center}
+.tp-modal-overlay.open{display:flex}
+.tp-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:95%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;gap:10px}
+.tp-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.tp-drop-zone{border:2px dashed var(--color-border-secondary);border-radius:var(--radius-lg);padding:2rem;text-align:center;cursor:pointer;transition:all 0.15s;flex-shrink:0}
+.tp-drop-zone:hover,.tp-drop-zone.drag-over{border-color:var(--color-info-border);background:var(--color-info-bg)}
+.tp-drop-zone i{font-size:32px;display:block;margin-bottom:8px;color:var(--color-text-tertiary)}
+.tp-drop-zone p{font-size:13px;color:var(--color-text-secondary);margin:0}
+.tp-drop-zone small{font-size:11px;color:var(--color-text-tertiary)}
+.tp-preview{flex:1;overflow-y:auto;min-height:0;display:none}
+.tp-preview.show{display:block}
+.tp-preview-table{width:100%;border-collapse:collapse;font-size:12px}
+.tp-preview-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase}
+.tp-preview-table td{padding:4px 8px;border-bottom:0.5px solid var(--color-border);font-size:12px;white-space:nowrap}
+.tp-preview-table tr:hover td{background:var(--color-bg-secondary)}
+.tp-check-col{width:32px;text-align:center}
+.tp-preview-table input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--color-info-text)}
+.tp-method-tag{display:inline-block;background:var(--color-info-bg);color:var(--color-info-text);border-radius:4px;padding:1px 5px;font-size:10px;margin:1px;white-space:nowrap;font-weight:500}
+.tp-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;flex-shrink:0}
+.tp-count{font-size:12px;color:var(--color-text-secondary)}
+.tp-existing-badge{display:inline-block;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:500}
+
+
+.lsc-group-card{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden}
+.lsc-group-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border)}
+.lsc-group-joints{display:flex;flex-wrap:wrap;gap:5px}
+.lsc-joint-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-info-bg);color:var(--color-info-text);border:0.5px solid var(--color-info-border);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600}
+.lsc-group-body{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.lsc-group-body{grid-template-columns:1fr}}
+.lsc-checklist{grid-column:1/-1;margin-top:4px}
+.lsc-check-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border)}
+.lsc-check-item:last-child{border-bottom:none}
+.lsc-check-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#2e7d32;flex-shrink:0;margin-top:1px}
+.lsc-check-item label{font-size:12px;cursor:pointer;flex:1;line-height:1.4}
+.lsc-check-item.done label{text-decoration:line-through;color:var(--color-text-tertiary)}
+.lsc-check-item.done{opacity:0.65}
+.lsc-progress-bar{height:5px;background:var(--color-bg-secondary);border-radius:3px;overflow:hidden;margin:6px 0 2px}
+.lsc-progress-fill{height:100%;background:#4caf50;border-radius:3px;transition:width 0.3s}
+.lsc-progress-label{font-size:11px;color:var(--color-text-secondary)}
+.lsc-complete-badge{background:var(--color-success-bg);color:var(--color-success-text);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.lsc-pending-badge{background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:20px;padding:2px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px}
+.lsc-group-actions{display:flex;gap:5px;margin-left:auto;flex-shrink:0}
+.lsc-field-label{font-size:10.5px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px}
+.lsc-field{display:flex;flex-direction:column;gap:2px}
+.lsc-field input,.lsc-field select,.lsc-field textarea{padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
+.lsc-field textarea{resize:vertical;min-height:52px}
+/* Group builder */
+.lsc-builder{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:14px}
+.lsc-builder-title{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.lsc-joint-selector{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.lsc-joint-check{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500}
+.lsc-joint-check:hover{background:var(--color-info-bg);border-color:var(--color-info-border)}
+.lsc-joint-check.selected{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text)}
+.lsc-joint-check input{display:none}
+
+
+.jt-card{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s}
+.jt-card:hover{border-color:var(--color-border-secondary)}
+.jt-card-header{padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;user-select:none}
+.jt-card-header:hover .jt-edit-hint{opacity:1}
+.jt-id{font-size:13px;font-weight:700}
+.jt-summary{font-size:12px;color:var(--color-text-secondary);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jt-edit-hint{font-size:10px;color:var(--color-info-text);opacity:0;transition:opacity 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px}
+.jt-unknown-badge{background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:600;margin-left:2px}
+.jt-card-body{display:none;border-top:0.5px solid var(--color-border);background:var(--color-bg);padding:10px 12px}
+.jt-card-body.open{display:block}
+.jt-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+.jt-edit-field{display:flex;flex-direction:column;gap:3px}
+.jt-edit-label{font-size:10.5px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em}
+.jt-edit-field input,.jt-edit-field select{padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;width:100%}
+.jt-edit-field input:focus,.jt-edit-field select:focus{outline:2px solid var(--color-info-border);border-color:transparent}
+.jt-edit-field input.was-unknown{border-color:#f0a000;background:var(--color-warning-bg)}
+.jt-changed-tag{font-size:10px;color:var(--color-success-text);font-weight:600;display:inline-flex;align-items:center;gap:3px;margin-top:2px}
+
+
+.threat-flag-btn{background:transparent;border:0.5px solid var(--color-border);border-radius:5px;
+  padding:2px 6px;cursor:pointer;font-size:11px;color:var(--color-text-tertiary);
+  display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.threat-flag-btn:hover{border-color:var(--color-danger-border);color:var(--color-danger-text)}
+.threat-flag-btn.flagged{background:var(--color-danger-bg);border-color:var(--color-danger-border);
+  color:var(--color-danger-text);font-weight:600}
+.pct-warn{color:var(--color-danger-text);font-weight:700}
+
+
+.nde-card{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden}
+.nde-card-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border)}
+.nde-card-method{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:20px;padding:2px 10px}
+.nde-card-title{font-size:13px;font-weight:600;flex:1}
+.nde-card-body{padding:12px 14px}
+.nde-param-section{margin-bottom:12px}
+.nde-param-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border);padding-bottom:4px;margin-bottom:8px}
+.nde-param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.nde-param-grid.wide{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.nde-param-field{display:flex;flex-direction:column;gap:2px}
+.nde-param-label{font-size:10px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em}
+.nde-param-field input,.nde-param-field select{padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
+.nde-param-field input:focus,.nde-param-field select:focus{outline:2px solid var(--color-info-border);border-color:transparent}
+.nde-param-field input.cal-expired{border-color:var(--color-danger-text);background:var(--color-danger-bg)}
+.nde-card-actions{display:flex;gap:5px;margin-left:auto}
+.nde-tech-autofill{background:var(--color-info-bg);border:0.5px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:3px 8px;font-size:11px;cursor:pointer;white-space:nowrap}
+.nde-tech-autofill:hover{opacity:0.85}
+.nde-add-card-btn{display:flex;align-items:center;gap:6px;width:100%;padding:10px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:13px;cursor:pointer;justify-content:center;margin-bottom:10px}
+.nde-add-card-btn:hover{background:var(--color-bg-secondary);border-color:var(--color-info-border);color:var(--color-info-text)}
+.nde-method-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.nde-method-tab{padding:5px 12px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;font-family:inherit}
+.nde-method-tab:hover{background:var(--color-bg-secondary)}
+.nde-method-tab.active{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text);font-weight:600}
+.cal-ok{color:var(--color-success-text);font-size:10px}
+.cal-warn{color:var(--color-warning-text);font-size:10px}
+.cal-exp{color:var(--color-danger-text);font-size:10px;font-weight:600}
+
+
+.cal-inline-row td{padding:0 !important;border-bottom:none !important}
+.cal-inline-wrap{background:var(--color-bg);border-left:3px solid var(--color-info-border);margin:0 0 8px 0}
+.cal-inline-toggle{display:flex;align-items:center;gap:7px;padding:6px 12px;cursor:pointer;font-size:12px;color:var(--color-info-text);border-bottom:0.5px solid var(--color-border);background:var(--color-info-bg);user-select:none}
+.cal-inline-toggle:hover{opacity:0.85}
+.cal-inline-toggle i.toggle-arrow{transition:transform 0.2s;font-size:11px}
+.cal-inline-toggle.open i.toggle-arrow{transform:rotate(90deg)}
+.cal-inline-body{display:none;padding:10px 14px}
+.cal-inline-body.open{display:block}
+.cal-group-divider{height:3px;background:var(--color-bg-tertiary)}
+
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
 .nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:0.5px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
@@ -331,6 +488,7 @@ td textarea:placeholder-shown{
           </div>
         </div>
         <button class="btn" onclick="importJSON()" title="Import JSON to resume inspection"><i class="ti ti-upload"></i><span class="btn-label"> Import</span></button>
+        <button class="btn" onclick="openTPModal()" title="Import scope from Testing Plan xlsx" style="border-color:var(--color-success-text);color:var(--color-success-text)"><i class="ti ti-file-spreadsheet"></i><span class="btn-label"> Testing Plan</span></button>
         <button class="btn" onclick="exportJSON()" title="Export JSON data"><i class="ti ti-download"></i><span class="btn-label"> Export JSON</span></button>
         <button class="btn btn-excel" onclick="exportDFPR()" title="Export DFPR Excel"><i class="ti ti-table"></i><span class="btn-label"> Export DFPR</span></button>
         <button class="btn btn-pdf" onclick="showPDFModal()" title="Generate PDF report"><i class="ti ti-file-type-pdf"></i><span class="btn-label"> Generate PDF</span></button>
@@ -342,7 +500,8 @@ td textarea:placeholder-shown{
       <div class="field-group"><label class="field-label">Project name</label><input id="cfg-project" placeholder="A-934 SFL 077 Kern River..." oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">SAP order #</label><input id="cfg-sap" placeholder="84025084" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Acuren job #</label><input id="cfg-job" placeholder="286-J258040" oninput="updateConfig()"></div>
-      <div class="field-group"><label class="field-label">Line / MP</label><input id="cfg-line" placeholder="77 / 0" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Line #</label><input id="cfg-line" placeholder="e.g. L-119C" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Milepost (MP)</label><input id="cfg-mp" placeholder="e.g. 0.0032" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Address</label><input id="cfg-address" placeholder="3301 S Allen Rd, Bakersfield, CA" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Field NDE vendor</label><input id="cfg-vendor" placeholder="Acuren" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Inspection start <span style="font-size:10px;color:var(--color-text-tertiary)" title="Auto-computed from row dates">auto</span></label><input type="date" id="cfg-date-start" oninput="updateConfig()" placeholder="auto"></div>
@@ -350,23 +509,24 @@ td textarea:placeholder-shown{
       <div class="field-group"><label class="field-label">Latitude</label><input id="cfg-lat" placeholder="35.33104" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Longitude</label><input id="cfg-lon" placeholder="-119.16183" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Procedure</label><input id="cfg-proc" placeholder="BP-4190P-507 Rev 1" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">UTT scan distances (in) <span style="font-size:10px;color:var(--color-text-tertiary)" title="Comma-separated default scan positions auto-populated per joint">default</span></label><input id="cfg-uttScanDists" placeholder="3, 8, 13.5" oninput="updateConfig()" title="Comma-separated distances used when auto-populating 12pt UTT rows"></div>
     </div>
 
     <div class="section-divider">Technicians on project</div>
     <div class="joints-wrap" id="tech-roster-list"></div>
     <div class="add-joint-row">
-      <div class="field-group"><label class="field-label">Name</label><input id="new-tech-name" placeholder="Tyler Laviolette" onkeydown="if(event.key==='Enter')addTechnician()" style="max-width:160px"></div>
-      <div class="field-group"><label class="field-label">Cert level</label>
+      <div class="field-group"><label class="field-label">Name</label><input id="new-tech-name" placeholder="e.g. Tyler Laviolette" onkeydown="if(event.key==='Enter')addTechnician()" style="max-width:160px"></div>
+      <div class="field-group"><label class="field-label">Level</label>
         <select id="new-tech-cert" style="max-width:80px"><option value="">—</option><option>I</option><option>II</option><option>III</option></select>
       </div>
-      <div class="field-group"><label class="field-label">Method(s)</label>
-        <input id="new-tech-methods" placeholder="UTT, MT, PAUT..." style="max-width:160px">
+      <div class="field-group"><label class="field-label">Methods</label>
+        <input id="new-tech-methods" placeholder="UTT, MT, PAUT..." style="max-width:150px">
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
-        <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add technician</button>
+        <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add</button>
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
-        <button class="btn" onclick="loadTechsFromKnack()" title="Add technicians from Knack (merges with existing)" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Load from Knack</button>
+        <button class="btn" onclick="openKnackPicker()" title="Select technicians from Knack" style="border-style:dashed"><i class="ti ti-cloud-download"></i> From Knack</button>
       </div>
     </div>
 
@@ -418,6 +578,7 @@ const TABS = [
   {id:'pautbm',label:'PAUT BM',icon:'ti-layers-subtract'},
   {id:'pautls',label:'PAUT LS',icon:'ti-timeline'},
   {id:'aelsc',label:'AE/LSC',icon:'ti-flask'},
+  {id:'calrec',label:'Daily Cal',icon:'ti-certificate'},
 ];
 
 const CLOCK = ['N/A','12:00','12:30','1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00','5:30','6:00','6:30','7:00','7:30','8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30'];
@@ -434,8 +595,11 @@ let state = {
   nri:{},
   scopeStatus:{},
   rowPhotos:{},
-  utt12:[],uttloc:[],lsc:[],jointlen:[],
-  va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]
+  pautSpacing:{},
+  utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],
+  va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],
+  calrec:[],
+  ndeCards:{}
 };
 let activeTab = 'utt12';
 let photoTarget = null;
@@ -469,7 +633,7 @@ function save(){
 
 function loadConfig(){
   const c = state.config||{};
-  ['project','sap','job','line','address','vendor','lat','lon','proc'].forEach(k=>{
+  ['project','sap','job','line','mp','address','vendor','lat','lon','proc','uttScanDists'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) el.value = c[k]||'';
   });
@@ -481,7 +645,7 @@ function loadConfig(){
 
 function updateConfig(){
   if(!state.config) state.config={};
-  ['project','sap','job','line','address','vendor','lat','lon','proc'].forEach(k=>{
+  ['project','sap','job','line','mp','address','vendor','lat','lon','proc','uttScanDists'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) state.config[k] = el.value;
   });
@@ -496,7 +660,8 @@ function updateConfig(){
 function updateSubtitle(){
   const c = state.config||{};
   const dateRange = [c.date_start, c.date_end].filter(Boolean).join(' → ');
-  const parts = [c.project, c.address, dateRange].filter(Boolean);
+  const lineMP = [c.line, c.mp].filter(Boolean).join(' MP ');
+  const parts = [c.project, lineMP, c.address, dateRange].filter(Boolean);
   document.getElementById('project-subtitle').textContent = parts.length ? parts.join(' · ') : 'Configure project details below';
 }
 
@@ -523,15 +688,23 @@ function addJoint(){
 // Auto-populate a blank row for this joint in each relevant tab
 function autoPopulateJoint(jt){
   const id = jt.id;
-  // 12pt UTT — 3 standard scan positions (U/S 3, U/S 8, U/S 13.5)
+  // 12pt UTT — use configured scan distances, fall back to 3/8/13.5
   if(!state.utt12) state.utt12=[];
-  [{dist:'3'},{dist:'8'},{dist:'13.5'}].forEach(pos=>{
-    state.utt12.push({jt:id, ref:'U/S', dist:pos.dist, bfg:'BFG',
+  const distStr = (state.config||{}).uttScanDists || '3, 8, 13.5';
+  const dists   = distStr.split(',').map(d=>d.trim()).filter(Boolean);
+  // If testing plan gave a quantity, honour it (pad or trim distances)
+  const qty = parseInt(jt.uttQty)||dists.length;
+  const scanDists = [];
+  for(let i=0; i<qty; i++){
+    scanDists.push(dists[i] || ''); // blank if no default for this position
+  }
+  scanDists.forEach(dist=>{
+    state.utt12.push({jt:id, ref:'U/S', dist, bfg:'BFG',
       vals:Array(12).fill(''), date:''});
   });
   // Joint Lengths
   if(!state.jointlen) state.jointlen=[];
-  state.jointlen.push({jt:id, type:jt.type||'Pipe', length:'', od1:jt.od||'', od2:'N/A', notes:'', date:''});
+  state.jointlen.push({jt:id, type:jt.type||'Pipe', length:jt.length||'', od1:jt.od||'', nwt1:jt.nwt||'', od2:jt.od2||'', nwt2:jt.nwt2||'', notes:'', date:''});
   // VA — one blank row per joint
   if(!state.va) state.va=[];
   state.va.push({jt:id, indid:'', char:'', ref:'U/S', dist:'', clock:'N/A',
@@ -562,38 +735,165 @@ function renderJoints(){
     el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No joints added yet</span>';
     return;
   }
-  el.innerHTML = joints.map(j=>{
+  el.innerHTML = joints.map((j,ji)=>{
     const notes = (state.jointNotes||{})[j.id]||[];
     const thumbs = notes.map((n,ni)=>`
       <div class="jt-notes-thumb" onclick="openLightbox('${n.data}','${n.name} — ${n.timestamp.slice(0,10)}')">
         <img src="${n.data}" alt="${n.name}">
         <button class="del-note" onclick="event.stopPropagation();removeJointNote('${j.id}',${ni})">×</button>
       </div>`).join('');
-    return `<div style="background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:6px;width:100%">
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <strong style="font-size:13px">${j.id}</strong>
-        <span style="font-size:12px;color:var(--color-text-secondary)">${j.type} · OD ${j.od||'?'}" · NWT ${j.nwt||'?'}" · ${j.seam||'?'}</span>
-        <button class="icon-btn" onclick="removeJoint('${j.id}')" aria-label="Remove ${j.id}" style="margin-left:auto"><i class="ti ti-x" style="font-size:12px"></i></button>
+
+    // Flag unknown/missing fields
+    const unknownSeam = !j.seam || j.seam.toLowerCase()==='unknown';
+    const unknownBadge = unknownSeam ? '<span class="jt-unknown-badge"><i class="ti ti-alert-triangle" style="font-size:9px"></i> seam unknown</span>' : '';
+    const summary = `${j.type||'?'} · OD ${j.od||'?'}" · NWT ${j.nwt||'?'}" · ${j.seam||'?'} · ${j.grade||'no grade'}`;
+
+    return `<div class="jt-card" id="jt-card-${j.id}">
+      <div class="jt-card-header" onclick="toggleJointCard('${j.id}')">
+        <span class="jt-id">${j.id}</span>
+        <span class="jt-summary" title="${summary}">${summary}</span>
+        ${unknownBadge}
+        <span class="jt-edit-hint"><i class="ti ti-pencil" style="font-size:11px"></i> tap to edit</span>
+        <button class="icon-btn" onclick="event.stopPropagation();removeJoint('${j.id}')" aria-label="Remove ${j.id}"><i class="ti ti-x" style="font-size:12px"></i></button>
       </div>
-      <div class="jt-notes-row">
-        <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes</span>
-        <div class="jt-notes-thumbs">${thumbs}</div>
-        <button class="jt-notes-add" onclick="openJointNotes('${j.id}')">
-          <i class="ti ti-camera-plus"></i> Add photo
-        </button>
+      <div class="jt-card-body${unknownSeam?' open':''}" id="jt-body-${j.id}">
+        <div class="jt-edit-grid">
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Joint ID</span>
+            <input value="${j.id}" readonly style="opacity:0.6;cursor:not-allowed" title="Joint ID cannot be changed after creation">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Feature type</span>
+            <select onchange="updateJointField('${j.id}','type',this.value)">
+              ${['Pipe','Mfg Bend','Straight Tee','Reducing Tee','Reducer','Cap'].map(v=>`<option${v===j.type?' selected':''}>${v}</option>`).join('')}
+            </select>
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">OD (in)</span>
+            <input type="number" value="${j.od||''}" placeholder="e.g. 34" step="0.125"
+                   onchange="updateJointField('${j.id}','od',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">NWT (in)</span>
+            <input type="number" value="${j.nwt||''}" placeholder="e.g. 0.500" step="0.001"
+                   onchange="updateJointField('${j.id}','nwt',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Long seam ${unknownSeam?'<span style="color:var(--color-warning-text)">⚠ update after LSC</span>':''}</span>
+            <input value="${j.seam||''}" list="seam-options" autocomplete="off"
+                   class="${unknownSeam?'was-unknown':''}"
+                   placeholder="ERW, DSAW, Seamless..."
+                   onchange="updateJointField('${j.id}','seam',this.value)"
+                   oninput="this.classList.remove('was-unknown')">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Grade</span>
+            <input value="${j.grade||''}" placeholder="e.g. API 5LX-X65"
+                   onchange="updateJointField('${j.id}','grade',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">PFL Feature #</span>
+            <input value="${j.pfl||''}" placeholder="e.g. SFL077-1.5"
+                   onchange="updateJointField('${j.id}','pfl',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Length (ft)</span>
+            <input type="number" value="${j.length||''}" placeholder="e.g. 3.2" step="0.1"
+                   onchange="updateJointField('${j.id}','length',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Install date</span>
+            <input type="date" value="${(j.installDate||'').slice(0,10)}"
+                   onchange="updateJointField('${j.id}','installDate',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">Above ground?</span>
+            <select onchange="updateJointField('${j.id}','aboveGround',this.value)">
+              <option value="">—</option>
+              ${['Yes','No'].map(v=>`<option${v===j.aboveGround?' selected':''}>${v}</option>`).join('')}
+            </select>
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">MPV type</span>
+            <input value="${j.mpvType||''}" placeholder="e.g. Records Validation"
+                   onchange="updateJointField('${j.id}','mpvType',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">OD2 (in) <span style="font-size:9px;color:var(--color-text-tertiary)">reducer/tee</span></span>
+            <input type="number" step="0.125" value="${j.od2||''}" placeholder="e.g. 12.75"
+                   onchange="updateJointField('${j.id}','od2',this.value)">
+          </div>
+          <div class="jt-edit-field">
+            <span class="jt-edit-label">NWT2 (in) <span style="font-size:9px;color:var(--color-text-tertiary)">reducer/tee</span></span>
+            <input type="number" step="0.001" value="${j.nwt2||''}" placeholder="e.g. 0.375"
+                   onchange="updateJointField('${j.id}','nwt2',this.value)">
+          </div>
+        </div>
+
+        <div class="jt-notes-row" style="border-top:0.5px solid var(--color-border);margin-top:4px">
+          <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes</span>
+          <div class="jt-notes-thumbs">${thumbs}</div>
+          <button class="jt-notes-add" onclick="openJointNotes('${j.id}')">
+            <i class="ti ti-camera-plus"></i> Add photo
+          </button>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
+function toggleJointCard(id){
+  const body = document.getElementById('jt-body-'+id);
+  if(body) body.classList.toggle('open');
+}
+
+function updateJointField(id, field, val){
+  const jt = (state.joints||[]).find(j=>j.id===id);
+  if(!jt) return;
+  jt[field] = val;
+  save();
+  // Refresh the summary line without full re-render
+  const card = document.getElementById('jt-card-'+id);
+  if(card){
+    const summary = card.querySelector('.jt-summary');
+    const badge   = card.querySelector('.jt-unknown-badge');
+    if(summary) summary.textContent =
+      `${jt.type||'?'} · OD ${jt.od||'?'}" · NWT ${jt.nwt||'?'}"${jt.od2?` / OD2 ${jt.od2}"`:''}${jt.nwt2?` NWT2 ${jt.nwt2}"`:''}  · ${jt.seam||'?'} · ${jt.grade||'no grade'}`;
+    const isUnknown = !jt.seam || jt.seam.toLowerCase()==='unknown';
+    if(badge) badge.style.display = isUnknown ? '' : 'none';
+  }
+  // If seam changed, refresh active tab so scope tables reflect it
+  if(field==='seam'||field==='type'||field==='od'||field==='nwt'){
+    renderTab(activeTab);
+  }
+}
+
+const TAB_CATEGORIES = {
+  MPV: ['utt12','uttloc','lsc','aelsc','jointlen'],
+  'Flaw Detection': ['va','mt','aut','mut','muthand','pautbm','pautls'],
+  'Equipment': ['calrec'],
+};
+
 function renderTabs(){
   const bar = document.getElementById('tab-bar');
-  bar.innerHTML = TABS.map(t=>{
-    const count = (state[t.id]||[]).length;
-    return `<button class="tab${activeTab===t.id?' active':''}" onclick="switchTab('${t.id}')">
-      <i class="ti ${t.icon}" style="font-size:13px;vertical-align:-1px"></i> ${t.label}${count>0?`<span class="tab-badge">${count}</span>`:''}
-    </button>`;
-  }).join('');
+  let html = '';
+  Object.entries(TAB_CATEGORIES).forEach(([cat, ids])=>{
+    html += `<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);padding:0 4px;align-self:center;white-space:nowrap">${cat}</span>`;
+    ids.forEach(tid=>{
+      const t = TABS.find(x=>x.id===tid);
+      if(!t) return;
+      const count = tid==='lsc' ? (state.lscGroups||[]).length : (state[tid]||[]).length;
+      const hasThreats = ['mt','va','aut','mut','pautbm','pautls'].includes(tid) &&
+        (state[tid]||[]).some(r=>r.threat);
+      html += `<button class="tab${activeTab===tid?' active':''}" onclick="switchTab('${tid}')">
+        <i class="ti ${t.icon}" style="font-size:13px;vertical-align:-1px"></i> ${t.label}
+        ${count>0?`<span class="tab-badge">${count}</span>`:''}
+        ${hasThreats?'<span style="color:#c00000;font-size:11px;margin-left:2px" title="Immediate threat flagged">⚠</span>':''}
+      </button>`;
+    });
+    html += `<span style="width:6px;display:inline-block"></span>`;
+  });
+  bar.innerHTML = html;
 }
 
 function switchTab(id){
@@ -616,6 +916,7 @@ function renderTab(id){
   else if(id==='pautbm') el.innerHTML = renderPAUTBM();
   else if(id==='pautls') el.innerHTML = renderPAUTLS();
   else if(id==='aelsc') el.innerHTML = renderAELSC();
+  else if(id==='calrec') el.innerHTML = renderCalRec();
 }
 
 function jo(sel){ return (state.joints||[]).map(j=>`<option${j.id===sel?' selected':''}>${j.id}</option>`).join(''); }
@@ -665,7 +966,7 @@ function renderUTT12(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — 12-Point UTT</div>
     <div class="${nriLocked('utt12')?'nri-locked':''}">  
     <div class="utt-table-wrap"><table class="utt-table">
-      <thead><tr><th>Joint</th><th>Ref</th><th>Dist</th><th>BFG/AFG</th>${UTT12_CLOCKS.map(c=>`<th>${c}</th>`).join('')}<th>Avg (in)</th><th>Min (in)</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ref</th><th>Dist</th><th>BFG/AFG</th>${UTT12_CLOCKS.map(c=>`<th>${c}</th>`).join('')}<th>Avg (in)</th><th>Min (in)</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -686,7 +987,9 @@ function uttVal(i,ci,v){
 function renderUTTLoc(){
   const rows = state.uttloc||[];
   const rowHtml = rows.length ? rows.map((r,i)=>{
-    const pct = r.bfgmin&&r.afgmin ? ((parseFloat(r.bfgmin)-parseFloat(r.afgmin))/parseFloat(r.bfgmin)*100).toFixed(1)+'%' : '—';
+    const pctVal = r.bfgmin&&r.afgmin ? (parseFloat(r.bfgmin)-parseFloat(r.afgmin))/parseFloat(r.bfgmin)*100 : null;
+    const pct = pctVal!==null ? pctVal.toFixed(1)+'%' : '—';
+    const pctWarn = pctVal!==null && pctVal>10;
     return `<tr>
       <td><select onchange="rowUpdate('uttloc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
       <td><input value="${r.ndtid||''}" placeholder="LSC-001" onchange="rowUpdate('uttloc',${i},'ndtid',this.value)" style="width:75px"></td>
@@ -699,7 +1002,7 @@ function renderUTTLoc(){
       <td><input type="number" step="0.001" value="${r.bfgmax||''}" onchange="rowUpdate('uttloc',${i},'bfgmax',this.value)" style="width:60px"></td>
       <td><input type="number" step="0.001" value="${r.afgmin||''}" onchange="rowUpdate('uttloc',${i},'afgmin',this.value)" style="width:60px"></td>
       <td><input type="number" step="0.001" value="${r.afgmax||''}" onchange="rowUpdate('uttloc',${i},'afgmax',this.value)" style="width:60px"></td>
-      <td class="stat-cell">${pct}</td>
+      <td class="${pctWarn?'pct-warn stat-cell':'stat-cell'}" title="${pctWarn?'⚠ Exceeds 10% — notify PG&E project team':''}">${pct}${pctWarn?' ⚠':''}</td>
       <td><select onchange="rowUpdate('uttloc',${i},'result',this.value)"><option value="">—</option><option${r.result==='NRI'?' selected':''}>NRI</option><option${r.result==='Indication Found'?' selected':''}>Indication Found</option></select></td>
       <td><select class="tech-select" onchange="rowUpdate('uttloc',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('uttloc',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('uttloc',i)}<td><button class="icon-btn" onclick="removeRow('uttloc',${i})"><i class="ti ti-trash"></i></button></td>
     </tr>`;
@@ -717,7 +1020,7 @@ function renderUTTLoc(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — UTT of Test Locations</div>
     <div class="${nriLocked('uttloc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -726,36 +1029,6 @@ function renderUTTLoc(){
 }
 
 /* ===== LSC ===== */
-function renderLSC(){
-  const rows = state.lsc||[];
-  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('lsc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
-    <td><select onchange="rowUpdate('lsc',${i},'lsctype',this.value)"><option value="">—</option><option>ERW</option><option>DSAW</option><option>SSAW</option><option>Seamless</option><option>FBW</option><option>Lap</option><option>A.O.Smith</option></select></td>
-    <td><select onchange="rowUpdate('lsc',${i},'clock',this.value)">${co(r.clock)}</select></td>
-    <td><textarea rows="2" onchange="rowUpdate('lsc',${i},'comments',this.value)">${r.comments||''}</textarea></td>
-    <td><select onchange="rowUpdate('lsc',${i},'photo',this.value)">${yno(r.photo)}</select></td>
-    <td><select class="tech-select" onchange="rowUpdate('lsc',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('lsc',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('lsc',i)}<td><button class="icon-btn" onclick="removeRow('lsc',${i})"><i class="ti ti-trash"></i></button></td>
-  </tr>`).join('') : emptyRow('No LSC entries yet');
-  return `<div class="panel">
-    <div class="panel-header">
-      <span class="panel-title"><i class="ti ti-vector"></i> Long Seam Characterization (LSC)</span>
-      <div class="panel-actions${nriLocked('lsc')?' nri-locked':''}">
-        <button class="btn" onclick="addRow('lsc',{jt:(state.joints||[])[0]?.id||'',clock:'N/A',photo:''})"><i class="ti ti-plus"></i> Add row</button>
-        <button class="btn" onclick="openPhoto('lsc')"><i class="ti ti-camera"></i> Add photos</button>
-      </div>
-    </div>
-    ${nriBar('lsc')}
-    ${scopeSummaryTable('lsc','Long Seam Characterization')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Long Seam Characterization</div>
-    <div class="${nriLocked('lsc')?'nri-locked':''}">  
-    <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>LSC type</th><th>Clock position</th><th>Comments</th><th>Photo taken?</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
-      <tbody>${rowHtml}</tbody>
-    </table></div>
-    </div>
-    ${photoSection('lsc')}
-  </div>`;
-}
 
 /* ===== Joint Lengths ===== */
 function renderJointLen(){
@@ -765,7 +1038,9 @@ function renderJointLen(){
     <td><select onchange="rowUpdate('jointlen',${i},'type',this.value)"><option>Pipe</option><option>Mfg Bend</option><option>Straight Tee</option><option>Reducing Tee</option><option>Reducer</option><option>Cap</option></select></td>
     <td><input type="number" step="0.01" value="${r.length||''}" onchange="rowUpdate('jointlen',${i},'length',this.value)" style="width:75px"></td>
     <td><input type="number" step="0.125" value="${r.od1||''}" onchange="rowUpdate('jointlen',${i},'od1',this.value)" style="width:60px"></td>
-    <td><input value="${r.od2||''}" placeholder="N/A" onchange="rowUpdate('jointlen',${i},'od2',this.value)" style="width:60px"></td>
+    <td><input type="number" step="0.001" value="${r.nwt1||''}" placeholder="e.g. 0.500" onchange="rowUpdate('jointlen',${i},'nwt1',this.value)" style="width:65px"></td>
+    <td><input type="number" step="0.125" value="${r.od2||''}" placeholder="N/A" onchange="rowUpdate('jointlen',${i},'od2',this.value)" style="width:60px"></td>
+    <td><input type="number" step="0.001" value="${r.nwt2||''}" placeholder="N/A" onchange="rowUpdate('jointlen',${i},'nwt2',this.value)" style="width:65px"></td>
     <td><textarea rows="2" onchange="rowUpdate('jointlen',${i},'notes',this.value)">${r.notes||''}</textarea></td>
     <td><select class="tech-select" onchange="rowUpdate('jointlen',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('jointlen',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('jointlen',i)}<td><button class="icon-btn" onclick="removeRow('jointlen',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No joint lengths recorded yet');
@@ -777,7 +1052,7 @@ function renderJointLen(){
     ${scopeSummaryTable('jointlen','Joint Lengths')}
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Measured Lengths — Joint Lengths</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Feature type</th><th>Length (in)</th><th>OD1 (in)</th><th>OD2 (in)</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Feature type</th><th>Length (in)</th><th>OD1 (in)</th><th>NWT1 (in)</th><th>OD2 (in)</th><th>NWT2 (in)</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
   </div>`;
@@ -845,7 +1120,7 @@ function renderVA(){
     <td><select onchange="rowUpdate('va',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
     <td><select onchange="rowUpdate('va',${i},'photo',this.value)">${yno(r.photo)}</select></td>
     <td><input value="${r.notes||''}" placeholder="Notes..." onchange="rowUpdate('va',${i},'notes',this.value)" style="width:100px"></td>
-    <td><select class="tech-select" onchange="rowUpdate('va',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('va',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('va',i)}<td><button class="icon-btn" onclick="removeRow('va',${i})"><i class="ti ti-trash"></i></button></td>
+    <td><select class="tech-select" onchange="rowUpdate('va',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('va',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('va',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('va',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('va',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No VA indications recorded');
   return `<div class="panel">
     <div class="panel-header">
@@ -860,7 +1135,7 @@ function renderVA(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Visual Assessment (VA)</div>
     <div class="${nriLocked('va')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -886,7 +1161,7 @@ function renderMT(){
     <td><select onchange="rowUpdate('mt',${i},'blphoto',this.value)">${yno(r.blphoto)}</select></td>
     <td><select onchange="rowUpdate('mt',${i},'wlphoto',this.value)">${yno(r.wlphoto)}</select></td>
     <td><select onchange="rowUpdate('mt',${i},'pautphoto',this.value)">${yno(r.pautphoto)}</select></td>
-    <td><select class="tech-select" onchange="rowUpdate('mt',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mt',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mt',i)}<td><button class="icon-btn" onclick="removeRow('mt',${i})"><i class="ti ti-trash"></i></button></td>
+    <td><select class="tech-select" onchange="rowUpdate('mt',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mt',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mt',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('mt',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('mt',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No MT indications recorded');
   return `<div class="panel">
     <div class="panel-header">
@@ -901,7 +1176,7 @@ function renderMT(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Magnetic Particle Testing (MT)</div>
     <div class="${nriLocked('mt')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -927,7 +1202,7 @@ function renderAUT(){
       <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('aut',${i},'wt',this.value);renderTab('aut')" style="width:60px"></td>
       <td><select onchange="rowUpdate('aut',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
       <td class="stat-cell">${pct}</td>
-      <td><select class="tech-select" onchange="rowUpdate('aut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('aut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('aut',i)}<td><button class="icon-btn" onclick="removeRow('aut',${i})"><i class="ti ti-trash"></i></button></td>
+      <td><select class="tech-select" onchange="rowUpdate('aut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('aut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('aut',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('aut',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('aut',${i})"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('') : emptyRow('No AUT indications recorded');
   return `<div class="panel">
@@ -943,7 +1218,7 @@ function renderAUT(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Automated UT (AUT)</div>
     <div class="${nriLocked('aut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -969,7 +1244,7 @@ function renderMUT(){
       <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('mut',${i},'wt',this.value);renderTab('mut')" style="width:60px"></td>
       <td><select onchange="rowUpdate('mut',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
       <td class="stat-cell">${pct}</td>
-      <td><select class="tech-select" onchange="rowUpdate('mut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mut',i)}<td><button class="icon-btn" onclick="removeRow('mut',${i})"><i class="ti ti-trash"></i></button></td>
+      <td><select class="tech-select" onchange="rowUpdate('mut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mut',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('mut',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('mut',${i})"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('') : emptyRow('No MUT indications recorded');
   return `<div class="panel">
@@ -985,7 +1260,7 @@ function renderMUT(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Manual UT (MUT)</div>
     <div class="${nriLocked('mut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -1018,7 +1293,7 @@ function renderMUTHand(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — MUT Hand Scans</div>
     <div class="${nriLocked('muthand')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Start (X,Y)</th><th>End (X,Y)</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Start X,Y (Axial,Circ) in.</th><th>End X,Y (Axial,Circ) in.</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -1041,7 +1316,7 @@ function renderPAUTBM(){
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautbm',${i},'ht',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('pautbm',${i},'wt',this.value)" style="width:55px"></td>
     <td><select onchange="rowUpdate('pautbm',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
-    <td><select class="tech-select" onchange="rowUpdate('pautbm',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautbm',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautbm',i)}<td><button class="icon-btn" onclick="removeRow('pautbm',${i})"><i class="ti ti-trash"></i></button></td>
+    <td><select class="tech-select" onchange="rowUpdate('pautbm',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautbm',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautbm',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('pautbm',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('pautbm',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No PAUT base metal indications recorded');
   return `<div class="panel">
     <div class="panel-header">
@@ -1056,7 +1331,7 @@ function renderPAUTBM(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Base Metal</div>
     <div class="${nriLocked('pautbm')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -1079,7 +1354,7 @@ function renderPAUTLS(){
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautls',${i},'ht',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('pautls',${i},'wt',this.value)" style="width:55px"></td>
     <td><select onchange="rowUpdate('pautls',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
-    <td><select class="tech-select" onchange="rowUpdate('pautls',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautls',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautls',i)}<td><button class="icon-btn" onclick="removeRow('pautls',${i})"><i class="ti ti-trash"></i></button></td>
+    <td><select class="tech-select" onchange="rowUpdate('pautls',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautls',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautls',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('pautls',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('pautls',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No PAUT long seam indications recorded');
   return `<div class="panel">
     <div class="panel-header">
@@ -1094,13 +1369,15 @@ function renderPAUTLS(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Long Seam</div>
     <div class="${nriLocked('pautls')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
     ${photoSection('pautls')}
   </div>`;
 }
+
+const ACUREN_EQUIPMENT = [{"name": "Bryan Matthews", "phone": "209-305-3437", "email": "Bryan.Matthews@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12332", "mtYokeCal": "2026-09-05", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5 2.0", "blSerial": "5UWF16184", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2141544", "detectorSN": "2141541", "lmCal": "2027-01-07", "utScope": "Olympus 45MG", "utScopeSerial": "201577004", "utScopeCal": "2026-09-05", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1321388", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-197", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Chris Wills", "phone": "661-205-8383", "email": "Christopher.Wills@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11536", "mtYokeCal": "2027-01-09", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "67635", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "303", "detectorSN": "C5DCF895ABC7", "lmCal": "2027-01-06", "utScope": "Olympus 45MG", "utScopeSerial": "171025608", "utScopeCal": "2027-04-01", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295787", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-175", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Christian Jordan", "phone": "661-852-1761", "email": "Christian.Jordan@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13029", "mtYokeCal": "2026-03-14", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "61175", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "304", "detectorSN": "D75DEB562267A", "lmCal": "2027-01-06", "utScope": "Olympus 45MG", "utScopeSerial": "170973605", "utScopeCal": "2027-01-07", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1400402", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-44", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Danny Tabor", "phone": "713-865-0965", "email": "daniel.tabor@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13208", "mtYokeCal": "2026-06-20", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "66588", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "CFF486D9F7C4", "detectorSN": "0491", "lmCal": "2026-09-04", "utScope": "Olympus 45MG", "utScopeSerial": "201578004", "utScopeCal": "2027-03-16", "utProbe": "Olympus", "utProbeModel": "D-798", "utProbeSerial": "1520050", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "C-076", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Hobie Maturin", "phone": "504-433-6100", "email": "hobie.maturin@acuren.com", "mtYokeModel": "B-100", "mtYokeSerial": "16386", "mtYokeCal": "2027-01-29", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1068", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2144035", "detectorSN": "2144039", "lmCal": "2027-01-08", "utScope": "Olympus 45MG", "utScopeSerial": "181178605", "utScopeCal": "2027-01-07", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1548515", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-258", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Ivan Morales", "phone": "956-525-2274", "email": "Ivan.Morales@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "10996", "mtYokeCal": "2026-10-16", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "54218", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2144033", "detectorSN": "2144037", "lmCal": "2027-01-08", "utScope": "Olympus 45MG", "utScopeSerial": "181255709", "utScopeCal": "2026-10-16", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295779", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-262", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Jalen Sebastien", "phone": "707-315-3321", "email": "jalen.sebastian@acuren.com", "mtYokeModel": "Y-2", "mtYokeSerial": "N8281", "mtYokeCal": "2026-11-02", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "55904", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "454", "detectorSN": "DDC41AC0D0C1", "lmCal": "2027-01-06", "utScope": "Olympus 38DL Plus", "utScopeSerial": "130604003", "utScopeCal": "2027-01-25", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1538555", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "12-5041", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "John Darbonne", "phone": "337-524-2835", "email": "John.Darbonne@acuren.com", "mtYokeModel": "Y-2", "mtYokeSerial": "N9212", "mtYokeCal": "2027-01-08", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5 2.0", "blSerial": "5UF16278", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "451", "detectorSN": "F0E073C907AD", "lmCal": "2027-01-07", "utScope": "Olympus Epoch 650", "utScopeSerial": "180574603", "utScopeCal": "2027-01-08", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B20055", "utFreq": "5", "utDia": "0.375", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-377", "pautUnit": "46081", "pautSerial": "Magnaflux", "pautCal": ""}, {"name": "Kaleb Smith", "phone": "714-743-9379", "email": "Kaleb.Smith@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "", "mtYokeCal": "", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "52534", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "305", "detectorSN": "F6BEDCB7DA25", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "211259104", "utScopeCal": "2027-02-26", "utProbe": "Olympus", "utProbeModel": "D-790", "utProbeSerial": "1059433", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-202", "pautUnit": "46290", "pautSerial": "", "pautCal": ""}, {"name": "Kyle Schofield", "phone": "707-228-0557", "email": "Kyle.Schofield@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13201", "mtYokeCal": "2027-01-25", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "5UWF16227", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "1999990", "detectorSN": "1999986", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "160204906", "utScopeCal": "2027-01-06", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B22296", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "D-180", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Leonardo Tejada", "phone": "956-203-7303", "email": "Leonardo.Tejada@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11080", "mtYokeCal": "2027-03-09", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "5UWF16226", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "452", "detectorSN": "FBB63FB7B76E", "lmCal": "2027-01-07", "utScope": "Olympus 45MG", "utScopeSerial": "171052410", "utScopeCal": "2026-09-09", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295778", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-335", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Mike Sizemore", "phone": "832-696-2428", "email": "Michael.Sizemore@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11740", "mtYokeCal": "2027-02-10", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "57666", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "453", "detectorSN": "C2A9654A9CE", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "160203205", "utScopeCal": "2027-02-13", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1407715", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "J-56", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Paizley Ramsey", "phone": "907-903-1696", "email": "Paizley.Ramsey@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12384", "mtYokeCal": "2026-07-02", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1061", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "302", "detectorSN": "E45637AA4437", "lmCal": "2027-01-08", "utScope": "Olympus Epoch 650", "utScopeSerial": "160239508", "utScopeCal": "2026-10-17", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B21767", "utFreq": "5", "utDia": "0.375", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "P-455", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Ruben Morales", "phone": "832-629-4384", "email": "Ruben.Morales@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13209", "mtYokeCal": "2026-12-07", "wfmtMedium": "20B", "wfmtBatch": "20A100", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1039", "lmBrand": "Labino", "lmModel": "Apollo 1.1", "lmSerial": "738", "detectorSN": "FE0EB1ED9AD0", "lmCal": "2026-09-04", "utScope": "Olympus 45MG", "utScopeSerial": "160881211", "utScopeCal": "2026-12-06", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1400405", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-127", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Tyler Laviolette", "phone": "989-513-8402", "email": "Tyler.Laviolette@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12270", "mtYokeCal": "2027-03-17", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "67634", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "0492", "detectorSN": "F5695649CE23", "lmCal": "2027-01-07", "utScope": "Olympus Epoch 650", "utScopeSerial": "231597403", "utScopeCal": "2027-01-08", "utProbe": "Britek", "utProbeModel": "BD-25", "utProbeSerial": "B21771", "utFreq": "5", "utDia": "0.25", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-135", "pautUnit": "", "pautSerial": "", "pautCal": ""}];
 
 /* ===== Technician roster ===== */
 const TECH_COLORS = ['#1a6fa8','#c55a11','#2e7d32','#6a1f7a','#b71c1c',
@@ -1139,20 +1416,67 @@ function renderTechRoster(){
   const el = document.getElementById('tech-roster-list');
   if(!el) return;
   const techs = state.technicians||[];
+
   if(!techs.length){
-    el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No technicians added yet</span>';
+    el.innerHTML = `<div class="roster-wrap"><div class="roster-empty">
+      <i class="ti ti-users" style="font-size:20px;display:block;margin-bottom:4px;opacity:0.3"></i>
+      No technicians yet — add manually or load from Knack
+    </div></div>`;
     return;
   }
-  el.innerHTML = techs.map((t,i)=>`
-    <div class="tech-chip" style="border-color:${t.color}20;background:${t.color}12">
-      <span class="tc-dot" style="background:${t.color}"></span>
-      <strong style="color:${t.color}">${t.name}</strong>
-      <span class="chip-meta">Level ${t.cert||'?'} · ${t.methods||'All methods'}</span>
-      <button class="icon-btn" onclick="removeTechnician('${t.name.replace(/'/g,"\\'")}')"><i class="ti ti-x" style="font-size:11px"></i></button>
-    </div>`).join('');
+
+  const rows = techs.map((t,i) => {
+    const escaped = t.name.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    return `<tr>
+      <td style="width:28px;text-align:center">
+        <input type="color" value="${t.color||'#1a6fa8'}"
+          style="width:24px;height:24px;padding:0;border:none;border-radius:50%;cursor:pointer;background:none"
+          title="Change colour"
+          onchange="updateTech(${i},'color',this.value)">
+      </td>
+      <td><input value="${escaped}" placeholder="Full name"
+          onchange="updateTech(${i},'name',this.value)"
+          oninput="updateTech(${i},'name',this.value)"></td>
+      <td style="width:90px">
+        <select onchange="updateTech(${i},'cert',this.value)">
+          <option value="">— Level —</option>
+          <option${t.cert==='I'?' selected':''}>I</option>
+          <option${t.cert==='II'?' selected':''}>II</option>
+          <option${t.cert==='III'?' selected':''}>III</option>
+        </select>
+      </td>
+      <td><input value="${(t.methods||'').replace(/"/g,'&quot;')}" placeholder="e.g. UTT, MT, PAUT"
+          onchange="updateTech(${i},'methods',this.value)"
+          oninput="updateTech(${i},'methods',this.value)"></td>
+
+      <td style="width:32px;text-align:center">
+        <button class="icon-btn" onclick="removeTechnician('${escaped}')" aria-label="Remove ${escaped}">
+          <i class="ti ti-trash"></i>
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `<div class="roster-wrap"><table class="roster-table">
+    <thead><tr>
+      <th title="Colour">●</th>
+      <th>Name</th>
+      <th>Level</th>
+      <th>Methods</th>
+      <th></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
 }
 
-// Returns <option> tags for a technician select, including blank + all techs
+function updateTech(idx, field, val){
+  if(!state.technicians || !state.technicians[idx]) return;
+  state.technicians[idx][field] = val;
+  // If name changed, refresh tab dropdowns so selects stay in sync
+  if(field === 'name' || field === 'color') renderTab(activeTab);
+  save();
+}
+
 function to(selected){
   const techs = state.technicians||[];
   const blankOpt = `<option value="">— Technician —</option>`;
@@ -1192,43 +1516,276 @@ function setScopeStatus(tabId, jtId, field, val){
 function scopeSummaryTable(tabId, methodLabel){
   const joints = state.joints||[];
   if(!joints.length) return `<div class="alert alert-info" style="margin-bottom:0"><i class="ti ti-info-circle"></i> No joints in scope yet — add joints in the project header above.</div>`;
-  const rows = joints.map(j=>{
+
+  // Map tabId → NDE_METHODS id
+  const TAB_TO_METHOD = {
+    utt12:'utt', uttloc:'utt', lsc:'aelsc', aelsc:'aelsc', jointlen:null,
+    va:'mt', mt:'mt', aut:'aut', mut:'mut', muthand:'mut',
+    pautbm:'paut', pautls:'paut',
+  };
+  const methodId = TAB_TO_METHOD[tabId] || null;
+
+  // Group joints by date+tech combo
+  const groups = {}; // key: 'date||tech' -> [jtIds]
+  joints.forEach(j=>{
     const st = getScopeStatus(tabId, j.id);
-    const badge = st.done
-      ? `<span class="done-badge"><i class="ti ti-check"></i> Completed ${st.date?'· '+st.date:''}</span>`
-      : `<span class="pending-badge"><i class="ti ti-clock"></i> Pending</span>`;
-    return `<tr>
-      <td><strong>${j.id}</strong></td>
-      <td>${j.type||'—'}</td>
-      <td>${j.od||'—'}"</td>
-      <td>${j.nwt||'—'}"</td>
-      <td>${j.seam||'—'}</td>
-      <td>${badge}</td>
-      <td><input type="date" class="scope-date" value="${st.date||''}"
-          onchange="setScopeStatus('${tabId}','${j.id}','date',this.value)"
-          title="Date ${methodLabel} was performed on ${j.id}"></td>
-      <td>
-        <select class="tech-select" onchange="setScopeStatus('${tabId}','${j.id}','tech',this.value)">
+    const key = `${st.date||''}||${st.tech||''}`;
+    if(!groups[key]) groups[key] = {date:st.date||'', tech:st.tech||'', joints:[]};
+    groups[key].joints.push(j.id);
+  });
+
+  // Sort groups: assigned (has date or tech) first, then unassigned
+  const sortedGroups = Object.entries(groups).sort(([ka],[kb])=>{
+    const aHas = ka !== '||';
+    const bHas = kb !== '||';
+    if(aHas && !bHas) return -1;
+    if(!aHas && bHas) return 1;
+    return ka.localeCompare(kb);
+  });
+
+  const colSpan = (tabId==='pautbm'||tabId==='pautls') ? 10 : 9;
+
+  let tableHtml = `<table class="scope-table">
+    <thead><tr>
+      <th>Joint</th><th>Feature Type</th><th>OD</th><th>NWT</th><th>Seam Type</th>
+      <th>Status</th><th>Date Performed</th>
+      ${(tabId==='pautbm'||tabId==='pautls')?'<th>Scan Spacing (in.)</th>':''}
+      <th>Technician</th><th>Mark Done</th>
+    </tr></thead>
+    <tbody>`;
+
+  sortedGroups.forEach(([gKey, gInfo], gi)=>{
+    // Rows for this group
+    gInfo.joints.forEach(jtId=>{
+      const j   = joints.find(x=>x.id===jtId)||{};
+      const st  = getScopeStatus(tabId, jtId);
+      const badge = st.done
+        ? `<span class="done-badge"><i class="ti ti-check"></i> Completed ${st.date?'· '+st.date:''}</span>`
+        : `<span class="pending-badge"><i class="ti ti-clock"></i> Pending</span>`;
+
+      tableHtml += `<tr>
+        <td><strong>${jtId}</strong></td>
+        <td>${j.type||'—'}</td>
+        <td>${j.od||'—'}"</td>
+        <td>${j.nwt||'—'}"</td>
+        <td>${j.seam||'—'}</td>
+        <td>${badge}</td>
+        <td><input type="date" class="scope-date" value="${st.date||''}"
+            onchange="setScopeStatus('${tabId}','${jtId}','date',this.value);ensureNDECard('${methodId||tabId}',this.value,getScopeStatus('${tabId}','${jtId}').tech)"
+            title="Date ${methodLabel} was performed on ${jtId}"></td>
+        ${(tabId==='pautbm'||tabId==='pautls')?`
+        <td><input style="width:90px;padding:3px 6px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)"
+            value="${((state.pautSpacing||{})[tabId]||{})[j.id]||''}"
+            placeholder="e.g. 0.5&quot;" title="PAUT scan spacing interval (in.)"
+            onchange="updatePAUTSpacing('${tabId}','${jtId}',this.value)"></td>
+        `:''}
+        <td><select class="tech-select"
+            onchange="setScopeStatus('${tabId}','${jtId}','tech',this.value);ensureNDECard('${methodId||tabId}',getScopeStatus('${tabId}','${jtId}').date,this.value)">
           ${to(st.tech||'')}
-        </select>
-      </td>
-      <td>
-        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px">
+        </select></td>
+        <td><label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px">
           <input type="checkbox" ${st.done?'checked':''} style="width:14px;height:14px;cursor:pointer;accent-color:#3b6d11"
-              onchange="setScopeStatus('${tabId}','${j.id}','done',this.checked)">
+              onchange="setScopeStatus('${tabId}','${jtId}','done',this.checked)">
           Done
-        </label>
-      </td>
-    </tr>`;
-  }).join('');
+        </label></td>
+      </tr>`;
+    });
+
+    // Inline cal card for this group (only if method has cal and has date or tech)
+    if(methodId && (gInfo.date || gInfo.tech)){
+      const calKey = `${methodId}__${gInfo.date}__${gInfo.tech}`;
+      const card = getNDECard(calKey, methodId, gInfo.date, gInfo.tech);
+      const isOpen = card._open || false;
+      const calLabel = gInfo.tech
+        ? `${gInfo.tech}${gInfo.date?' · '+gInfo.date:''} — NDE Parameters`
+        : `${gInfo.date} — NDE Parameters`;
+      const hasData = card.utUnit || card.procedure || card.yokeModel || card.utSerial;
+
+      tableHtml += `<tr class="cal-inline-row">
+        <td colspan="${colSpan}" style="padding:0;border:none">
+          <div class="cal-inline-wrap">
+            <div class="cal-inline-toggle${isOpen?' open':''}"
+                 onclick="toggleNDECardInline('${calKey}','${methodId}','${gInfo.date}','${gInfo.tech}','${tabId}')">
+              <i class="ti ti-certificate" style="font-size:13px"></i>
+              <span>${calLabel}</span>
+              ${hasData?`<span style="font-size:10px;color:var(--color-success-text);margin-left:4px">● filled</span>`:'<span style="font-size:10px;color:var(--color-warning-text);margin-left:4px">○ empty</span>'}
+              ${ACUREN_EQUIPMENT.find(e=>e.name===gInfo.tech)?`<span class="nde-tech-autofill" style="margin-left:auto;margin-right:8px" onclick="event.stopPropagation();autoFillFromEquipment('${calKey}','${gInfo.tech}')"><i class="ti ti-wand"></i> Auto-fill</span>`:''}
+              <i class="ti ti-chevron-right toggle-arrow"></i>
+            </div>
+            <div class="cal-inline-body${isOpen?' open':''}" id="cal-body-${calKey}">
+              ${isOpen ? renderNDECardFields(card) : ''}
+            </div>
+          </div>
+        </td>
+      </tr>`;
+    }
+
+    // Divider between groups
+    if(gi < sortedGroups.length - 1){
+      tableHtml += `<tr><td colspan="${colSpan}" class="cal-group-divider"></td></tr>`;
+    }
+  });
+
+  tableHtml += `</tbody></table>`;
+
   return `<div class="scope-section">
     <div class="scope-banner"><i class="ti ti-list-check"></i> Joints in Scope — ${methodLabel}</div>
-    <div class="table-wrap"><table class="scope-table">
-      <thead><tr><th>Joint</th><th>Feature Type</th><th>OD</th><th>NWT</th><th>Seam Type</th><th>Status</th><th>Date Performed</th><th>Technician</th><th>Mark Done</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>
+    <div class="table-wrap">${tableHtml}</div>
   </div>`;
 }
+
+// Get or create a cal card by key
+function getNDECard(key, methodId, date, tech){
+  if(!state.ndeCards) state.ndeCards={};
+  if(!state.ndeCards[key]){
+    state.ndeCards[key] = {
+      id:key, method:methodId, date:date||'', tech:tech||'', certLevel:'',
+      procedure:'', revNo:'', calIn:'', calOut:'', calDue:'',
+      utUnit:'', utSerial:'', utModel:'',
+      transManuf:'', transModel:'', transSerial:'',
+      frequency:'', transSize:'', elementQty:'',
+      screenRange:'', refScanDb:'', velocity:'',
+      calBlock:'', calBlockMaterial:'', calBlockSerial:'',
+      calBlockTemp:'', pipeTemp:'', couplant:'', couplantBatch:'',
+      etchantType:'', etchantExp:'',
+      yokeModel:'', yokeSerial:'', yokeCal:'',
+      technique:'', wfmtMedium:'', wfmtBatch:'',
+      blBrand:'', blModel:'', blSerial:'',
+      lmBrand:'', lmModel:'', lmSerial:'', detectorSN:'', lmCal:'',
+      visLight:'', uvLight:'',
+      scanSpeed:'', echoToEcho:'',
+      elementActivityCheck:false,
+      notes:'', _open:false,
+    };
+  }
+  return state.ndeCards[key];
+}
+
+// Ensure a cal card exists when date/tech is set on a scope row
+function ensureNDECard(methodId, date, tech){
+  if(!methodId || (!date && !tech)) return;
+  const key = `${methodId}__${date}__${tech}`;
+  getNDECard(key, methodId, date, tech);
+  save();
+}
+
+function toggleNDECardInline(key, methodId, date, tech, tabId){
+  const card = getNDECard(key, methodId, date, tech);
+  card._open = !card._open;
+  save();
+  // Toggle body without full re-render
+  const toggle = event.currentTarget;
+  const body = document.getElementById('cal-body-'+key);
+  toggle.classList.toggle('open', card._open);
+  if(body){
+    body.classList.toggle('open', card._open);
+    if(card._open && !body.innerHTML.trim()){
+      body.innerHTML = renderNDECardFields(card);
+    }
+  }
+}
+
+// Render just the fields portion of a card (no header, used inline)
+function renderNDECardFields(card){
+  const id = card.id;
+  const m  = card.method;
+
+  const headerFields = `<div class="nde-param-section">
+    <div class="nde-param-title">General</div>
+    <div class="nde-param-grid">
+      ${ndeField(id,'procedure','Procedure',card.procedure,{placeholder:'e.g. BP-4190P-507'})}
+      ${ndeField(id,'revNo','Rev No.',card.revNo,{placeholder:'e.g. Rev.1'})}
+      ${ndeSelect(id,'certLevel','Cert Level',card.certLevel,['I','II','III'])}
+      ${ndeField(id,'calIn','Cal-In Time',card.calIn,{isTime:true})}
+      ${ndeField(id,'calOut','Cal-Out Time',card.calOut,{isTime:true})}
+    </div>
+  </div>`;
+
+  const utFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">UT Unit</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'utUnit','Brand / Model',card.utUnit,{placeholder:'e.g. Olympus Epoch 650'})}
+        ${ndeField(id,'utSerial','Serial Number',card.utSerial)}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">Transducer</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'transManuf','Manufacturer',card.transManuf)}
+        ${ndeField(id,'transModel','Model',card.transModel)}
+        ${ndeField(id,'transSerial','Serial Number',card.transSerial)}
+        ${ndeField(id,'transSize','Size / Dia. (in.)',card.transSize,{placeholder:'e.g. 0.25'})}
+        ${ndeField(id,'elementQty','Element / Qty',card.elementQty,{placeholder:'e.g. Dual / 32'})}
+        ${ndeField(id,'frequency','Frequency (MHz)',card.frequency,{placeholder:'e.g. 5'})}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">Calibration Settings</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'screenRange','Screen Range (in.)',card.screenRange,{placeholder:'e.g. 1'})}
+        ${ndeField(id,'refScanDb','Ref+Scan (dB)',card.refScanDb,{placeholder:'e.g. 58'})}
+        ${ndeField(id,'velocity','Velocity (in/µsec)',card.velocity,{placeholder:'e.g. 0.2342'})}
+        ${ndeField(id,'calBlock','Cal Block',card.calBlock,{placeholder:'e.g. 0.1 min to 0.5 max'})}
+        ${ndeField(id,'calBlockMaterial','Cal Block Material',card.calBlockMaterial,{placeholder:'e.g. 1018 Carbon Steel'})}
+        ${ndeField(id,'calBlockSerial','Cal Block Serial',card.calBlockSerial)}
+        ${ndeField(id,'couplant','Couplant',card.couplant,{placeholder:'e.g. Ultragel II'})}
+        ${ndeField(id,'couplantBatch','Couplant Batch',card.couplantBatch)}
+      </div>
+    </div>`;
+
+  const mtExtra = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">MT Yoke</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'yokeModel','Yoke Model',card.yokeModel,{placeholder:'e.g. B-310'})}
+        ${ndeField(id,'yokeSerial','Yoke Serial',card.yokeSerial)}
+        ${ndeField(id,'yokeCal','Yoke Cal Due',card.yokeCal,{isCalDate:true})}
+        ${ndeSelect(id,'technique','Technique',card.technique,['Wet/Fluorescent (WFMT)','Dry Powder','Visible Wet'])}
+        ${ndeField(id,'wfmtMedium','WFMT Medium',card.wfmtMedium,{placeholder:'e.g. 20B'})}
+        ${ndeField(id,'wfmtBatch','Medium Batch',card.wfmtBatch)}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">UV / Light Equipment</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'blBrand','Blacklight Brand',card.blBrand,{placeholder:'e.g. Labino'})}
+        ${ndeField(id,'blModel','Blacklight Model',card.blModel,{placeholder:'e.g. UVG5'})}
+        ${ndeField(id,'blSerial','Blacklight Serial',card.blSerial)}
+        ${ndeField(id,'lmBrand','Light Meter Brand',card.lmBrand)}
+        ${ndeField(id,'lmModel','Light Meter Model',card.lmModel)}
+        ${ndeField(id,'lmSerial','Light Meter Serial',card.lmSerial)}
+        ${ndeField(id,'detectorSN','Detector S/N',card.detectorSN)}
+        ${ndeField(id,'lmCal','Light Meter Cal Due',card.lmCal,{isCalDate:true})}
+        ${ndeField(id,'visLight','Vis. Light (fc)',card.visLight,{placeholder:'<2'})}
+        ${ndeField(id,'uvLight','UV Intensity (µW/cm²)',card.uvLight,{placeholder:'>1000'})}
+      </div>
+    </div>`;
+
+  const bodyMap = {
+    utt:     utFields,
+    aelsc:   `<div class="nde-param-section"><div class="nde-param-title">Acid Etch</div><div class="nde-param-grid">${ndeField(id,'etchantType','Etchant Type',card.etchantType,{placeholder:'e.g. Nital 10%'})}${ndeField(id,'etchantExp','Etchant Expiry',card.etchantExp,{isCalDate:true})}</div></div>${mtExtra}${utFields}`,
+    mt:      mtExtra + utFields,
+    aut:     utFields + `<div class="nde-param-section"><div class="nde-param-title">AUT Specific</div><div class="nde-param-grid">${ndeField(id,'calBlockTemp','Cal Block Temp (°F)',card.calBlockTemp)}${ndeField(id,'pipeTemp','Pipe Temp (°F)',card.pipeTemp)}${ndeField(id,'scanSpeed','Scan Speed',card.scanSpeed,{placeholder:'<2 in/sec'})}${ndeSelect(id,'echoToEcho','Echo-to-Echo',card.echoToEcho,['Yes','No'])}</div></div>`,
+    mut:     utFields,
+    paut:    utFields + `<div class="nde-param-section"><div class="nde-param-title">PAUT Specific</div><div class="nde-param-grid"><div class="nde-param-field"><span class="nde-param-label">Element Activity Check</span><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:5px 0"><input type="checkbox" ${card.elementActivityCheck?'checked':''} style="width:14px;height:14px" onchange="updateNDECard('${id}','elementActivityCheck',this.checked)"> Verified</label></div>${ndeField(id,'calBlock','Cal Block (OD × WT curved)',card.calBlock,{placeholder:'e.g. 16.00 x 0.250'})}${ndeField(id,'calBlockMaterial','Material',card.calBlockMaterial,{placeholder:'Carbon Steel'})}${ndeField(id,'calBlockSerial','Cal Block Serial',card.calBlockSerial)}${ndeField(id,'calBlockTemp','Cal Block Temp Within 25°F',card.calBlockTemp,{placeholder:'Yes/No'})}</div></div>`,
+    xrf:     `<div class="nde-param-section"><div class="nde-param-title">XRF/LIBS Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit,{placeholder:'e.g. ThermoFisher Niton Apollo'})}${ndeField(id,'utSerial','Serial Number',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Data Checker Tool / Version',card.procedure)}</div></div>`,
+    hard:    `<div class="nde-param-section"><div class="nde-param-title">Hardness Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','UCI Equipment',card.utUnit,{placeholder:'e.g. SonoDur-100H'})}${ndeField(id,'utSerial','UCI Serial',card.utSerial)}${ndeField(id,'transModel','Ernst Equipment',card.transModel,{placeholder:'e.g. E-Dynatest'})}${ndeField(id,'transSerial','Ernst Serial',card.transSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Hardness Template / Version',card.procedure)}</div></div>`,
+    filings: `<div class="nde-param-section"><div class="nde-param-title">Metal Filings</div><div class="nde-param-grid">${ndeField(id,'procedure','Surface Prep Method',card.procedure)}${ndeField(id,'utUnit','Buffing/Grinding Tool',card.utUnit)}${ndeField(id,'notes','Date Shipped to Bryan Labs',card.notes)}</div></div>`,
+    iit:     `<div class="nde-param-section"><div class="nde-param-title">IIT Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit)}${ndeField(id,'utSerial','Serial',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Procedure / Rev',card.procedure)}</div></div>`,
+    metallo: `<div class="nde-param-section"><div class="nde-param-title">Field Metallography</div><div class="nde-param-grid">${ndeField(id,'procedure','Procedure',card.procedure)}${ndeField(id,'utUnit','Replica Film Brand',card.utUnit)}${ndeField(id,'transManuf','Etchant Used',card.transManuf)}${ndeField(id,'notes','Date Shipped to ATS',card.notes)}</div></div>`,
+  };
+
+  const notesSection = `<div class="nde-param-section">
+    <div class="nde-param-title">Notes / Comments</div>
+    <textarea style="width:100%;min-height:48px;padding:6px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
+      onchange="updateNDECard('${id}','notes',this.value)">${card.notes||''}</textarea>
+  </div>`;
+
+  return headerFields + (bodyMap[m]||'') + notesSection;
+}
+
 
 /* ===== AE/LSC ===== */
 function renderAELSC(){
@@ -1289,7 +1846,7 @@ function renderAELSC(){
     <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</div>
     <div class="${nriLocked('aelsc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>LSC Type</th><th>AE Method</th><th>Clock Position</th><th>LS Result / Confirmation</th><th>AE Depth (in)</th><th>Photo?</th><th>Comments</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>LSC Type</th><th>AE Method</th><th>Clock Position</th><th>LS Result / Confirmation</th><th>AE Depth (in)</th><th>Photo?</th><th>Comments</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -1337,7 +1894,13 @@ function removePhoto(tabId,idx){
 /* ===== Generic helpers ===== */
 function addRow(tabId, defaults){
   if(!state[tabId]) state[tabId]=[];
+  const rowIdx = state[tabId].length;
   state[tabId].push({...defaults});
+  // Auto-generate indication ID for flaw detection tabs
+  if(['va','mt','aut','mut','pautbm','pautls'].includes(tabId)){
+    autoIndId(tabId, rowIdx);
+    return; // autoIndId calls save+render
+  }
   save(); renderTabs(); renderTab(tabId);
 }
 
@@ -1365,7 +1928,7 @@ function exportJSON(){
 
 function clearAll(){
   if(!confirm('Clear ALL field data? This cannot be undone.')) return;
-  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},nri:{},scopeStatus:{},rowPhotos:{},utt12:[],uttloc:[],lsc:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]};
+  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
   localStorage.removeItem('nde_field_report');
   loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
 }
@@ -1434,8 +1997,8 @@ function buildXLSX(){
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([lHdr,...(nriRow('lsc','No LSC anomalies.')||lRows)]),'LSC Results');
 
       // Joint Lengths
-      const jHdr=['Joint','Feature Type','Length (in)','OD1 (in)','OD2 (in)','Notes'];
-      const jRows=(state.jointlen||[]).map(r=>[r.jt,r.type,r.length,r.od1,r.od2||'N/A',r.notes]);
+      const jHdr=['Joint','Feature Type','Length (in)','OD1 (in)','NWT1 (in)','OD2 (in)','NWT2 (in)','Notes'];
+      const jRows=(state.jointlen||[]).map(r=>[r.jt,r.type,r.length,r.od1,r.nwt1||'N/A',r.od2||'N/A',r.nwt2||'N/A',r.notes]);
       XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([jHdr,...jRows]),'Joint Lengths');
 
       // VA
@@ -1964,16 +2527,27 @@ const KNACK_CONFIG = {
   certField: '',   // Add cert field key here if available in Knack
 };
 
-async function loadTechsFromKnack(){
-  const {appId,apiKey,objectKey,nameField,certField} = KNACK_CONFIG;
-  if(!appId||!apiKey||!objectKey){
-    showToast('Knack credentials not configured yet','error');
+/* ===== Knack technician picker ===== */
+let _knackAllRecords = [];   // full list fetched from Knack
+let _knackSelected   = {};   // {id: record} of checked items
+
+async function openKnackPicker(){
+  const {appId, apiKey, objectKey} = KNACK_CONFIG;
+  if(!appId || !apiKey || !objectKey){
+    showToast('Knack credentials not configured', 'error');
     return;
   }
-  showToast('Loading technicians from Knack...');
+  // Open modal immediately with loading state
+  document.getElementById('knack-modal').classList.add('open');
+  document.getElementById('knack-list').innerHTML =
+    '<div class="knack-loading"><i class="ti ti-loader"></i>&nbsp; Loading from Knack...</div>';
+  document.getElementById('knack-search').value = '';
+  _knackSelected = {};
+  updateKnackCount();
+
   try{
-    // Knack paginates — fetch all pages
-    let page=1, allRecords=[], total=null;
+    // Fetch all pages
+    let page = 1, records = [], total = null;
     do {
       const res = await fetch(
         `https://api.knack.com/v1/objects/${objectKey}/records?rows_per_page=100&page=${page}`,
@@ -1988,76 +2562,1163 @@ async function loadTechsFromKnack(){
         throw new Error(`HTTP ${res.status}: ${txt.slice(0,120)}`);
       }
       const data = await res.json();
-      allRecords = allRecords.concat(data.records||[]);
-      total = data.total_records || allRecords.length;
+      records = records.concat(data.records || []);
+      total   = data.total_records || records.length;
       page++;
-    } while(allRecords.length < total && page <= 20);
+    } while(records.length < total && page <= 20);
 
-    if(!allRecords.length){
-      showToast('No records found in Knack object','error');
-      return;
-    }
+    _knackAllRecords = records;
+    renderKnackList(records);
 
-    // Knack returns field values in multiple forms — handle all of them
-    function extractField(record, fieldKey){
-      if(!fieldKey) return '';
-      // Try direct, _raw, and nested {identifier} formats
-      const v = record[fieldKey];
-      if(v === undefined || v === null) return '';
-      if(typeof v === 'string') return v.trim();
-      if(typeof v === 'object'){
-        // Name field is sometimes {first:'', last:''} for Name fields
-        if(v.first !== undefined) return `${v.first||''} ${v.last||''}`.trim();
-        // Connection fields have {identifier}
-        if(v.identifier !== undefined) return String(v.identifier).trim();
-        // Try _raw
-        const raw = record[fieldKey+'_raw'];
-        if(raw !== undefined) return String(raw).trim();
-      }
-      return String(v).trim();
-    }
-
-    // Deduplicate and merge into roster
-    let added=0, skipped=0;
-    allRecords.forEach((r,i)=>{
-      const name = extractField(r, nameField);
-      const cert = extractField(r, certField);
-      if(!name){ skipped++; return; }
-      if(!(state.technicians||[]).find(x=>x.name===name)){
-        if(!state.technicians) state.technicians=[];
-        state.technicians.push({
-          name,
-          cert,
-          methods:'',
-          color: techColor((state.technicians||[]).length),
-          knackId: r.id||'',
-        });
-        added++;
-      } else {
-        skipped++;
-      }
-    });
-
-    save();
-    renderTechRoster();
-    renderTab(activeTab);
-    showToast(
-      added>0
-        ? `✓ Added ${added} technician${added!==1?'s':''} from Knack${skipped>0?' ('+skipped+' already in roster)':''}`
-        : `All ${skipped} Knack records already in roster`
-    );
-
-  }catch(err){
-    console.error('Knack error:', err);
-    showToast('Knack error: '+err.message, 'error');
+  } catch(err){
+    document.getElementById('knack-list').innerHTML =
+      `<div class="knack-loading" style="color:var(--color-danger-text)">
+        <i class="ti ti-alert-circle"></i>&nbsp; ${err.message}
+       </div>`;
   }
 }
+
+function extractKnackField(record, fieldKey){
+  if(!fieldKey) return '';
+  const v = record[fieldKey];
+  if(v === undefined || v === null) return '';
+  if(typeof v === 'string') return v.trim();
+  if(typeof v === 'object'){
+    if(v.first !== undefined) return `${v.first||''} ${v.last||''}`.trim();
+    if(v.identifier !== undefined) return String(v.identifier).trim();
+    const raw = record[fieldKey + '_raw'];
+    if(raw !== undefined) return String(raw).trim();
+  }
+  return String(v).trim();
+}
+
+function renderKnackList(records){
+  const {nameField, certField} = KNACK_CONFIG;
+  const existing = new Set((state.technicians||[]).map(t => t.name));
+  const search   = (document.getElementById('knack-search').value || '').toLowerCase();
+
+  const KNACK_EXCLUDE = ['Manteca Office', 'Mari Furlong'];
+
+  const filtered = records.filter(r => {
+    const name = extractKnackField(r, nameField);
+    if(!name) return false;
+    if(KNACK_EXCLUDE.some(ex => name.toLowerCase() === ex.toLowerCase())) return false;
+    return !search || name.toLowerCase().includes(search);
+  });
+
+  if(!filtered.length){
+    document.getElementById('knack-list').innerHTML =
+      '<div class="knack-loading">No results found</div>';
+    return;
+  }
+
+  document.getElementById('knack-list').innerHTML = filtered.map(r => {
+    const name     = extractKnackField(r, nameField);
+    const cert     = certField ? extractKnackField(r, certField) : '';
+    const id       = r.id || name;
+    const alreadyIn= existing.has(name);
+    const checked  = !!_knackSelected[id];
+    return `<label class="knack-item${alreadyIn?' already-added':''}${checked?' selected':''}" data-id="${id}">
+      <input type="checkbox" ${checked?'checked':''} ${alreadyIn?'disabled':''}
+             onchange="toggleKnackItem('${id}', this.checked)"
+             onclick="event.stopPropagation()">
+      <div style="flex:1;min-width:0">
+        <div class="knack-item-name">${name}</div>
+        ${cert ? `<div class="knack-item-meta">Level ${cert}</div>` : '<div class="knack-item-meta"></div>'}
+      </div>
+    </label>`;
+  }).join('');
+}
+
+function filterKnackList(){
+  renderKnackList(_knackAllRecords);
+}
+
+function toggleKnackItem(id, checked){
+  const record = _knackAllRecords.find(r => r.id === id || r.id === id);
+  if(!record) return;
+  if(checked){
+    _knackSelected[id] = record;
+  } else {
+    delete _knackSelected[id];
+  }
+  // Update selected highlight
+  const label = document.querySelector(`.knack-item[data-id="${id}"]`);
+  if(label) label.classList.toggle('selected', checked);
+  updateKnackCount();
+}
+
+function updateKnackCount(){
+  const n = Object.keys(_knackSelected).length;
+  document.getElementById('knack-select-count').textContent =
+    n === 0 ? 'None selected' : `${n} technician${n!==1?'s':''} selected`;
+}
+
+function confirmKnackSelection(){
+  const {nameField, certField} = KNACK_CONFIG;
+  const selected = Object.values(_knackSelected);
+  if(!selected.length){
+    showToast('No technicians selected', 'error');
+    return;
+  }
+  if(!state.technicians) state.technicians = [];
+  let added = 0;
+  selected.forEach(r => {
+    const name = extractKnackField(r, nameField);
+    const cert = certField ? extractKnackField(r, certField) : '';
+    if(!state.technicians.find(t => t.name === name)){
+      state.technicians.push({
+        name,
+        cert,
+        methods: '',
+        color:   techColor(state.technicians.length),
+        knackId: r.id || '',
+      });
+      added++;
+    }
+  });
+  save();
+  renderTechRoster();
+  renderTab(activeTab);
+  closeKnackModal();
+  showToast(`Added ${added} technician${added!==1?'s':''} to roster`);
+}
+
+function closeKnackModal(){
+  document.getElementById('knack-modal').classList.remove('open');
+  _knackSelected = {};
+}
+
+// Keep old name as alias for any legacy calls
+async function loadTechsFromKnack(){ await openKnackPicker(); }
 
 // Refresh Knack techs (clears roster first, re-fetches)
 async function refreshTechsFromKnack(){
   if(!confirm('This will clear the current roster and reload from Knack. Continue?')) return;
   state.technicians=[];
   await loadTechsFromKnack();
+}
+
+
+/* ===== Testing Plan Import ===== */
+
+// Column mapping from the ECA Testing Plan xlsx (1-based)
+const TP_COLS = {
+  station:    1,   // A  Station/Route
+  stationId:  2,   // B  Station ID
+  joint:      3,   // C  Joint
+  pfl:        4,   // D  PFL Feature #
+  feature:    5,   // E  Feature
+  length:     6,   // F  Length (ft)
+  aboveGround:7,   // G  Above Ground?
+  seam:       8,   // H  Long Seam
+  grade:      9,   // I  Grade
+  installDate:10,  // J  Install Date
+  od1:        11,  // K  OD1 (in)
+  nwt1:       12,  // L  NWT1 (in)
+  od2:        13,  // M  OD2 (in)
+  nwt2:       14,  // N  NWT2 (in)
+  mpvType:    16,  // P  MPV Type Required
+  // Method quantity/requested columns (col index, display name, tab key)
+  methods: [
+    { col:21, name:'12-PT UTT',        tab:'utt12'   },
+    { col:23, name:'LSC',              tab:'lsc'     },
+    { col:25, name:'Metal Filings',    tab:null      },
+    { col:27, name:'LIBS/XRF',         tab:null      },
+    { col:29, name:'Hardness',         tab:null      },
+    { col:37, name:'VT',               tab:'va'      },
+    { col:39, name:'MT',               tab:'mt'      },
+    { col:41, name:'AUT/UTT Grid',     tab:'aut'     },
+    { col:43, name:'PAUT Body',        tab:'pautbm'  },
+    { col:46, name:'PAUT Long Seam',   tab:'pautls'  },
+  ]
+};
+
+let _tpRows = [];  // parsed rows from xlsx
+
+function openTPModal(){
+  document.getElementById('tp-modal').classList.add('open');
+  document.getElementById('tp-preview').classList.remove('show');
+  document.getElementById('tp-import-count').textContent = 'No file loaded';
+  document.getElementById('tp-import-btn').disabled = true;
+  document.getElementById('tp-drop-zone').style.display = '';
+  _tpRows = [];
+  // Attach drag events fresh each open to avoid stale handlers
+  const dz = document.getElementById('tp-drop-zone');
+  dz.ondragenter = e => { e.preventDefault(); dz.classList.add('drag-over'); };
+  dz.ondragover  = e => { e.preventDefault(); dz.classList.add('drag-over'); };
+  dz.ondragleave = e => {
+    // Only remove highlight when leaving the drop zone itself, not its children
+    if(!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over');
+  };
+  dz.ondrop = e => {
+    e.preventDefault();
+    dz.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if(file) parseTPFile(file);
+  };
+}
+
+function closeTPModal(){
+  document.getElementById('tp-modal').classList.remove('open');
+}
+
+function handleTPDrop(e){
+  e.preventDefault();
+  document.getElementById('tp-drop-zone').classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if(file) parseTPFile(file);
+}
+
+function handleTPFile(e){
+  const file = e.target.files[0];
+  if(file) parseTPFile(file);
+  e.target.value='';
+}
+
+function parseTPFile(file){
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try{
+      const wb   = XLSX.read(ev.target.result, {type:'array', cellDates:true});
+      const ws   = wb.Sheets['ECA Testing Plan'];
+      if(!ws){ alert('Could not find sheet named "ECA Testing Plan" in this file.'); return; }
+
+      // Convert to 2D array (0-indexed)
+      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+      // Data starts at row index 3 (row 4 in Excel, 0-indexed = 3)
+      const dataRows = aoa.slice(3).filter(r => r[TP_COLS.joint - 1]);
+
+      _tpRows = dataRows.map(r => {
+        const getCol = (c) => {
+          const v = r[c - 1];
+          return (v === null || v === undefined) ? '' : String(v).trim();
+        };
+        // Determine which methods are in scope (has a value > 0 or 'Y')
+        const scopedMethods = TP_COLS.methods.filter(m => {
+          const v = getCol(m.col);
+          return v && v !== '0' && v.toLowerCase() !== 'n' && v !== '';
+        });
+
+        return {
+          joint:       getCol(TP_COLS.joint),
+          feature:     getCol(TP_COLS.feature),
+          od:          getCol(TP_COLS.od1),
+          nwt:         getCol(TP_COLS.nwt1),
+          od2:         getCol(TP_COLS.od2),
+          nwt2:        getCol(TP_COLS.nwt2),
+          seam:        getCol(TP_COLS.seam),
+          grade:       getCol(TP_COLS.grade),
+          pfl:         getCol(TP_COLS.pfl),
+          length:      getCol(TP_COLS.length),
+          aboveGround: getCol(TP_COLS.aboveGround),
+          installDate: getCol(TP_COLS.installDate).slice(0,10),
+          mpvType:     getCol(TP_COLS.mpvType),
+          methods:     scopedMethods,
+          selected:    true,
+          rawRow:      r,  // keep original row for quantity extraction
+        };
+      });
+
+      renderTPPreview();
+    } catch(err){
+      alert('Error reading file: '+err.message);
+      console.error(err);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function renderTPPreview(){
+  if(!_tpRows.length){
+    document.getElementById('tp-import-count').textContent = 'No joints found in file';
+    return;
+  }
+
+  const existing = new Set((state.joints||[]).map(j=>j.id));
+  const selectedCount = _tpRows.filter(r=>r.selected).length;
+
+  // Summary line
+  const newCount = _tpRows.filter(r=>!existing.has(r.joint)).length;
+  const dupCount = _tpRows.filter(r=>existing.has(r.joint)).length;
+  document.getElementById('tp-summary').innerHTML =
+    `Found <strong>${_tpRows.length}</strong> joints — ` +
+    `<strong>${newCount}</strong> new` +
+    (dupCount ? `, <strong>${dupCount}</strong> already in scope` : '');
+
+  const tbody = _tpRows.map((r,i) => {
+    const isExisting = existing.has(r.joint);
+    const methodTags = r.methods.map(m =>
+      `<span class="tp-method-tag">${m.name}</span>`
+    ).join('');
+    return `<tr style="${isExisting?'opacity:0.5':''}">
+      <td class="tp-check-col">
+        <input type="checkbox" ${r.selected?'checked':''} ${isExisting?'disabled title="Already in scope"':''}
+          onchange="tpToggleRow(${i},this.checked)">
+      </td>
+      <td><strong>${r.joint}</strong>${isExisting?' <span class="tp-existing-badge">in scope</span>':''}</td>
+      <td>${r.feature}</td>
+      <td>${r.od}"</td>
+      <td>${r.nwt}"</td>
+      <td>${r.seam||'—'}</td>
+      <td>${r.grade||'—'}</td>
+      <td style="color:var(--color-text-secondary)">${r.pfl||'—'}</td>
+      <td>${r.length||'—'}</td>
+      <td>${methodTags||'<span style="color:var(--color-text-tertiary);font-size:11px">None specified</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tp-tbody').innerHTML = tbody;
+  document.getElementById('tp-preview').classList.add('show');
+  document.getElementById('tp-drop-zone').style.display = 'none';
+  document.getElementById('tp-import-btn').disabled = selectedCount === 0;
+  document.getElementById('tp-import-count').textContent =
+    `${selectedCount} of ${_tpRows.length} joints selected`;
+}
+
+function tpToggleRow(i, checked){
+  _tpRows[i].selected = checked;
+  const sel = _tpRows.filter(r=>r.selected).length;
+  document.getElementById('tp-import-btn').disabled = sel === 0;
+  document.getElementById('tp-import-count').textContent =
+    `${sel} of ${_tpRows.length} joints selected`;
+  document.getElementById('tp-select-all').checked = sel === _tpRows.filter(r=>!((state.joints||[]).find(j=>j.id===r.joint))).length;
+}
+
+function tpToggleAll(checked){
+  const existing = new Set((state.joints||[]).map(j=>j.id));
+  _tpRows.forEach((r,i) => {
+    if(!existing.has(r.joint)){ r.selected = checked; }
+  });
+  renderTPPreview();
+}
+
+function confirmTPImport(){
+  const toImport = _tpRows.filter(r=>r.selected);
+  if(!toImport.length) return;
+
+  const existing = new Set((state.joints||[]).map(j=>j.id));
+  let added = 0;
+
+  toImport.forEach(r => {
+    if(existing.has(r.joint)) return;
+
+    // UTT quantity from col U (index 20, 0-based)
+    const uttQtyRaw = r.rawRow ? r.rawRow[20] : null;
+    const uttQty    = parseInt(uttQtyRaw) || 3;
+    const jt = {
+      id:          r.joint,
+      type:        r.feature || 'Pipe',
+      od:          r.od,
+      nwt:         r.nwt,
+      od2:         r.od2  || '',
+      nwt2:        r.nwt2 || '',
+      seam:        r.seam,
+      grade:       r.grade,
+      pfl:         r.pfl,
+      length:      r.length,
+      installDate: r.installDate,
+      aboveGround: r.aboveGround,
+      mpvType:     r.mpvType,
+      methods:     r.methods.map(m=>m.name),
+      uttQty,
+    };
+
+    if(!state.joints) state.joints = [];
+    state.joints.push(jt);
+    autoPopulateJoint(jt);
+    added++;
+  });
+
+  save();
+  renderJoints();
+  renderTabs();
+  renderTab(activeTab);
+  updateSubtitle();
+  closeTPModal();
+  showToast(`Imported ${added} joint${added!==1?'s':''} from Testing Plan`);
+}
+
+
+/* ===== LSC Checklist & Groups ===== */
+
+// Standard LSC checklist items — technician checks each step off
+const LSC_CHECKLIST_ITEMS = [
+  'Pipe surface prepared for examination (cleaned, scale removed)',
+  'Area media blasted or mechanically cleaned to bare metal',
+  'AE/etch solution applied to examination area',
+  'Sufficient dwell time observed per procedure',
+  'Long seam position identified and clock position recorded',
+  'Seam type visually characterized (ERW, DSAW, SSAW, FBW, Seamless, etc.)',
+  'Seam width and HAZ measured/noted',
+  'Surface condition documented (pits, corrosion, anomalies noted)',
+  'Photographic documentation taken (BL and WL)',
+  'Characterization result recorded and verified by technician',
+  'Area cleaned and neutralized after examination',
+];
+
+let _lscGroupModalEditing = null; // null = new, or index to edit
+
+function openLSCGroupModal(editIdx){
+  _lscGroupModalEditing = editIdx !== undefined ? editIdx : null;
+  const modal = document.getElementById('lsc-group-modal');
+
+  // Populate clock options
+  const clkSel = document.getElementById('lsc-grp-clock');
+  clkSel.innerHTML = CLOCK.map(c=>`<option>${c}</option>`).join('');
+
+  // Populate joint selector — only joints not already in a group (unless editing)
+  const joints = state.joints||[];
+  const usedJoints = new Set();
+  (state.lscGroups||[]).forEach((g,gi)=>{
+    if(gi !== editIdx) g.joints.forEach(j=>usedJoints.add(j));
+  });
+
+  const existing = _lscGroupModalEditing !== null ? (state.lscGroups[_lscGroupModalEditing]||{}) : {};
+
+  document.getElementById('lsc-group-joint-selector').innerHTML = joints.map(j=>{
+    const inGroup = existing.joints && existing.joints.includes(j.id);
+    const taken   = usedJoints.has(j.id);
+    return `<label class="lsc-joint-check${inGroup?' selected':''}" id="lsc-jc-${j.id}">
+      <input type="checkbox" value="${j.id}" ${inGroup?'checked':''} ${taken&&!inGroup?'disabled title="In another group"':''}
+             onchange="lscJointToggle('${j.id}',this.checked,this.closest('label'))">
+      ${j.id}<span style="font-size:10px;color:var(--color-text-tertiary);margin-left:2px">${j.seam||''}</span>
+      ${taken&&!inGroup?'<span style="font-size:9px;color:var(--color-warning-text)"> (grouped)</span>':''}
+    </label>`;
+  }).join('') || '<span style="font-size:12px;color:var(--color-text-tertiary)">No joints in scope yet</span>';
+
+  // Pre-fill fields if editing
+  document.getElementById('lsc-grp-seam').value     = existing.seam     || '';
+  document.getElementById('lsc-grp-clock').value    = existing.clock    || 'N/A';
+  document.getElementById('lsc-grp-aemethod').value = existing.aemethod || '';
+  document.getElementById('lsc-grp-result').value   = existing.result   || '';
+  document.getElementById('lsc-grp-notes').value    = existing.notes    || '';
+  updateLSCGroupCount();
+
+  modal.classList.add('open');
+}
+
+function closeLSCGroupModal(){
+  document.getElementById('lsc-group-modal').classList.remove('open');
+}
+
+function lscJointToggle(id, checked, label){
+  label.classList.toggle('selected', checked);
+  updateLSCGroupCount();
+}
+
+function updateLSCGroupCount(){
+  const checked = document.querySelectorAll('#lsc-group-joint-selector input[type=checkbox]:checked');
+  document.getElementById('lsc-grp-sel-count').textContent =
+    `${checked.length} joint${checked.length!==1?'s':''} selected`;
+}
+
+function confirmLSCGroup(){
+  const checked = Array.from(
+    document.querySelectorAll('#lsc-group-joint-selector input[type=checkbox]:checked')
+  ).map(el=>el.value);
+
+  if(!checked.length){ showToast('Select at least one joint','error'); return; }
+
+  if(!state.lscGroups) state.lscGroups=[];
+
+  const seam     = document.getElementById('lsc-grp-seam').value.trim();
+  const clock    = document.getElementById('lsc-grp-clock').value;
+  const aemethod = document.getElementById('lsc-grp-aemethod').value;
+  const result   = document.getElementById('lsc-grp-result').value;
+  const notes    = document.getElementById('lsc-grp-notes').value.trim();
+
+  if(_lscGroupModalEditing !== null){
+    // Edit existing
+    const g = state.lscGroups[_lscGroupModalEditing];
+    g.joints   = checked;
+    g.seam     = seam;
+    g.clock    = clock;
+    g.aemethod = aemethod;
+    g.result   = result;
+    g.notes    = notes;
+  } else {
+    // New group
+    const newGroup = {
+      id:        'lscg_' + Date.now(),
+      joints:    checked,
+      seam,
+      clock,
+      aemethod,
+      result,
+      notes,
+      date:      '',
+      tech:      '',
+      checklist: LSC_CHECKLIST_ITEMS.map(item=>({text:item, done:false})),
+      photos:    [],
+    };
+    state.lscGroups.push(newGroup);
+  }
+
+  save();
+  closeLSCGroupModal();
+  renderTab('lsc');
+  showToast(_lscGroupModalEditing !== null ? 'Group updated' : `LSC group created for ${checked.join(', ')}`);
+}
+
+function deleteLSCGroup(idx){
+  if(!confirm('Delete this LSC group? Checklist data will be lost.')) return;
+  state.lscGroups.splice(idx,1);
+  save();
+  renderTab('lsc');
+  showToast('LSC group deleted');
+}
+
+function toggleLSCCheckItem(groupIdx, itemIdx, done){
+  state.lscGroups[groupIdx].checklist[itemIdx].done = done;
+  save();
+  // Update just the progress bar and badge without full re-render
+  const g = state.lscGroups[groupIdx];
+  const total   = g.checklist.length;
+  const checked = g.checklist.filter(c=>c.done).length;
+  const pct     = Math.round(checked/total*100);
+  const bar  = document.getElementById(`lsc-prog-fill-${groupIdx}`);
+  const lbl  = document.getElementById(`lsc-prog-lbl-${groupIdx}`);
+  const badge= document.getElementById(`lsc-status-badge-${groupIdx}`);
+  if(bar)  bar.style.width  = pct+'%';
+  if(lbl)  lbl.textContent  = `${checked} / ${total} completed`;
+  if(badge){
+    if(pct===100){
+      badge.className='lsc-complete-badge';
+      badge.innerHTML='<i class="ti ti-circle-check"></i> Complete';
+    } else {
+      badge.className='lsc-pending-badge';
+      badge.innerHTML=`<i class="ti ti-clock"></i> ${pct}%`;
+    }
+  }
+}
+
+function updateLSCGroupField(idx, field, val){
+  state.lscGroups[idx][field] = val;
+  save();
+}
+
+function openLSCGroupPhoto(groupIdx){
+  photoTarget = 'lscGroup_'+groupIdx;
+  if(!state.photos['lscGroup_'+groupIdx]) state.photos['lscGroup_'+groupIdx]=[];
+  document.getElementById('photo-input').click();
+}
+
+/* ===== Rewritten renderLSC ===== */
+function renderLSC(){
+  const groups   = state.lscGroups||[];
+  const joints   = state.joints||[];
+  const nri      = (state.nri||{}).lsc||{};
+
+  // Which joints already have a group
+  const groupedJoints = new Set(groups.flatMap(g=>g.joints));
+  const ungrouped = joints.filter(j=>!groupedJoints.has(j.id));
+
+  // Build group cards
+  const groupCards = groups.length ? groups.map((g,gi)=>{
+    const total   = g.checklist.length;
+    const done    = g.checklist.filter(c=>c.done).length;
+    const pct     = total ? Math.round(done/total*100) : 0;
+    const complete = pct===100;
+
+    const jointBadges = g.joints.map(jid=>
+      `<span class="lsc-joint-badge"><i class="ti ti-vector" style="font-size:10px"></i>${jid}</span>`
+    ).join('');
+
+    const checkItems = g.checklist.map((item,ii)=>`
+      <div class="lsc-check-item${item.done?' done':''}">
+        <input type="checkbox" id="lsc-ci-${gi}-${ii}" ${item.done?'checked':''}
+               onchange="toggleLSCCheckItem(${gi},${ii},this.checked)">
+        <label for="lsc-ci-${gi}-${ii}">${item.text}</label>
+      </div>`).join('');
+
+    const tabPhotos = (state.photos||{})['lscGroup_'+gi]||[];
+    const thumbs = tabPhotos.map((p,pi)=>`
+      <div class="row-photo-thumb" onclick="openLightbox('${p.data}','${p.name}')">
+        <img src="${p.data}" alt="LSC photo">
+        <button class="rpt-del" onclick="event.stopPropagation();removeLSCGroupPhoto(${gi},${pi})">×</button>
+      </div>`).join('');
+
+    return `<div class="lsc-group-card">
+      <div class="lsc-group-header">
+        <div class="lsc-group-joints">${jointBadges}</div>
+        <span id="lsc-status-badge-${gi}" class="${complete?'lsc-complete-badge':'lsc-pending-badge'}">
+          ${complete?'<i class="ti ti-circle-check"></i> Complete':'<i class="ti ti-clock"></i> '+pct+'%'}
+        </span>
+        <div class="lsc-group-actions">
+          <button class="btn btn-sm" onclick="openLSCGroupModal(${gi})" title="Edit group"><i class="ti ti-pencil"></i></button>
+          <button class="btn btn-sm" onclick="openLSCGroupPhoto(${gi})" title="Add photos"><i class="ti ti-camera"></i></button>
+          <button class="icon-btn" onclick="deleteLSCGroup(${gi})" title="Delete group"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+
+      <div class="lsc-group-body">
+        <div class="lsc-field">
+          <div class="lsc-field-label">Seam type / Characterization</div>
+          <input value="${g.seam||''}" placeholder="e.g. ERW, DSAW..." list="seam-options"
+                 onchange="updateLSCGroupField(${gi},'seam',this.value)">
+        </div>
+        <div class="lsc-field">
+          <div class="lsc-field-label">Clock position</div>
+          <select onchange="updateLSCGroupField(${gi},'clock',this.value)">
+            ${CLOCK.map(c=>`<option${c===(g.clock||'N/A')?' selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="lsc-field">
+          <div class="lsc-field-label">AE Method</div>
+          <select onchange="updateLSCGroupField(${gi},'aemethod',this.value)">
+            <option value="">—</option>
+            ${['Acid Etch','Replica Tape','Grind & Etch','DE Only','N/A'].map(v=>`<option${v===g.aemethod?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="lsc-field">
+          <div class="lsc-field-label">Confirmation result</div>
+          <select onchange="updateLSCGroupField(${gi},'result',this.value)">
+            <option value="">—</option>
+            ${['Confirmed ERW','Confirmed DSAW','Confirmed SSAW','Confirmed Seamless','Confirmed FBW','Indeterminate','No Seam Visible'].map(v=>`<option${v===g.result?' selected':''}>${v}</option>`).join('')}
+          </select>
+        </div>
+        <div class="lsc-field">
+          <div class="lsc-field-label">Technician</div>
+          <select onchange="updateLSCGroupField(${gi},'tech',this.value)">
+            ${to(g.tech||'')}
+          </select>
+        </div>
+        <div class="lsc-field">
+          <div class="lsc-field-label">Date</div>
+          <input type="date" value="${g.date||''}" class="date-input"
+                 onchange="updateLSCGroupField(${gi},'date',this.value);computeDateRange()">
+        </div>
+        <div class="lsc-field" style="grid-column:1/-1">
+          <div class="lsc-field-label">Notes / Observations</div>
+          <textarea onchange="updateLSCGroupField(${gi},'notes',this.value)">${g.notes||''}</textarea>
+        </div>
+
+        <div class="lsc-checklist" style="grid-column:1/-1">
+          <div class="lsc-field-label" style="margin-bottom:6px">Checklist</div>
+          <div class="lsc-progress-bar"><div class="lsc-progress-fill" id="lsc-prog-fill-${gi}" style="width:${pct}%"></div></div>
+          <div class="lsc-progress-label" id="lsc-prog-lbl-${gi}">${done} / ${total} completed</div>
+          <div style="margin-top:8px">${checkItems}</div>
+        </div>
+
+        ${tabPhotos.length||true?`<div style="grid-column:1/-1">
+          <div class="lsc-field-label">Photos (${tabPhotos.length})</div>
+          <div class="row-photo-strip">${thumbs}</div>
+        </div>`:''}
+      </div>
+    </div>`;
+  }).join('') : '';
+
+  // Ungrouped joints warning
+  const ungroupedWarn = ungrouped.length ? `
+    <div class="alert alert-info" style="margin-bottom:12px">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>${ungrouped.map(j=>j.id).join(', ')}</strong> ${ungrouped.length===1?'has':'have'} not been assigned to an LSC group yet.</span>
+    </div>` : '';
+
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-vector"></i> Long Seam Characterization (LSC)</span>
+      <div class="panel-actions${nriLocked('lsc')?' nri-locked':''}">
+        <button class="btn btn-primary" onclick="openLSCGroupModal()"><i class="ti ti-stack-2"></i> New LSC group</button>
+      </div>
+    </div>
+    ${nriBar('lsc')}
+    ${scopeSummaryTable('lsc','Long Seam Characterization')}
+    <div class="ind-banner"><i class="ti ti-list-check"></i> LSC Checklists by Group</div>
+    <div class="${nriLocked('lsc')?'nri-locked':''}">
+      ${ungroupedWarn}
+      ${groupCards || `<div class="empty-state"><i class="ti ti-stack-2"></i>No LSC groups yet — click "New LSC group" to create one</div>`}
+    </div>
+    ${photoSection('lsc')}
+  </div>`;
+}
+
+function removeLSCGroupPhoto(gi, pi){
+  const key = 'lscGroup_'+gi;
+  if(!state.photos[key]) return;
+  state.photos[key].splice(pi,1);
+  save(); renderTab('lsc');
+}
+
+
+/* ===== Auto-generate Indication IDs (per PG&E convention) ===== */
+// Convention: JT-01 MT-01, JT-01 MT-02, JT-02 MT-01 etc.
+// method prefix map
+const IND_PREFIX = {
+  mt:'MT', va:'VT', aut:'AUT', mut:'MUT',
+  pautbm:'PAUT-BM', pautls:'PAUT-LS',
+};
+
+function nextIndId(tabId, jtId){
+  const prefix = IND_PREFIX[tabId] || tabId.toUpperCase();
+  const existing = (state[tabId]||[])
+    .filter(r => r.jt === jtId && r.indid)
+    .map(r => {
+      const m = String(r.indid).match(/(\d+)$/);
+      return m ? parseInt(m[1]) : 0;
+    });
+  const next = existing.length ? Math.max(...existing) + 1 : 1;
+  return `${jtId} ${prefix}-${String(next).padStart(2,'0')}`;
+}
+
+// Call this when a new indication row is added — auto-fills the ID
+function autoIndId(tabId, rowIdx){
+  const row = (state[tabId]||[])[rowIdx];
+  if(!row || row.indid) return; // don't overwrite existing
+  row.indid = nextIndId(tabId, row.jt||'');
+  save();
+  renderTab(tabId);
+}
+
+/* ===== Immediate Threat Flag ===== */
+function toggleThreat(tabId, rowIdx, flagged){
+  const row = (state[tabId]||[])[rowIdx];
+  if(!row) return;
+  row.threat = flagged;
+  save();
+  renderTabs(); // update threat badge in tab bar
+  renderTab(tabId);
+  if(flagged){
+    showThreatAlert(row, tabId);
+  }
+}
+
+function showThreatAlert(row, tabId){
+  const modal = document.getElementById('threat-modal');
+  document.getElementById('threat-modal-detail').innerHTML =
+    `<strong>Joint:</strong> ${row.jt||'—'} &nbsp;|&nbsp;
+     <strong>ID:</strong> ${row.indid||'—'} &nbsp;|&nbsp;
+     <strong>Characterization:</strong> ${row.char||'—'}<br>
+     <strong>Length:</strong> ${row.len||'—'}" &nbsp;
+     <strong>Width:</strong> ${row.wid||'—'}" &nbsp;
+     <strong>Depth:</strong> ${row.dep||row.minwt||'—'}" &nbsp;
+     <strong>Height:</strong> ${row.ht||'—'}"`;
+  modal.classList.add('open');
+}
+
+function closeThreatModal(){
+  document.getElementById('threat-modal').classList.remove('open');
+}
+
+/* ===== PAUT Scan Spacing field helpers ===== */
+function updatePAUTSpacing(tabId, jtId, val){
+  if(!state.pautSpacing) state.pautSpacing={};
+  if(!state.pautSpacing[tabId]) state.pautSpacing[tabId]={};
+  state.pautSpacing[tabId][jtId] = val;
+  save();
+}
+
+
+
+
+/* ===== NDE Report Cards ===== */
+
+const NDE_METHODS = [
+  {id:'utt',    label:'UTT',           icon:'ti-ruler-2',      tabs:['utt12','uttloc']},
+  {id:'aelsc',  label:'AE/LSC',        icon:'ti-flask',        tabs:['aelsc','lsc']},
+  {id:'mt',     label:'MT/VT',         icon:'ti-magnet',       tabs:['mt','va']},
+  {id:'aut',    label:'AUT',           icon:'ti-scan',         tabs:['aut']},
+  {id:'mut',    label:'MUT',           icon:'ti-wave-sine',    tabs:['mut','muthand']},
+  {id:'paut',   label:'PAUT',          icon:'ti-layers-subtract', tabs:['pautbm','pautls']},
+  {id:'xrf',    label:'XRF/LIBS',      icon:'ti-atom',         tabs:[]},
+  {id:'hard',   label:'Hardness',      icon:'ti-hammer',       tabs:[]},
+  {id:'filings',label:'Metal Filings', icon:'ti-needle',       tabs:[]},
+  {id:'iit',    label:'IIT',           icon:'ti-activity',     tabs:[]},
+  {id:'metallo',label:'Field Metallo.', icon:'ti-microscope',  tabs:[]},
+];
+
+let activeNDEMethod = 'utt';
+
+function calStatus(dateStr){
+  if(!dateStr || dateStr === '9999-09-09') return {cls:'cal-ok', label:''};
+  try{
+    const d = new Date(dateStr);
+    const now = new Date();
+    const days = Math.round((d-now)/86400000);
+    if(days < 0)  return {cls:'cal-exp',  label:' ⚠ EXPIRED'};
+    if(days < 30) return {cls:'cal-warn', label:` (${days}d)`};
+    return {cls:'cal-ok', label:''};
+  }catch{return {cls:'',label:''};}
+}
+
+function ndeField(cardId, field, label, value, opts={}){
+  const cal = opts.isCalDate ? calStatus(value) : {cls:'',label:''};
+  const cls = (opts.isCalDate && value && new Date(value)<new Date()) ? ' cal-expired' : '';
+  const inputType = opts.isCalDate ? 'date' : (opts.isTime ? 'time' : 'text');
+  const extra = opts.wide ? ' style="width:100%"' : '';
+  return `<div class="nde-param-field">
+    <span class="nde-param-label">${label}${cal.label?`<span class="${cal.cls}">${cal.label}</span>`:''}</span>
+    <input type="${inputType}" class="${cls}" value="${value||''}"${extra}
+           onchange="updateNDECard('${cardId}','${field}',this.value)"
+           placeholder="${opts.placeholder||''}">
+  </div>`;
+}
+
+function ndeSelect(cardId, field, label, value, options){
+  const opts = options.map(o=>
+    `<option value="${o}" ${o===value?'selected':''}>${o}</option>`
+  ).join('');
+  return `<div class="nde-param-field">
+    <span class="nde-param-label">${label}</span>
+    <select onchange="updateNDECard('${cardId}','${field}',this.value)">
+      <option value="">—</option>${opts}
+    </select>
+  </div>`;
+}
+
+function autoFillFromEquipment(cardId, techName){
+  const eq = ACUREN_EQUIPMENT.find(t=>t.name===techName);
+  if(!eq) return;
+  if(!state.ndeCards) state.ndeCards={};
+  const card = state.ndeCards[cardId];
+  if(!card) return;
+
+  // Fill UT/probe fields
+  if(eq.utScope)         card.utUnit      = eq.utScope;
+  if(eq.utScopeSerial)   card.utSerial    = eq.utScopeSerial;
+  if(eq.utScopeCal)      card.calDue      = eq.utScopeCal;
+  if(eq.utProbe)         card.transManuf  = eq.utProbe;
+  if(eq.utProbeModel)    card.transModel  = eq.utProbeModel;
+  if(eq.utProbeSerial)   card.transSerial = eq.utProbeSerial;
+  if(eq.utFreq)          card.frequency   = eq.utFreq;
+  if(eq.utDia)           card.transSize   = eq.utDia;
+  if(eq.couplant)        card.couplant    = eq.couplant;
+  if(eq.couplantBatch)   card.couplantBatch = eq.couplantBatch;
+
+  // MT-specific
+  if(eq.mtYokeModel)     card.yokeModel   = eq.mtYokeModel;
+  if(eq.mtYokeSerial)    card.yokeSerial  = eq.mtYokeSerial;
+  if(eq.mtYokeCal)       card.yokeCal     = eq.mtYokeCal;
+  if(eq.blBrand)         card.blBrand     = eq.blBrand;
+  if(eq.blModel)         card.blModel     = eq.blModel;
+  if(eq.blSerial)        card.blSerial    = eq.blSerial;
+  if(eq.wfmtMedium)      card.wfmtMedium  = eq.wfmtMedium;
+  if(eq.wfmtBatch)       card.wfmtBatch   = eq.wfmtBatch;
+  if(eq.lmBrand)         card.lmBrand     = eq.lmBrand;
+  if(eq.lmModel)         card.lmModel     = eq.lmModel;
+  if(eq.lmSerial)        card.lmSerial    = eq.lmSerial;
+  if(eq.detectorSN)      card.detectorSN  = eq.detectorSN;
+  if(eq.lmCal)           card.lmCal       = eq.lmCal;
+
+  // PAUT-specific
+  if(eq.pautUnit)        card.utUnit      = eq.pautUnit;
+  if(eq.pautSerial)      card.utSerial    = eq.pautSerial;
+  if(eq.pautCal)         card.calDue      = eq.pautCal;
+
+  save();
+  renderTab('calrec');
+}
+
+function updateNDECard(cardId, field, val){
+  if(!state.ndeCards) state.ndeCards={};
+  if(state.ndeCards[cardId]){
+    state.ndeCards[cardId][field]=val;
+    save();
+  }
+  if(field==='date') computeDateRange();
+}
+
+function addNDECard(methodId){
+  if(!state.ndeCards) state.ndeCards={};
+  const id = 'nde_'+Date.now();
+  state.ndeCards[id] = {
+    id, method:methodId, date:'', tech:'', certLevel:'',
+    procedure:'', revNo:'', calIn:'', calOut:'', calDue:'',
+    utUnit:'', utSerial:'', utModel:'',
+    transManuf:'', transModel:'', transSerial:'',
+    frequency:'', transSize:'', elementQty:'',
+    screenRange:'', refScanDb:'', velocity:'',
+    calBlock:'', calBlockMaterial:'', calBlockSerial:'',
+    calBlockTemp:'', pipeTemp:'', couplant:'', couplantBatch:'',
+    // AE/LSC
+    etchantType:'', etchantExp:'',
+    // MT
+    yokeModel:'', yokeSerial:'', yokeCal:'',
+    technique:'', wfmtMedium:'', wfmtBatch:'',
+    blBrand:'', blModel:'', blSerial:'',
+    lmBrand:'', lmModel:'', lmSerial:'', detectorSN:'', lmCal:'',
+    visLight:'', uvLight:'',
+    // AUT specific
+    scanSpeed:'', echoToEcho:'',
+    // PAUT specific
+    elementActivityCheck:false,
+    // Notes
+    notes:'',
+  };
+  save();
+  renderTab('calrec');
+}
+
+function deleteNDECard(cardId){
+  if(!confirm('Delete this NDE parameter record?')) return;
+  if(state.ndeCards) delete state.ndeCards[cardId];
+  save(); renderTab('calrec');
+}
+
+function renderNDECardBody(card){
+  const id = card.id;
+  const m = card.method;
+
+  // Shared header fields
+  const headerFields = `
+    <div class="nde-param-grid">
+      ${ndeField(id,'date','Inspection Date',card.date,{isCalDate:false,placeholder:''})}
+      ${ndeSelect(id,'tech','Technician',card.tech,(state.technicians||[]).map(t=>t.name))}
+      ${ndeSelect(id,'certLevel','Cert Level',card.certLevel,['I','II','III'])}
+      ${ndeField(id,'procedure','Procedure',card.procedure,{placeholder:'e.g. BP-4190P-507'})}
+      ${ndeField(id,'revNo','Rev No.',card.revNo,{placeholder:'e.g. Rev.1'})}
+      ${ndeField(id,'calIn','Cal-In Time',card.calIn,{isTime:true})}
+      ${ndeField(id,'calOut','Cal-Out Time',card.calOut,{isTime:true})}
+    </div>`;
+
+  const utFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">UT Unit</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'utUnit','Brand / Model',card.utUnit,{placeholder:'e.g. Olympus Epoch 650'})}
+        ${ndeField(id,'utSerial','Serial Number',card.utSerial)}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">Transducer</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'transManuf','Manufacturer',card.transManuf)}
+        ${ndeField(id,'transModel','Model',card.transModel)}
+        ${ndeField(id,'transSerial','Serial Number',card.transSerial)}
+        ${ndeField(id,'transSize','Size / Dia. (in.)',card.transSize,{placeholder:'e.g. 0.25'})}
+        ${ndeField(id,'elementQty','Element / Element Qty',card.elementQty,{placeholder:'e.g. Dual / 32'})}
+        ${ndeField(id,'frequency','Frequency (MHz)',card.frequency,{placeholder:'e.g. 5'})}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">Calibration Settings</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'screenRange','Screen Range (in.)',card.screenRange,{placeholder:'e.g. 1'})}
+        ${ndeField(id,'refScanDb','Ref+Scan (dB)',card.refScanDb,{placeholder:'e.g. 58'})}
+        ${ndeField(id,'velocity','Velocity (in/µsec)',card.velocity,{placeholder:'e.g. 0.2342'})}
+        ${ndeField(id,'calBlock','Cal Block Used',card.calBlock,{placeholder:'e.g. 0.1 min to 0.5 max'})}
+        ${ndeField(id,'calBlockMaterial','Cal Block Material',card.calBlockMaterial,{placeholder:'e.g. 1018 Carbon Steel'})}
+        ${ndeField(id,'calBlockSerial','Cal Block Serial',card.calBlockSerial)}
+        ${ndeField(id,'couplant','Couplant Type',card.couplant,{placeholder:'e.g. Ultragel II'})}
+        ${ndeField(id,'couplantBatch','Couplant Batch No.',card.couplantBatch)}
+      </div>
+    </div>`;
+
+  const mtFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">MT Yoke</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'yokeModel','Yoke Model',card.yokeModel,{placeholder:'e.g. B-310'})}
+        ${ndeField(id,'yokeSerial','Yoke Serial',card.yokeSerial)}
+        ${ndeField(id,'yokeCal','Yoke Cal Due',card.yokeCal,{isCalDate:true})}
+        ${ndeSelect(id,'technique','Technique',card.technique,['Wet/Fluorescent (WFMT)','Dry Powder','Visible Wet'])}
+        ${ndeField(id,'wfmtMedium','WFMT Medium',card.wfmtMedium,{placeholder:'e.g. 20B'})}
+        ${ndeField(id,'wfmtBatch','Medium Batch',card.wfmtBatch)}
+      </div>
+    </div>
+    <div class="nde-param-section">
+      <div class="nde-param-title">UV / Light Equipment</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'blBrand','Blacklight Brand',card.blBrand,{placeholder:'e.g. Labino'})}
+        ${ndeField(id,'blModel','Blacklight Model',card.blModel,{placeholder:'e.g. UVG5'})}
+        ${ndeField(id,'blSerial','Blacklight Serial',card.blSerial)}
+        ${ndeField(id,'lmBrand','Light Meter Brand',card.lmBrand)}
+        ${ndeField(id,'lmModel','Light Meter Model',card.lmModel)}
+        ${ndeField(id,'lmSerial','Light Meter Serial',card.lmSerial)}
+        ${ndeField(id,'detectorSN','Detector S/N',card.detectorSN)}
+        ${ndeField(id,'lmCal','Light Meter Cal Due',card.lmCal,{isCalDate:true})}
+        ${ndeField(id,'visLight','Vis. Light (fc)',card.visLight,{placeholder:'<2'})}
+        ${ndeField(id,'uvLight','UV Light Intensity (µW/cm²)',card.uvLight,{placeholder:'e.g. >1000'})}
+      </div>
+    </div>
+    ${utFields}`;
+
+  const aeFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">Acid Etch Parameters</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'etchantType','Etchant Type',card.etchantType,{placeholder:'e.g. Nital 10%'})}
+        ${ndeField(id,'etchantExp','Etchant Expiry',card.etchantExp,{isCalDate:true})}
+      </div>
+    </div>
+    ${mtFields}`;
+
+  const autFields = `
+    ${utFields}
+    <div class="nde-param-section">
+      <div class="nde-param-title">AUT Specific</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'calBlockTemp','Cal Block Temp (°F)',card.calBlockTemp)}
+        ${ndeField(id,'pipeTemp','Pipe Temp (°F)',card.pipeTemp)}
+        ${ndeField(id,'scanSpeed','Scan Speed',card.scanSpeed,{placeholder:'e.g. <2 in/sec'})}
+        ${ndeSelect(id,'echoToEcho','Echo-to-Echo',card.echoToEcho,['Yes','No'])}
+      </div>
+    </div>`;
+
+  const pautFields = `
+    ${utFields}
+    <div class="nde-param-section">
+      <div class="nde-param-title">PAUT Specific</div>
+      <div class="nde-param-grid">
+        <div class="nde-param-field">
+          <span class="nde-param-label">Element Activity Check</span>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:5px 0">
+            <input type="checkbox" ${card.elementActivityCheck?'checked':''}
+              style="width:14px;height:14px;cursor:pointer"
+              onchange="updateNDECard('${id}','elementActivityCheck',this.checked)">
+            Verified
+          </label>
+        </div>
+        ${ndeField(id,'calBlock','Cal Block (OD × WT curved)',card.calBlock,{placeholder:'e.g. 16.00 x 0.250'})}
+        ${ndeField(id,'calBlockMaterial','Material',card.calBlockMaterial,{placeholder:'Carbon Steel'})}
+        ${ndeField(id,'calBlockSerial','Cal Block Serial',card.calBlockSerial)}
+        ${ndeField(id,'calBlockTemp','Cal Block Temp Within 25°F',card.calBlockTemp,{placeholder:'Yes/No'})}
+      </div>
+    </div>`;
+
+  const xrfFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">XRF/LIBS Equipment</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'utUnit','Equipment Brand/Model',card.utUnit,{placeholder:'e.g. ThermoFisher Niton Apollo LIBS'})}
+        ${ndeField(id,'utSerial','Serial Number',card.utSerial)}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+        ${ndeField(id,'procedure','Procedure / Data Checker Tool',card.procedure)}
+        ${ndeField(id,'revNo','Version',card.revNo)}
+      </div>
+    </div>`;
+
+  const hardFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">Hardness Equipment</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'utUnit','UCI Equipment',card.utUnit,{placeholder:'e.g. SonoDur-100H'})}
+        ${ndeField(id,'utSerial','UCI Serial',card.utSerial)}
+        ${ndeField(id,'transModel','Ernst Equipment',card.transModel,{placeholder:'e.g. E-Dynatest'})}
+        ${ndeField(id,'transSerial','Ernst Serial',card.transSerial)}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+        ${ndeField(id,'procedure','Hardness Spreadsheet Template',card.procedure)}
+        ${ndeField(id,'revNo','Template Version',card.revNo)}
+      </div>
+    </div>`;
+
+  const filingsFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">Metal Filings Collection</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'procedure','Procedure',card.procedure,{placeholder:'e.g. surface prep method'})}
+        ${ndeField(id,'utUnit','Buffing/Grinding Tool',card.utUnit)}
+        ${ndeField(id,'notes','Shipping Date to Bryan Labs',card.notes,{placeholder:'date shipped'})}
+      </div>
+    </div>`;
+
+  const iitFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">IIT (Strength Testing) Equipment</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'utUnit','Equipment Brand/Model',card.utUnit,{placeholder:'e.g. IIT tool'})}
+        ${ndeField(id,'utSerial','Serial Number',card.utSerial)}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+        ${ndeField(id,'procedure','Procedure',card.procedure)}
+        ${ndeField(id,'revNo','Rev No.',card.revNo)}
+      </div>
+    </div>`;
+
+  const metalloFields = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">Field Metallography</div>
+      <div class="nde-param-grid">
+        ${ndeField(id,'procedure','Procedure',card.procedure)}
+        ${ndeField(id,'utUnit','Replica Film Brand',card.utUnit)}
+        ${ndeField(id,'transManuf','Etchant Used',card.transManuf)}
+        ${ndeField(id,'notes','Shipping Date to ATS',card.notes,{placeholder:'date shipped to ATS San Ramon'})}
+      </div>
+    </div>`;
+
+  const notesField = `
+    <div class="nde-param-section">
+      <div class="nde-param-title">Notes</div>
+      <textarea style="width:100%;min-height:52px;padding:6px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
+        onchange="updateNDECard('${id}','notes',this.value)">${card.notes||''}</textarea>
+    </div>`;
+
+  const bodyMap = {
+    utt:     utFields,
+    aelsc:   aeFields,
+    mt:      mtFields,
+    aut:     autFields,
+    mut:     utFields,
+    paut:    pautFields,
+    xrf:     xrfFields,
+    hard:    hardFields,
+    filings: filingsFields,
+    iit:     iitFields,
+    metallo: metalloFields,
+  };
+
+  const autoFillBtn = ACUREN_EQUIPMENT.find(e=>e.name===card.tech)
+    ? `<button class="nde-tech-autofill" onclick="autoFillFromEquipment('${id}','${card.tech}')">
+         <i class="ti ti-wand"></i> Auto-fill equipment
+       </button>`
+    : '';
+
+  return `
+    <div class="nde-card-header">
+      <span class="nde-card-method">${NDE_METHODS.find(m=>m.id===card.method)?.label||card.method}</span>
+      <span class="nde-card-title">${card.tech||'No tech assigned'} · ${card.date||'No date'}</span>
+      ${autoFillBtn}
+      <div class="nde-card-actions">
+        <button class="icon-btn" onclick="deleteNDECard('${id}')" title="Delete this record"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+    <div class="nde-card-body">
+      <div class="nde-param-section">
+        <div class="nde-param-title">General</div>
+        ${headerFields}
+      </div>
+      ${bodyMap[card.method]||''}
+      ${notesField}
+    </div>`;
+}
+
+/* ===== Rewritten renderCalRec ===== */
+function renderCalRec(){
+  if(!state.ndeCards) state.ndeCards={};
+
+  const allCards = Object.values(state.ndeCards||{});
+  const methodCards = allCards.filter(c=>c.method===activeNDEMethod);
+  const methodInfo = NDE_METHODS.find(m=>m.id===activeNDEMethod);
+
+  const methodTabsHtml = NDE_METHODS.map(m=>{
+    const count = Object.values(state.ndeCards||{}).filter(c=>c.method===m.id).length;
+    return `<button class="nde-method-tab${activeNDEMethod===m.id?' active':''}"
+              onclick="activeNDEMethod='${m.id}';renderTab('calrec')">
+      <i class="ti ${m.icon}" style="font-size:12px;vertical-align:-1px"></i> ${m.label}
+      ${count>0?`<span style="background:var(--color-info-bg);color:var(--color-info-text);border-radius:10px;padding:0 5px;font-size:10px;margin-left:3px">${count}</span>`:''}
+    </button>`;
+  }).join('');
+
+  const cardsHtml = methodCards.length
+    ? methodCards.map(c=>`<div class="nde-card">${renderNDECardBody(c)}</div>`).join('')
+    : `<div class="empty-state"><i class="ti ${methodInfo?.icon||'ti-clipboard'}"></i>
+         No ${methodInfo?.label||''} parameter records yet</div>`;
+
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-certificate"></i> NDE Inspection Parameter Records</span>
+    </div>
+    <div class="alert alert-info"><i class="ti ti-info-circle"></i>
+      Per PG&E Vendor Expectations §5 &amp; §9.1: document all equipment serial numbers, calibration dates, software versions, and daily cal-in/cal-out times. Select a method below then add a record card for each tech/day combination.
+    </div>
+    <div class="nde-method-tabs">${methodTabsHtml}</div>
+    <button class="nde-add-card-btn" onclick="addNDECard('${activeNDEMethod}')">
+      <i class="ti ti-plus"></i> Add ${methodInfo?.label||''} parameter record
+    </button>
+    ${cardsHtml}
+  </div>`;
 }
 
 </script>
@@ -2132,6 +3793,154 @@ async function refreshTechsFromKnack(){
   <div class="install-banner-btns">
     <button class="btn btn-primary" onclick="installPWA()" id="install-btn" style="font-size:12px"><i class="ti ti-download"></i> Install</button>
     <button class="btn" onclick="dismissInstall()" style="font-size:12px">Later</button>
+  </div>
+</div>
+
+
+<div class="knack-modal-overlay" id="knack-modal" onclick="if(event.target===this)closeKnackModal()">
+  <div class="knack-modal">
+    <div class="knack-modal-title">
+      <i class="ti ti-cloud-download" style="color:var(--color-info-text)"></i>
+      Select Technicians from Knack
+    </div>
+    <input class="knack-search" id="knack-search" placeholder="Search by name..." oninput="filterKnackList()">
+    <div class="knack-list" id="knack-list">
+      <div class="knack-loading"><i class="ti ti-loader"></i> Loading from Knack...</div>
+    </div>
+    <div class="knack-modal-footer">
+      <span class="knack-select-count" id="knack-select-count">0 selected</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn" onclick="closeKnackModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmKnackSelection()"><i class="ti ti-check"></i> Add selected</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="tp-modal-overlay" id="tp-modal" onclick="if(event.target===this)closeTPModal()">
+  <div class="tp-modal">
+    <div class="tp-modal-title">
+      <i class="ti ti-file-spreadsheet" style="color:var(--color-success-text)"></i>
+      Import from Testing Plan
+    </div>
+    <div class="tp-drop-zone" id="tp-drop-zone"
+         onclick="document.getElementById('tp-file-input').click()">
+      <i class="ti ti-upload"></i>
+      <p>Click to select or drag &amp; drop your Testing Plan .xlsx</p>
+      <small>Reads joints, OD, NWT, seam type, grade, PFL#, and method scope from "ECA Testing Plan" sheet</small>
+    </div>
+    <div class="tp-preview" id="tp-preview">
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:6px" id="tp-summary"></div>
+      <div class="table-wrap"><table class="tp-preview-table">
+        <thead><tr>
+          <th class="tp-check-col"><input type="checkbox" id="tp-select-all" onchange="tpToggleAll(this.checked)" title="Select all"></th>
+          <th>Joint</th><th>Feature</th><th>OD</th><th>NWT</th><th>Seam</th><th>Grade</th><th>PFL #</th><th>Length (ft)</th><th>Methods in scope</th>
+        </tr></thead>
+        <tbody id="tp-tbody"></tbody>
+      </table></div>
+    </div>
+    <div class="tp-footer">
+      <span class="tp-count" id="tp-import-count">No file loaded</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn" onclick="closeTPModal()">Cancel</button>
+        <button class="btn btn-primary" id="tp-import-btn" onclick="confirmTPImport()" disabled>
+          <i class="ti ti-download"></i> Import selected
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<input type="file" id="tp-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleTPFile(event)">
+
+
+<div class="knack-modal-overlay" id="lsc-group-modal" onclick="if(event.target===this)closeLSCGroupModal()">
+  <div class="knack-modal" style="max-width:540px">
+    <div class="knack-modal-title"><i class="ti ti-stack-2" style="color:var(--color-info-text)"></i> Create LSC Group</div>
+    <p style="font-size:12px;color:var(--color-text-secondary)">Select joints that share the same seam characterization. They will share one checklist.</p>
+
+    <div>
+      <div class="lsc-field-label">Joints in this group</div>
+      <div class="lsc-joint-selector" id="lsc-group-joint-selector"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+      <div class="lsc-field">
+        <div class="lsc-field-label">Seam type / Characterization</div>
+        <input id="lsc-grp-seam" list="seam-options" placeholder="e.g. ERW, DSAW..." autocomplete="off">
+      </div>
+      <div class="lsc-field">
+        <div class="lsc-field-label">Long seam clock position</div>
+        <select id="lsc-grp-clock"></select>
+      </div>
+      <div class="lsc-field">
+        <div class="lsc-field-label">AE Method</div>
+        <select id="lsc-grp-aemethod">
+          <option value="">—</option>
+          <option>Acid Etch</option>
+          <option>Replica Tape</option>
+          <option>Grind &amp; Etch</option>
+          <option>DE Only</option>
+          <option>N/A</option>
+        </select>
+      </div>
+      <div class="lsc-field">
+        <div class="lsc-field-label">Confirmation result</div>
+        <select id="lsc-grp-result">
+          <option value="">—</option>
+          <option>Confirmed ERW</option>
+          <option>Confirmed DSAW</option>
+          <option>Confirmed SSAW</option>
+          <option>Confirmed Seamless</option>
+          <option>Confirmed FBW</option>
+          <option>Indeterminate</option>
+          <option>No Seam Visible</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="lsc-field" style="margin-top:6px">
+      <div class="lsc-field-label">Notes / observations</div>
+      <textarea id="lsc-grp-notes" placeholder="Any additional observations..."></textarea>
+    </div>
+
+    <div class="knack-modal-footer">
+      <span style="font-size:12px;color:var(--color-text-secondary)" id="lsc-grp-sel-count">0 joints selected</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn" onclick="closeLSCGroupModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmLSCGroup()"><i class="ti ti-plus"></i> Create group</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="knack-modal-overlay" id="threat-modal" onclick="if(event.target===this)closeThreatModal()">
+  <div class="knack-modal" style="max-width:520px;border:2px solid var(--color-danger-border)">
+    <div class="knack-modal-title" style="color:var(--color-danger-text)">
+      <i class="ti ti-alert-triangle" style="font-size:20px"></i>
+      ⚠ IMMEDIATE THREAT — STOP WORK
+    </div>
+    <div style="background:var(--color-danger-bg);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;color:var(--color-danger-text);margin-bottom:12px;border:0.5px solid var(--color-danger-border)">
+      This indication has been flagged as a potential immediate threat per PG&E procedure TD-4820S.
+      <strong>Stop work immediately and notify the PG&E project team.</strong>
+    </div>
+    <div style="font-size:12px;margin-bottom:12px" id="threat-modal-detail"></div>
+    <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:14px">
+      <strong>Required actions (§7 Threats):</strong><br>
+      1. Stop work immediately<br>
+      2. Notify FIMP Manager, Station Lead and Back-up<br>
+      3. Provide all indication dimensions (length, width, depth, height)<br>
+      4. Assess for cracking around all mechanical damage or wall loss indications<br>
+      5. Document in DFPR and applicable NDE report(s)
+    </div>
+    <div style="font-size:12px;margin-bottom:10px">
+      <strong>Contact:</strong>
+      <input id="threat-contact-notes" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:12px;margin-top:4px" placeholder="Notes on who was notified, time, response...">
+    </div>
+    <div style="display:flex;gap:6px;justify-content:flex-end">
+      <button class="btn btn-danger" onclick="closeThreatModal()"><i class="ti ti-check"></i> Acknowledged — will notify team</button>
+    </div>
   </div>
 </div>
 
