@@ -1639,9 +1639,12 @@ function generateIcon(size){
   return canvas.toDataURL('image/png');
 }
 
-// Service worker for offline caching
+// Service worker for offline caching — only works on HTTPS (GitHub Pages etc.)
+// Silently skipped when running from a local file or blob URL
 function registerServiceWorker(){
   if(!('serviceWorker' in navigator)) return;
+  const proto = location.protocol;
+  if(proto !== 'https:' && location.hostname !== 'localhost') return;
   const swCode = `
     const CACHE = 'nde-report-v1';
     const ICON_CDN = 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css';
