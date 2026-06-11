@@ -366,7 +366,7 @@ td textarea:placeholder-shown{
         <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add technician</button>
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
-        <button class="btn" onclick="loadTechsFromKnack()" title="Import tech roster from Knack.com" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Load from Knack</button>
+        <button class="btn" onclick="loadTechsFromKnack()" title="Add technicians from Knack (merges with existing)" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Load from Knack</button>
       </div>
     </div>
 
@@ -1371,7 +1371,6 @@ function clearAll(){
 }
 
 load();
-loadTheme();
 
 // Close theme dropdown on outside click
 document.addEventListener('click', e=>{
@@ -1589,6 +1588,7 @@ function loadTheme(){
   const saved = localStorage.getItem('nde_theme') || 'auto';
   setTheme(saved);
 }
+loadTheme();
 
 
 /* ===== PWA / Install ===== */
@@ -1954,11 +1954,11 @@ function showToast(msg, type='success'){
 
 /* ===== Knack integration (ready when credentials available) ===== */
 const KNACK_CONFIG = {
-  appId:   '660ed1cef07d6b437f7b1cd7',   // Set your Knack App ID here
-  apiKey:  '1be6f991-feb8-43a7-82cd-5e71b6e486e5',   // Set your Knack REST API Key here
-  objectKey: 'object_9', // e.g. 'object_1' — the object containing technicians
-  nameField: 'field_206', // e.g. 'field_1' — the field with the tech name
-  certField: '', // e.g. 'field_2' — cert level field
+  appId:     '660ed1cef07d6b437f7b1cd7',
+  apiKey:    '1be6f991-feb8-43a7-82cd-5e71b6e486e5',
+  objectKey: 'object_9',
+  nameField: 'field_206',
+  certField: '',   // Add cert field key here if available in Knack
 };
 
 async function loadTechsFromKnack(){
@@ -1967,36 +1967,94 @@ async function loadTechsFromKnack(){
     showToast('Knack credentials not configured yet','error');
     return;
   }
+  showToast('Loading technicians from Knack...');
   try{
-    showToast('Loading technicians from Knack...');
-    const res = await fetch(`https://api.knack.com/v1/objects/${objectKey}/records?rows_per_page=100`,{
-      headers:{'X-Knack-Application-Id':appId,'X-Knack-REST-API-Key':apiKey}
-    });
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
-    const fetched = (data.records||[]).map((r,i)=>({
-      name: r[nameField]||'Unknown',
-      cert: r[certField]||'',
-      methods:'',
-      color: techColor(i),
-    }));
-    if(!fetched.length){ showToast('No technicians found in Knack','error'); return; }
-    // Merge — add techs not already in roster
-    let added=0;
-    fetched.forEach(t=>{
-      if(!(state.technicians||[]).find(x=>x.name===t.name)){
+    // Knack paginates — fetch all pages
+    let page=1, allRecords=[], total=null;
+    do {
+      const res = await fetch(
+        `https://api.knack.com/v1/objects/${objectKey}/records?rows_per_page=100&page=${page}`,
+        { headers:{
+            'X-Knack-Application-Id': appId,
+            'X-Knack-REST-API-Key':   apiKey,
+            'Content-Type':           'application/json'
+        }}
+      );
+      if(!res.ok){
+        const txt = await res.text();
+        throw new Error(`HTTP ${res.status}: ${txt.slice(0,120)}`);
+      }
+      const data = await res.json();
+      allRecords = allRecords.concat(data.records||[]);
+      total = data.total_records || allRecords.length;
+      page++;
+    } while(allRecords.length < total && page <= 20);
+
+    if(!allRecords.length){
+      showToast('No records found in Knack object','error');
+      return;
+    }
+
+    // Knack returns field values in multiple forms — handle all of them
+    function extractField(record, fieldKey){
+      if(!fieldKey) return '';
+      // Try direct, _raw, and nested {identifier} formats
+      const v = record[fieldKey];
+      if(v === undefined || v === null) return '';
+      if(typeof v === 'string') return v.trim();
+      if(typeof v === 'object'){
+        // Name field is sometimes {first:'', last:''} for Name fields
+        if(v.first !== undefined) return `${v.first||''} ${v.last||''}`.trim();
+        // Connection fields have {identifier}
+        if(v.identifier !== undefined) return String(v.identifier).trim();
+        // Try _raw
+        const raw = record[fieldKey+'_raw'];
+        if(raw !== undefined) return String(raw).trim();
+      }
+      return String(v).trim();
+    }
+
+    // Deduplicate and merge into roster
+    let added=0, skipped=0;
+    allRecords.forEach((r,i)=>{
+      const name = extractField(r, nameField);
+      const cert = extractField(r, certField);
+      if(!name){ skipped++; return; }
+      if(!(state.technicians||[]).find(x=>x.name===name)){
         if(!state.technicians) state.technicians=[];
-        state.technicians.push(t);
+        state.technicians.push({
+          name,
+          cert,
+          methods:'',
+          color: techColor((state.technicians||[]).length),
+          knackId: r.id||'',
+        });
         added++;
+      } else {
+        skipped++;
       }
     });
+
     save();
     renderTechRoster();
     renderTab(activeTab);
-    showToast(`Loaded ${added} technician${added!==1?'s':''} from Knack`);
+    showToast(
+      added>0
+        ? `✓ Added ${added} technician${added!==1?'s':''} from Knack${skipped>0?' ('+skipped+' already in roster)':''}`
+        : `All ${skipped} Knack records already in roster`
+    );
+
   }catch(err){
-    showToast('Knack error: '+err.message,'error');
+    console.error('Knack error:', err);
+    showToast('Knack error: '+err.message, 'error');
   }
+}
+
+// Refresh Knack techs (clears roster first, re-fetches)
+async function refreshTechsFromKnack(){
+  if(!confirm('This will clear the current roster and reload from Knack. Continue?')) return;
+  state.technicians=[];
+  await loadTechsFromKnack();
 }
 
 </script>
