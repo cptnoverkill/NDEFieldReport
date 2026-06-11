@@ -431,6 +431,32 @@ td textarea:placeholder-shown{
 .aut-heatmap{display:block;border-radius:4px;cursor:crosshair}
 .paste-hint{font-size:11px;color:var(--color-text-secondary);font-style:italic}
 
+
+/* ── Sidebar navigation ─────────────────────────────────────── */
+.app-body{display:flex;align-items:flex-start;gap:0;min-height:0;flex:1}
+.sidebar{width:200px;flex-shrink:0;background:var(--color-bg-secondary);border-right:0.5px solid var(--color-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
+.sidebar-category{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--color-text-tertiary);padding:10px 12px 4px;margin-top:4px}
+.sidebar-category:first-child{margin-top:0}
+.sidebar .tab{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;border-radius:0;background:transparent;color:var(--color-text-secondary);font-size:12px;font-weight:500;cursor:pointer;text-align:left;position:relative;transition:background 0.1s,color 0.1s;white-space:nowrap;font-family:inherit}
+.sidebar .tab:hover{background:var(--color-bg);color:var(--color-text)}
+.sidebar .tab.active{background:var(--color-bg);color:var(--color-info-text);font-weight:600;border-right:2.5px solid var(--color-info-text)}
+.sidebar .tab i{font-size:14px;flex-shrink:0;opacity:0.7}
+.sidebar .tab.active i{opacity:1}
+.sidebar .tab-badge{background:var(--color-info-bg);color:var(--color-info-text);border-radius:10px;padding:0 6px;font-size:10px;margin-left:auto;font-weight:600}
+.sidebar .tab .threat-dot{width:7px;height:7px;border-radius:50%;background:var(--color-danger-text);margin-left:auto;flex-shrink:0}
+.main-content{flex:1;min-width:0;overflow-x:auto;padding:0}
+
+/* Mobile: sidebar collapses to top bar */
+@media(max-width:640px){
+  .app-body{flex-direction:column}
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:0.5px solid var(--color-border)}
+  .sidebar-category{display:none}
+  .sidebar .tab{flex-direction:column;gap:2px;padding:6px 8px;font-size:10px;white-space:nowrap;border-right:none;border-bottom:2.5px solid transparent}
+  .sidebar .tab.active{border-right:none;border-bottom:2.5px solid var(--color-info-text)}
+  .sidebar .tab i{font-size:16px}
+  .sidebar .tab-badge{margin-left:0}
+}
+
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
 .nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:0.5px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
@@ -459,9 +485,7 @@ td textarea:placeholder-shown{
   /* Theme dropdown opens downward but anchored to left on small screens */
   .theme-dropdown{right:auto;left:0;min-width:160px}
 
-  /* Tabs — smaller text, scroll horizontally */
-  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;gap:3px}
-  .tab{font-size:11px;padding:5px 9px;white-space:nowrap;flex-shrink:0}
+  /* Sidebar — horizontal on mobile handled by sidebar styles */
 
   /* Tables — ensure they scroll */
   .table-wrap,.utt-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -587,8 +611,10 @@ td textarea:placeholder-shown{
     </div>
   </div>
 
-  <div class="tabs" id="tab-bar"></div>
-  <div id="tab-content"></div>
+  <div class="app-body">
+    <nav class="sidebar" id="tab-bar"></nav>
+    <div class="main-content" id="tab-content"></div>
+  </div>
 </div>
 
 <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handlePhotos(event)">
@@ -906,7 +932,7 @@ function updateJointField(id, field, val){
 }
 
 const TAB_CATEGORIES = {
-  MPV: ['utt12','uttloc','aelsc','jointlen'],
+  'MPV': ['utt12','uttloc','aelsc','jointlen'],
   'Flaw Detection': ['va','mt','aut','mut','muthand','pautbm','pautls'],
   'Equipment': ['calrec'],
 };
@@ -915,7 +941,7 @@ function renderTabs(){
   const bar = document.getElementById('tab-bar');
   let html = '';
   Object.entries(TAB_CATEGORIES).forEach(([cat, ids])=>{
-    html += `<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);padding:0 4px;align-self:center;white-space:nowrap">${cat}</span>`;
+    html += `<div class="sidebar-category">${cat}</div>`;
     ids.forEach(tid=>{
       const t = TABS.find(x=>x.id===tid);
       if(!t) return;
@@ -923,12 +949,12 @@ function renderTabs(){
       const hasThreats = ['mt','va','aut','mut','pautbm','pautls'].includes(tid) &&
         (state[tid]||[]).some(r=>r.threat);
       html += `<button class="tab${activeTab===tid?' active':''}" onclick="switchTab('${tid}')">
-        <i class="ti ${t.icon}" style="font-size:13px;vertical-align:-1px"></i> ${t.label}
+        <i class="ti ${t.icon}"></i>
+        <span>${t.label}</span>
         ${count>0?`<span class="tab-badge">${count}</span>`:''}
-        ${hasThreats?'<span style="color:#c00000;font-size:11px;margin-left:2px" title="Immediate threat flagged">⚠</span>':''}
+        ${hasThreats?`<span class="threat-dot" title="Immediate threat flagged"></span>`:''}
       </button>`;
     });
-    html += `<span style="width:6px;display:inline-block"></span>`;
   });
   bar.innerHTML = html;
 }
@@ -3940,7 +3966,8 @@ function setCellValue(type, key, r, c, val){
   const store = type==='mut' ? state.mutGrids : state.ecGrids;
   if(!store[key]) return;
   if(!store[key].cells[r]) store[key].cells[r]=[];
-  store[key].cells[r][c] = val===''?'':parseFloat(val)||val;
+  // Store as-is — preserve user's decimal places (e.g. 0.375 stays 0.375)
+  store[key].cells[r][c] = val==='' ? '' : val.trim();
 
   // Sync EC max depth to indication row
   if(type==='ec' && store[key].vaRowIdx !== undefined){
@@ -3986,8 +4013,9 @@ function handleGridPaste(e, type, key, startR, startC){
       const tr = startR+ri, tc = startC+ci;
       if(tr < grid.rows && tc < grid.cols){
         if(!grid.cells[tr]) grid.cells[tr]=[];
-        const v = parseFloat(cell.trim());
-        grid.cells[tr][tc] = isNaN(v) ? '' : v;
+        // Preserve as string to keep 3 decimal places as typed
+        const v = cell.trim();
+        grid.cells[tr][tc] = v;
       }
     });
   });
@@ -4928,277 +4956,274 @@ async function generatePDF(){
 /* ===== Grid → Canvas → PDF helpers ===== */
 
 // Render a MUT or EC grid to an offscreen canvas and return dataURL
-function gridToCanvas(gridData, type){
-  const {rows, cols, colStart=1, cells=[], voids={}, nwt=0.5} = gridData;
+// Draw a single grid chunk to canvas (colStart..colEnd, rowStart..rowEnd)
+function gridChunkToCanvas(gridData, type, rowStart, rowEnd, colStartIdx, colEndIdx){
+  const {colStart=1, cells=[], voids={}, nwt=0.5} = gridData;
   const isEC = type === 'ec';
+  const chunkRows = rowEnd - rowStart;
+  const chunkCols = colEndIdx - colStartIdx;
 
-  // Compute value range
-  const vals = [];
-  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
-    if(!voids[r]?.[c]){
-      const v = parseFloat(cells[r]?.[c]);
-      if(!isNaN(v)) vals.push(v);
-    }
+  // Compute value range across WHOLE grid for consistent color scale
+  const allVals = [];
+  for(let r=0;r<gridData.rows;r++) for(let c=0;c<gridData.cols;c++){
+    if(!voids[r]?.[c]){ const v=parseFloat(cells[r]?.[c]); if(!isNaN(v)) allVals.push(v); }
   }
-  const minV = vals.length ? Math.min(...vals) : 0;
-  const maxV = vals.length ? Math.max(...vals) : (nwt||1);
-  const avgV = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+  const minV = allVals.length ? Math.min(...allVals) : 0;
+  const maxV = allVals.length ? Math.max(...allVals) : (nwt||1);
+  const avgV = allVals.length ? allVals.reduce((a,b)=>a+b,0)/allVals.length : 0;
 
-  // Cell sizing — target ~700px wide max
-  const cellW = Math.max(28, Math.min(60, Math.floor(680 / cols)));
-  const cellH = 20;
-  const labelW = 28;
-  const headerH = 20;
-  const canvasW = labelW + cols * cellW + 2;
-  const canvasH = headerH + rows * cellH + 28; // +28 for stats footer
+  const cellW  = 38;   // fixed cell width px — readable at any zoom
+  const cellH  = 18;
+  const labelW = 30;   // row label column
+  const headerH= 20;
+  const footerH= 22;
+  const cW = labelW + chunkCols * cellW;
+  const cH = headerH + chunkRows * cellH + footerH;
 
   const canvas = document.createElement('canvas');
-  canvas.width = canvasW;
-  canvas.height = canvasH;
+  canvas.width=cW; canvas.height=cH;
   const ctx = canvas.getContext('2d');
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cW,cH);
 
-  // Background
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, canvasW, canvasH);
-
-  // Column headers
-  ctx.fillStyle = '#1F3864';
-  ctx.fillRect(0, 0, canvasW, headerH);
-  ctx.fillStyle = '#fff';
-  ctx.font = `bold ${Math.min(11, cellW/3)}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // Grid title
-  ctx.font = 'bold 11px sans-serif';
-  ctx.fillText(gridData.label||'Grid', labelW/2, headerH/2);
-
-  for(let c=0;c<cols;c++){
-    ctx.fillText(String(colStart+c), labelW + c*cellW + cellW/2, headerH/2);
+  // Header — col labels
+  ctx.fillStyle='#1F3864'; ctx.fillRect(0,0,cW,headerH);
+  ctx.fillStyle='#fff'; ctx.font=`bold 10px sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  // Top-left corner: "Row"
+  ctx.fillText('Row', labelW/2, headerH/2);
+  for(let ci=0;ci<chunkCols;ci++){
+    ctx.fillText(String(colStart + colStartIdx + ci), labelW+ci*cellW+cellW/2, headerH/2);
   }
 
-  // Rows
-  for(let r=0;r<rows;r++){
-    // Row label
-    ctx.fillStyle = '#e8eaf6';
-    ctx.fillRect(0, headerH + r*cellH, labelW, cellH);
-    ctx.strokeStyle = '#aaa';
-    ctx.lineWidth = 0.5;
-    ctx.strokeRect(0, headerH + r*cellH, labelW, cellH);
-    ctx.fillStyle = '#333';
-    ctx.font = 'bold 10px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(alphaLabel(r), labelW/2, headerH + r*cellH + cellH/2);
+  // Cells
+  for(let ri=0;ri<chunkRows;ri++){
+    const r = rowStart + ri;
+    // Row label cell
+    ctx.fillStyle='#e8eaf6';
+    ctx.fillRect(0, headerH+ri*cellH, labelW, cellH);
+    ctx.strokeStyle='#bbb'; ctx.lineWidth=0.5;
+    ctx.strokeRect(0, headerH+ri*cellH, labelW, cellH);
+    ctx.fillStyle='#333'; ctx.font='bold 10px sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(alphaLabel(r), labelW/2, headerH+ri*cellH+cellH/2);
 
-    // Cells
-    for(let c=0;c<cols;c++){
-      const x = labelW + c*cellW;
-      const y = headerH + r*cellH;
+    for(let ci=0;ci<chunkCols;ci++){
+      const c  = colStartIdx + ci;
+      const x  = labelW + ci*cellW;
+      const y  = headerH + ri*cellH;
       const isVoid = voids[r]?.[c];
-      const val = cells[r]?.[c];
+      const val    = cells[r]?.[c];
       const numVal = parseFloat(val);
 
       if(isVoid){
-        ctx.fillStyle = '#111';
-        ctx.fillRect(x, y, cellW, cellH);
-        ctx.fillStyle = '#fff';
-        ctx.font = '8px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('Void', x+cellW/2, y+cellH/2);
+        ctx.fillStyle='#111'; ctx.fillRect(x,y,cellW,cellH);
+        ctx.fillStyle='#fff'; ctx.font='8px sans-serif';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('Void',x+cellW/2,y+cellH/2);
       } else {
         const bg = !isNaN(numVal)
-          ? (isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt, maxV))
+          ? (isEC ? depthColor(numVal,maxV) : thicknessColor(numVal,minV,nwt,maxV))
           : '#f5f5f5';
-        ctx.fillStyle = bg;
-        ctx.fillRect(x, y, cellW, cellH);
-        ctx.strokeStyle = '#ccc';
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(x, y, cellW, cellH);
-
+        ctx.fillStyle=bg; ctx.fillRect(x,y,cellW,cellH);
+        ctx.strokeStyle='#ccc'; ctx.lineWidth=0.5; ctx.strokeRect(x,y,cellW,cellH);
         if(!isNaN(numVal)){
-          const fgMatch = bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
-          const lum = fgMatch ? (0.299*fgMatch[1]+0.587*fgMatch[2]+0.114*fgMatch[3])/255 : 0.5;
-          ctx.fillStyle = lum > 0.45 ? '#111' : '#fff';
-          ctx.font = `${Math.min(10, cellW/4)}px sans-serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(numVal.toFixed(3), x+cellW/2, y+cellH/2);
+          const m=bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
+          const lum=m?(0.299*m[1]+0.587*m[2]+0.114*m[3])/255:0.5;
+          ctx.fillStyle=lum>0.45?'#111':'#fff';
+          ctx.font='9px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.fillText(numVal.toFixed(3),x+cellW/2,y+cellH/2);
         }
       }
     }
   }
 
-  // Stats footer
-  const fy = headerH + rows*cellH + 4;
-  ctx.fillStyle = '#1F3864';
-  ctx.fillRect(0, fy, canvasW, 24);
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 10px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-  if(vals.length){
-    ctx.fillStyle = '#ff6b6b';
-    ctx.fillText(`MIN: ${minV.toFixed(3)}"`, 8, fy+12);
-    ctx.fillStyle = '#69db7c';
-    ctx.fillText(`MAX: ${maxV.toFixed(3)}"`, canvasW/3, fy+12);
-    ctx.fillStyle = '#fff';
-    ctx.fillText(`AVG: ${avgV.toFixed(3)}"`, canvasW*2/3, fy+12);
+  // Footer stats bar
+  const fy = headerH + chunkRows*cellH;
+  ctx.fillStyle='#1F3864'; ctx.fillRect(0,fy,cW,footerH);
+  if(allVals.length){
+    ctx.font='bold 10px sans-serif'; ctx.textBaseline='middle';
+    ctx.fillStyle='#ff6b6b'; ctx.textAlign='left';
+    ctx.fillText(`MIN: ${minV.toFixed(3)}"`,6,fy+footerH/2);
+    ctx.fillStyle='#69db7c'; ctx.textAlign='center';
+    ctx.fillText(`MAX: ${maxV.toFixed(3)}"`,cW/2,fy+footerH/2);
+    ctx.fillStyle='#fff'; ctx.textAlign='right';
+    ctx.fillText(`AVG: ${avgV.toFixed(3)}"`,cW-6,fy+footerH/2);
   }
 
-  return { dataUrl: canvas.toDataURL('image/png'), w: canvasW, h: canvasH, stats:{minV,maxV,avgV} };
+  return { dataUrl:canvas.toDataURL('image/png'), pxW:cW, pxH:cH };
 }
 
-// Render AUT heatmap to canvas dataURL
-function autScanToCanvas(scanData){
+// Render an AUT scan chunk to canvas
+function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx){
   const {data, nwt=0.5} = scanData;
-  if(!data?.length) return null;
-  const rows = data.length;
-  const cols = Math.max(...data.map(r=>r.length));
   const allVals = data.flat().filter(v=>v!==null&&!isNaN(v));
-  if(!allVals.length) return null;
-  const minV = Math.min(...allVals);
-  const maxV = Math.max(...allVals);
+  const minV = allVals.length?Math.min(...allVals):0;
+  const maxV = allVals.length?Math.max(...allVals):(nwt||1);
 
-  // Scale to fit nicely on letter paper: target 170mm wide ≈ 650px at 96dpi
-  const cellW = Math.max(2, Math.min(10, Math.floor(640/cols)));
-  const cellH = Math.max(4, Math.min(14, Math.floor(480/rows)));
-  const scaleBarW = 18;
-  const canvasW = cols*cellW + scaleBarW + 4;
-  const canvasH = rows*cellH + 30; // header + footer
+  const chunkRows = rowEnd - rowStart;
+  const chunkCols = colEndIdx - colStartIdx;
+  const cellW=6, cellH=6;
+  const scaleW=20, headerH=16, footerH=14;
+  const cW = chunkCols*cellW + scaleW;
+  const cH = headerH + chunkRows*cellH + footerH;
 
   const canvas = document.createElement('canvas');
-  canvas.width = canvasW; canvas.height = canvasH;
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvasW,canvasH);
+  canvas.width=cW; canvas.height=cH;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cW,cH);
 
-  // Title
-  ctx.fillStyle = '#1F3864';
-  ctx.fillRect(0,0,canvasW,16);
-  ctx.fillStyle='#fff'; ctx.font='bold 10px sans-serif';
+  // Header
+  ctx.fillStyle='#1F3864'; ctx.fillRect(0,0,cW,headerH);
+  ctx.fillStyle='#fff'; ctx.font='bold 9px sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(scanData.label||'AUT C-scan', (canvasW-scaleBarW)/2, 8);
+  ctx.fillText(`${scanData.label||'AUT'} — cols ${colStartIdx}–${colEndIdx-1}, rows ${rowStart}–${rowEnd-1}`, cW/2, headerH/2);
 
-  // Heatmap cells
-  data.forEach((row,ri)=>{
-    row.forEach((val,ci)=>{
-      ctx.fillStyle = val===null ? '#333' : thicknessColor(val, minV, nwt, maxV);
-      ctx.fillRect(ci*cellW, 16+ri*cellH, cellW, cellH);
-    });
-  });
-
-  // Color scale bar (right side)
-  const sbx = cols*cellW+2;
-  for(let y=0;y<rows*cellH;y++){
-    const t = 1 - y/(rows*cellH);
-    const v = minV + (maxV-minV)*t;
-    ctx.fillStyle = thicknessColor(v, minV, nwt, maxV);
-    ctx.fillRect(sbx, 16+y, scaleBarW-2, 1);
+  // Cells
+  for(let ri=0;ri<chunkRows;ri++){
+    for(let ci=0;ci<chunkCols;ci++){
+      const val=(data[rowStart+ri]||[])[colStartIdx+ci];
+      ctx.fillStyle=val===null?'#444':thicknessColor(val,minV,nwt,maxV);
+      ctx.fillRect(ci*cellW, headerH+ri*cellH, cellW, cellH);
+    }
   }
 
-  // Stats footer
-  const fy = 16+rows*cellH+2;
-  ctx.fillStyle='#1F3864'; ctx.fillRect(0,fy,canvasW,12);
-  ctx.fillStyle='#ff6b6b'; ctx.font='bold 9px sans-serif';
-  ctx.textAlign='left'; ctx.textBaseline='middle';
-  ctx.fillText(`MIN: ${minV.toFixed(3)}"`, 4, fy+6);
-  ctx.fillStyle='#69db7c';
-  ctx.fillText(`MAX: ${maxV.toFixed(3)}"`, canvasW/3, fy+6);
-  ctx.fillStyle='#fff';
-  ctx.fillText(`NWT: ${nwt}"`, canvasW*2/3, fy+6);
+  // Color scale bar
+  const sbx=chunkCols*cellW+1;
+  for(let y=0;y<chunkRows*cellH;y++){
+    const t=1-y/(chunkRows*cellH);
+    ctx.fillStyle=thicknessColor(minV+(maxV-minV)*t,minV,nwt,maxV);
+    ctx.fillRect(sbx,headerH+y,scaleW-2,1);
+  }
 
-  const avg = allVals.reduce((a,b)=>a+b,0)/allVals.length;
-  return { dataUrl: canvas.toDataURL('image/png'), w: canvasW, h: canvasH,
-           stats:{minV,maxV,avgV:avg} };
+  // Footer
+  const fy=headerH+chunkRows*cellH;
+  ctx.fillStyle='#1F3864'; ctx.fillRect(0,fy,cW,footerH);
+  ctx.fillStyle='#ff6b6b'; ctx.font='bold 8px sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(`MIN:${minV.toFixed(3)}"`,3,fy+footerH/2);
+  ctx.fillStyle='#69db7c'; ctx.textAlign='center';
+  ctx.fillText(`MAX:${maxV.toFixed(3)}"`,cW/2,fy+footerH/2);
+  ctx.fillStyle='#fff'; ctx.textAlign='right';
+  ctx.fillText(`NWT:${nwt}"`,cW-3,fy+footerH/2);
+
+  return { dataUrl:canvas.toDataURL('image/png'), pxW:cW, pxH:cH };
 }
 
-// Add a grid image to a PDF page, handling page overflow
-function addGridToPDF(doc, imgData, w, h, y, label){
-  // Scale to fit page width
-  const scale = Math.min(1, TW / (w * 0.264583)); // px to mm (96dpi)
-  const imgW = w * 0.264583 * scale;
-  const imgH = h * 0.264583 * scale;
+// Add a canvas chunk image to PDF, scaling to fit page width
+// Returns new Y position
+function addCanvasToPDF(doc, chunk, y, label){
+  const mmPerPx = 25.4/96;  // 96dpi
+  let imgW = chunk.pxW * mmPerPx;
+  let imgH = chunk.pxH * mmPerPx;
+  // Scale down if wider than page
+  if(imgW > TW){ const s=TW/imgW; imgW=TW; imgH*=s; }
+  // New page if needed
+  if(y + imgH + (label?6:0) + 4 > PH-15){
+    doc.addPage(); y=pageHeader(doc);
+  }
+  if(label){
+    doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.setTextColor(31,56,100);
+    doc.text(label, ML, y+4); y+=6;
+  }
+  try{ doc.addImage(chunk.dataUrl,'PNG',ML,y,imgW,imgH,undefined,'FAST'); }
+  catch(e){ console.warn('addImage failed:',e); }
+  return y + imgH + 4;
+}
 
-  // Check if we need a new page
-  if(y + imgH + 14 > PH - 15){
-    doc.addPage();
-    y = pageHeader(doc);
+// Build all grids section for a given method context — chunked for auto-flow
+async function buildGridsSection(doc, tabId, startY){
+  let y = startY;
+
+  // ── EC grids (VA tab) ──────────────────────────────────────────────────────
+  if(tabId==='va'){
+    const ecGrids=Object.values(state.ecGrids||{});
+    for(const grid of ecGrids){
+      if(!grid.rows||!grid.cols) continue;
+      // Section header
+      if(y+20>PH-15){ doc.addPage(); y=pageHeader(doc); }
+      doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+      doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+      const vaRow=(state.va||[]).find(r=>r.ecGridKey===grid.key);
+      const title=`EC Depth Grid — ${grid.label||grid.key}${vaRow?` (${vaRow.jt} ${vaRow.indid||''})` :''}`;
+      doc.text(title, PW/2, y+5, {align:'center'});
+      doc.setTextColor(...R_BLACK); y+=9;
+
+      // Chunk by columns: max ~12 cols per chunk on letter portrait
+      const maxCols=12;
+      for(let rowS=0; rowS<grid.rows; rowS+=50){
+        const rowE=Math.min(rowS+50, grid.rows);
+        for(let colS=0; colS<grid.cols; colS+=maxCols){
+          const colE=Math.min(colS+maxCols, grid.cols);
+          const isFirst=rowS===0&&colS===0;
+          const chunk=gridChunkToCanvas(grid,'ec',rowS,rowE,colS,colE);
+          const lbl=isFirst?null:`(rows ${alphaLabel(rowS)}–${alphaLabel(rowE-1)}, cols ${grid.colStart+colS}–${grid.colStart+colE-1})`;
+          y=addCanvasToPDF(doc, chunk, y, lbl);
+        }
+      }
+    }
   }
 
-  // Label
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
-  doc.setTextColor(31,56,100);
-  doc.text(label, ML, y+5);
-  y += 7;
+  // ── MUT grids (MUT tab) ────────────────────────────────────────────────────
+  if(tabId==='mut'){
+    const mutGrids=Object.values(state.mutGrids||{});
+    for(const grid of mutGrids){
+      if(!grid.rows||!grid.cols) continue;
+      if(y+20>PH-15){ doc.addPage(); y=pageHeader(doc); }
+      doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+      doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+      const mutRow=(state.mut||[]).find(r=>r.mutGridKey===grid.key);
+      const title=`MUT Grid — ${grid.label||grid.key}${mutRow?` (${mutRow.jt} ${mutRow.indid||''})`:''} | NWT: ${grid.nwt||'?'}"`;
+      doc.text(title, PW/2, y+5, {align:'center'});
+      doc.setTextColor(...R_BLACK); y+=9;
 
-  try{
-    doc.addImage(imgData, 'PNG', ML, y, imgW, imgH, undefined, 'FAST');
-  }catch(e){ console.warn('Grid image failed:', e); }
-  y += imgH + 6;
+      const maxCols=12;
+      for(let rowS=0; rowS<grid.rows; rowS+=50){
+        const rowE=Math.min(rowS+50, grid.rows);
+        for(let colS=0; colS<grid.cols; colS+=maxCols){
+          const colE=Math.min(colS+maxCols, grid.cols);
+          const isFirst=rowS===0&&colS===0;
+          const chunk=gridChunkToCanvas(grid,'mut',rowS,rowE,colS,colE);
+          const lbl=isFirst?null:`(rows ${alphaLabel(rowS)}–${alphaLabel(rowE-1)}, cols ${grid.colStart+colS}–${grid.colStart+colE-1})`;
+          y=addCanvasToPDF(doc, chunk, y, lbl);
+        }
+      }
+    }
+  }
+
+  // ── AUT C-scans (AUT tab) ──────────────────────────────────────────────────
+  if(tabId==='aut'){
+    const autScans=Object.values(state.autScans||{});
+    for(const scan of autScans){
+      if(!scan.data?.length) continue;
+      const scanRows=scan.data.length;
+      const scanCols=Math.max(...scan.data.map(r=>r.length));
+
+      if(y+20>PH-15){ doc.addPage(); y=pageHeader(doc); }
+      doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+      doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+      doc.text(`AUT C-scan — ${scan.label||scan.key} | Joint: ${scan.joint} | ${scanRows}×${scanCols} | NWT: ${scan.nwt||'?'}"`, PW/2, y+5, {align:'center'});
+      doc.setTextColor(...R_BLACK); y+=9;
+
+      // AUT: chunk columns to keep readable width
+      // At 6px/cell, 120 cols = 720px = ~190mm — slightly too wide for portrait
+      // Chunk at ~100 cols per pass, all rows together (cells are small)
+      const maxAUTCols=100;
+      for(let colS=0; colS<scanCols; colS+=maxAUTCols){
+        const colE=Math.min(colS+maxAUTCols, scanCols);
+        const chunk=autChunkToCanvas(scan, 0, scanRows, colS, colE);
+        const lbl=scanCols>maxAUTCols?`Axial index ${colS}–${colE-1}`:null;
+        y=addCanvasToPDF(doc, chunk, y, lbl);
+      }
+    }
+  }
+
   return y;
 }
 
 // Build all grids section for a given method context
 async function buildGridsSection(doc, tabId, y){
-  let hasGrids = false;
-
-  // EC grids — linked to VA indication rows
-  if(tabId === 'va'){
-    const ecGrids = Object.values(state.ecGrids||{});
-    for(const grid of ecGrids){
-      if(!hasGrids){
-        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
-        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
-        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
-        doc.text('EC Depth Grids', PW/2, y+5, {align:'center'});
-        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
-      }
-      const result = gridToCanvas(grid, 'ec');
-      // Find linked VA indication
-      const vaRow = (state.va||[]).find(r=>r.ecGridKey===grid.key);
-      const lbl = `${grid.label||grid.key}${vaRow?` — ${vaRow.jt} ${vaRow.indid||''}`:''} (Max Depth: ${result.stats.minV.toFixed(3)}")`;
-      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
-    }
-  }
-
-  // MUT grids — linked to MUT indication rows
-  if(tabId === 'mut'){
-    const mutGrids = Object.values(state.mutGrids||{});
-    for(const grid of mutGrids){
-      if(!hasGrids){
-        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
-        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
-        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
-        doc.text('MUT Wall Thickness Grids', PW/2, y+5, {align:'center'});
-        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
-      }
-      const result = gridToCanvas(grid, 'mut');
-      const mutRow = (state.mut||[]).find(r=>r.mutGridKey===grid.key);
-      const lbl = `${grid.label||grid.key}${mutRow?` — ${mutRow.jt} ${mutRow.indid||''}`:''} (Min WT: ${result.stats.minV.toFixed(3)}", NWT: ${grid.nwt||'?'}")`;
-      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
-    }
-  }
-
-  // AUT scans
-  if(tabId === 'aut'){
-    const autScans = Object.values(state.autScans||{});
-    for(const scan of autScans){
-      if(!hasGrids){
-        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
-        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
-        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
-        doc.text('AUT C-scan Data', PW/2, y+5, {align:'center'});
-        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
-      }
-      const result = autScanToCanvas(scan);
-      if(!result) continue;
-      const lbl = `${scan.label||scan.key} — Joint ${scan.joint} (${scan.data?.length||0} rows × ${scan.data?.[0]?.length||0} cols, NWT: ${scan.nwt||'?'}")`;
-      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
-    }
-  }
-
-  return y;
+  return startY;
 }
 
 </script>
