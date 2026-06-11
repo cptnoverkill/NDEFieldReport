@@ -190,7 +190,7 @@ tr:hover td{background:var(--color-bg-secondary)}
 .tech-chip{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border)}
 .tech-chip .tc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tech-chip .chip-meta{color:var(--color-text-secondary);font-size:11px}
-.tech-select{padding:2px 5px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:90px}
+.tech-select{padding:2px 5px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:80px;max-width:130px;width:auto}
 
 
 .install-banner{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
@@ -205,6 +205,48 @@ tr:hover td{background:var(--color-bg-secondary)}
 .install-banner-text strong{display:block;font-size:13px;font-weight:600}
 .install-banner-text span{font-size:12px;color:var(--color-text-secondary)}
 .install-banner-btns{display:flex;gap:6px}
+
+
+/* Placeholder — italic, clearly muted so empty state is obvious */
+input::placeholder,textarea::placeholder{
+  color:var(--color-text-tertiary);
+  font-style:italic;
+  opacity:1;
+}
+/* Inside table cells — smaller */
+td input::placeholder,td textarea::placeholder{
+  font-size:10.5px;
+  color:var(--color-text-tertiary);
+  font-style:italic;
+}
+/* Empty number inputs — show ghost background */
+td input[type=number]:placeholder-shown{
+  background:repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 4px,
+    var(--color-border) 4px,
+    var(--color-border) 5px
+  );
+  background-color:var(--color-bg);
+  opacity:0.7;
+}
+td input:not([type=number]):placeholder-shown,
+td textarea:placeholder-shown{
+  border-style:dashed;
+  border-color:var(--color-border-secondary);
+  background-color:var(--color-bg-secondary);
+}
+
+
+.jt-notes-row{display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding:8px 0;border-top:0.5px solid var(--color-border);flex-wrap:wrap}
+.jt-notes-label{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;padding-top:2px}
+.jt-notes-thumbs{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.jt-notes-thumb{position:relative;width:52px;height:52px;border-radius:6px;overflow:hidden;border:0.5px solid var(--color-border);cursor:pointer}
+.jt-notes-thumb img{width:100%;height:100%;object-fit:cover}
+.jt-notes-thumb .del-note{position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:3px;font-size:9px;cursor:pointer;padding:1px 3px;line-height:1.4;font-weight:700}
+.jt-notes-add{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px dashed var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;font-size:11px;color:var(--color-text-secondary);background:transparent;white-space:nowrap}
+.jt-notes-add:hover{background:var(--color-bg-secondary)}
 
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
@@ -275,7 +317,7 @@ tr:hover td{background:var(--color-bg-secondary)}
         <div class="app-subtitle" id="project-subtitle">Configure project details below</div>
       </div>
       <div class="header-actions">
-        <span class="save-status"><span class="dot" id="save-dot"></span><span id="save-text" class="btn-label">Saved</span></span>
+        <span class="save-status"><span class="dot" id="save-dot"></span><span id="save-text" class="btn-label">Saved</span> <span id="storage-usage" style="font-size:10px;color:var(--color-text-tertiary);margin-left:4px"></span></span>
         <div class="theme-picker">
           <button class="theme-btn" onclick="toggleThemeDropdown()" id="theme-toggle-btn" aria-label="Change theme">
             <i class="ti ti-palette"></i><span id="theme-label" class="btn-label"> Theme</span>
@@ -288,6 +330,7 @@ tr:hover td{background:var(--color-bg-secondary)}
             <button class="theme-option" onclick="setTheme('tan')" data-t="tan"><span class="theme-swatch" style="background:#fdf6ec;border-color:#c4a07a"></span>Field Tan</button>
           </div>
         </div>
+        <button class="btn" onclick="importJSON()" title="Import JSON to resume inspection"><i class="ti ti-upload"></i><span class="btn-label"> Import</span></button>
         <button class="btn" onclick="exportJSON()" title="Export JSON data"><i class="ti ti-download"></i><span class="btn-label"> Export JSON</span></button>
         <button class="btn btn-excel" onclick="exportDFPR()" title="Export DFPR Excel"><i class="ti ti-table"></i><span class="btn-label"> Export DFPR</span></button>
         <button class="btn btn-pdf" onclick="showPDFModal()" title="Generate PDF report"><i class="ti ti-file-type-pdf"></i><span class="btn-label"> Generate PDF</span></button>
@@ -302,7 +345,8 @@ tr:hover td{background:var(--color-bg-secondary)}
       <div class="field-group"><label class="field-label">Line / MP</label><input id="cfg-line" placeholder="77 / 0" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Address</label><input id="cfg-address" placeholder="3301 S Allen Rd, Bakersfield, CA" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Field NDE vendor</label><input id="cfg-vendor" placeholder="Acuren" oninput="updateConfig()"></div>
-      <div class="field-group"><label class="field-label">Inspection date</label><input type="date" id="cfg-date" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Inspection start <span style="font-size:10px;color:var(--color-text-tertiary)" title="Auto-computed from row dates">auto</span></label><input type="date" id="cfg-date-start" oninput="updateConfig()" placeholder="auto"></div>
+      <div class="field-group"><label class="field-label">Inspection end <span style="font-size:10px;color:var(--color-text-tertiary)" title="Auto-computed from row dates">auto</span></label><input type="date" id="cfg-date-end" oninput="updateConfig()" placeholder="auto"></div>
       <div class="field-group"><label class="field-label">Latitude</label><input id="cfg-lat" placeholder="35.33104" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Longitude</label><input id="cfg-lon" placeholder="-119.16183" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Procedure</label><input id="cfg-proc" placeholder="BP-4190P-507 Rev 1" oninput="updateConfig()"></div>
@@ -320,6 +364,9 @@ tr:hover td{background:var(--color-bg-secondary)}
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
         <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add technician</button>
+      </div>
+      <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
+        <button class="btn" onclick="loadTechsFromKnack()" title="Import tech roster from Knack.com" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Load from Knack</button>
       </div>
     </div>
 
@@ -383,6 +430,7 @@ const UTT12_CLOCKS = ['12:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','
 let state = {
   config:{},joints:[],photos:{},
   technicians:[],
+  jointNotes:{},
   nri:{},
   scopeStatus:{},
   rowPhotos:{},
@@ -403,6 +451,8 @@ function load(){
   renderTabs();
   renderTab(activeTab);
   updateSubtitle();
+  computeDateRange();
+  updateStorageUsage();
 }
 
 function save(){
@@ -413,30 +463,40 @@ function save(){
     try{ localStorage.setItem('nde_field_report', JSON.stringify(state)); }catch(e){ alert('Storage full — export your data now!'); }
     document.getElementById('save-dot').style.background='#4caf50';
     document.getElementById('save-text').textContent='Saved';
+    updateStorageUsage();
   }, 600);
 }
 
 function loadConfig(){
   const c = state.config||{};
-  ['project','sap','job','line','address','vendor','date','lat','lon','proc'].forEach(k=>{
+  ['project','sap','job','line','address','vendor','lat','lon','proc'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) el.value = c[k]||'';
   });
+  const ds = document.getElementById('cfg-date-start');
+  const de = document.getElementById('cfg-date-end');
+  if(ds) ds.value = c['date_start']||'';
+  if(de) de.value = c['date_end']||'';
 }
 
 function updateConfig(){
   if(!state.config) state.config={};
-  ['project','sap','job','line','address','vendor','tech','cert','date','lat','lon','proc'].forEach(k=>{
+  ['project','sap','job','line','address','vendor','lat','lon','proc'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) state.config[k] = el.value;
   });
+  const ds = document.getElementById('cfg-date-start');
+  const de = document.getElementById('cfg-date-end');
+  if(ds) state.config['date_start'] = ds.value;
+  if(de) state.config['date_end'] = de.value;
   updateSubtitle();
   save();
 }
 
 function updateSubtitle(){
   const c = state.config||{};
-  const parts = [c.project, c.address, c.date].filter(Boolean);
+  const dateRange = [c.date_start, c.date_end].filter(Boolean).join(' → ');
+  const parts = [c.project, c.address, dateRange].filter(Boolean);
   document.getElementById('project-subtitle').textContent = parts.length ? parts.join(' · ') : 'Configure project details below';
 }
 
@@ -498,13 +558,32 @@ function renderJoints(){
   const el = document.getElementById('joints-list');
   if(!el) return;
   const joints = state.joints||[];
-  if(!joints.length){ el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No joints added yet</span>'; return; }
-  el.innerHTML = joints.map(j=>`
-    <div class="joint-chip">
-      <strong>${j.id}</strong>
-      <span class="chip-meta">${j.type} · OD ${j.od||'?'}" · NWT ${j.nwt||'?'}" · ${j.seam||'?'}</span>
-      <button class="icon-btn" onclick="removeJoint('${j.id}')" aria-label="Remove ${j.id}"><i class="ti ti-x" style="font-size:12px"></i></button>
-    </div>`).join('');
+  if(!joints.length){
+    el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No joints added yet</span>';
+    return;
+  }
+  el.innerHTML = joints.map(j=>{
+    const notes = (state.jointNotes||{})[j.id]||[];
+    const thumbs = notes.map((n,ni)=>`
+      <div class="jt-notes-thumb" onclick="openLightbox('${n.data}','${n.name} — ${n.timestamp.slice(0,10)}')">
+        <img src="${n.data}" alt="${n.name}">
+        <button class="del-note" onclick="event.stopPropagation();removeJointNote('${j.id}',${ni})">×</button>
+      </div>`).join('');
+    return `<div style="background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:8px 12px;margin-bottom:6px;width:100%">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <strong style="font-size:13px">${j.id}</strong>
+        <span style="font-size:12px;color:var(--color-text-secondary)">${j.type} · OD ${j.od||'?'}" · NWT ${j.nwt||'?'}" · ${j.seam||'?'}</span>
+        <button class="icon-btn" onclick="removeJoint('${j.id}')" aria-label="Remove ${j.id}" style="margin-left:auto"><i class="ti ti-x" style="font-size:12px"></i></button>
+      </div>
+      <div class="jt-notes-row">
+        <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes</span>
+        <div class="jt-notes-thumbs">${thumbs}</div>
+        <button class="jt-notes-add" onclick="openJointNotes('${j.id}')">
+          <i class="ti ti-camera-plus"></i> Add photo
+        </button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderTabs(){
@@ -1102,9 +1181,10 @@ function getScopeStatus(tabId, jtId){
 }
 
 function setScopeStatus(tabId, jtId, field, val){
-  getScopeStatus(tabId, jtId); // ensure exists
+  getScopeStatus(tabId, jtId);
   state.scopeStatus[tabId][jtId][field] = val;
   save();
+  if(field==='date') computeDateRange();
   renderTab(tabId);
 }
 
@@ -1263,6 +1343,7 @@ function addRow(tabId, defaults){
 
 function rowUpdate(tabId,i,k,v){
   state[tabId][i][k]=v; save();
+  if(k==='date') computeDateRange();
 }
 
 function removeRow(tabId,i){
@@ -1284,7 +1365,7 @@ function exportJSON(){
 
 function clearAll(){
   if(!confirm('Clear ALL field data? This cannot be undone.')) return;
-  state = {config:{},joints:[],photos:{},technicians:[],nri:{},scopeStatus:{},rowPhotos:{},utt12:[],uttloc:[],lsc:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]};
+  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},nri:{},scopeStatus:{},rowPhotos:{},utt12:[],uttloc:[],lsc:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]};
   localStorage.removeItem('nde_field_report');
   loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
 }
@@ -1657,6 +1738,267 @@ injectManifest();
 registerServiceWorker();
 checkIOSInstall();
 
+
+/* ===== Joint field notes photos ===== */
+let jointNotesTarget = null;
+
+function openJointNotes(jtId){
+  jointNotesTarget = jtId;
+  document.getElementById('joint-notes-input').click();
+}
+
+function handleJointNotes(e){
+  if(!jointNotesTarget) return;
+  const id = jointNotesTarget;
+  if(!state.jointNotes) state.jointNotes={};
+  if(!state.jointNotes[id]) state.jointNotes[id]=[];
+  Array.from(e.target.files).forEach(f=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      state.jointNotes[id].push({
+        name: f.name,
+        data: ev.target.result,
+        timestamp: new Date().toISOString()
+      });
+      save();
+      renderJoints();
+    };
+    reader.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+
+function removeJointNote(jtId, idx){
+  if(!confirm('Remove this field note photo?')) return;
+  state.jointNotes[jtId].splice(idx,1);
+  save();
+  renderJoints();
+}
+
+
+/* ===== Auto date range from row data ===== */
+function computeDateRange(){
+  const DATA_TABS = ['utt12','uttloc','lsc','jointlen','va','mt','aut','mut',
+                     'muthand','pautbm','pautls','aelsc'];
+  const allDates = [];
+  DATA_TABS.forEach(tab=>{
+    (state[tab]||[]).forEach(r=>{ if(r.date) allDates.push(r.date); });
+  });
+  // Also check scopeStatus dates
+  Object.values(state.scopeStatus||{}).forEach(tabObj=>{
+    Object.values(tabObj).forEach(s=>{ if(s.date) allDates.push(s.date); });
+  });
+  if(!allDates.length) return;
+  allDates.sort();
+  const minD = allDates[0];
+  const maxD = allDates[allDates.length-1];
+  if(!state.config) state.config={};
+  let changed = false;
+  if(state.config.date_start !== minD){ state.config.date_start = minD; changed=true; }
+  if(state.config.date_end   !== maxD){ state.config.date_end   = maxD; changed=true; }
+  if(changed){
+    loadConfig();
+    updateSubtitle();
+  }
+}
+
+/* ===== Photo compression ===== */
+function compressImage(file, maxPx=900, quality=0.72){
+  return new Promise((resolve)=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      const img = new window.Image();
+      img.onload = ()=>{
+        const scale = Math.min(1, maxPx/Math.max(img.width, img.height));
+        const w = Math.round(img.width  * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve({
+          name: file.name,
+          data: canvas.toDataURL('image/jpeg', quality),
+          timestamp: new Date().toISOString(),
+          originalSize: file.size,
+          compressedSize: Math.round(canvas.toDataURL('image/jpeg',quality).length * 0.75)
+        });
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Patch handlePhotos to compress
+const _origHandlePhotos = handlePhotos;
+async function handlePhotos(e){
+  const files = Array.from(e.target.files);
+  if(!state.photos) state.photos={};
+  if(!state.photos[photoTarget]) state.photos[photoTarget]=[];
+  for(const f of files){
+    const compressed = await compressImage(f);
+    state.photos[photoTarget].push(compressed);
+    save();
+    renderTab(activeTab);
+  }
+  e.target.value='';
+}
+
+// Patch handleRowPhotos to compress
+const _origHandleRowPhotos = handleRowPhotos;
+async function handleRowPhotos(e){
+  if(!rowPhotoTarget) return;
+  const {tabId,rowIdx} = rowPhotoTarget;
+  if(!state.rowPhotos) state.rowPhotos={};
+  if(!state.rowPhotos[tabId]) state.rowPhotos[tabId]={};
+  if(!state.rowPhotos[tabId][rowIdx]) state.rowPhotos[tabId][rowIdx]=[];
+  for(const f of Array.from(e.target.files)){
+    const compressed = await compressImage(f);
+    state.rowPhotos[tabId][rowIdx].push(compressed);
+    save();
+    renderTab(tabId);
+  }
+  e.target.value='';
+}
+
+// Patch handleJointNotes to compress
+const _origHandleJointNotes = handleJointNotes;
+async function handleJointNotes(e){
+  if(!jointNotesTarget) return;
+  const id = jointNotesTarget;
+  if(!state.jointNotes) state.jointNotes={};
+  if(!state.jointNotes[id]) state.jointNotes[id]=[];
+  for(const f of Array.from(e.target.files)){
+    const compressed = await compressImage(f);
+    state.jointNotes[id].push(compressed);
+    save();
+    renderJoints();
+  }
+  e.target.value='';
+}
+
+/* ===== Storage usage indicator ===== */
+function updateStorageUsage(){
+  try{
+    const used = new Blob([localStorage.getItem('nde_field_report')||'']).size;
+    const pct  = Math.round(used/5242880*100);
+    const el   = document.getElementById('storage-usage');
+    if(!el) return;
+    el.textContent = `Storage: ${(used/1024).toFixed(0)}KB / 5MB`;
+    el.style.color = pct>80 ? 'var(--color-danger-text)' : pct>60 ? 'var(--color-warning-text)' : 'var(--color-text-tertiary)';
+    el.title = `${pct}% of localStorage used`;
+  }catch(e){}
+}
+
+/* ===== Import JSON ===== */
+function importJSON(){
+  const input = document.createElement('input');
+  input.type='file';
+  input.accept='.json,application/json';
+  input.onchange = e=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        const imported = JSON.parse(ev.target.result);
+        if(!imported.config && !imported.joints){
+          alert('This does not look like a valid NDE field report JSON.');
+          return;
+        }
+        if(!confirm(`Load report "${imported.config?.project||'Unknown'}"?\n\nThis will replace your current data. Export first if you want to keep it.`)) return;
+        state = imported;
+        // Ensure all expected keys exist
+        ['utt12','uttloc','lsc','jointlen','va','mt','aut','mut','muthand',
+         'pautbm','pautls','aelsc'].forEach(k=>{ if(!state[k]) state[k]=[]; });
+        ['photos','rowPhotos','jointNotes','nri','scopeStatus'].forEach(k=>{ if(!state[k]) state[k]={}; });
+        if(!state.technicians) state.technicians=[];
+        if(!state.joints) state.joints=[];
+        localStorage.setItem('nde_field_report', JSON.stringify(state));
+        loadConfig();
+        renderTechRoster();
+        renderJoints();
+        renderTabs();
+        renderTab(activeTab);
+        updateSubtitle();
+        computeDateRange();
+        updateStorageUsage();
+        showToast('Report loaded successfully');
+      }catch(err){
+        alert('Failed to parse JSON: '+err.message);
+      }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+
+/* ===== Toast notification ===== */
+function showToast(msg, type='success'){
+  let toast = document.getElementById('app-toast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id='app-toast';
+    toast.style.cssText=`position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+      padding:10px 18px;border-radius:20px;font-size:13px;font-weight:500;
+      z-index:9998;transition:opacity 0.3s;pointer-events:none;white-space:nowrap`;
+    document.body.appendChild(toast);
+  }
+  toast.textContent=msg;
+  toast.style.background = type==='success'?'#2e7d32':'#c62828';
+  toast.style.color='#fff';
+  toast.style.opacity='1';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{ toast.style.opacity='0'; },2800);
+}
+
+/* ===== Knack integration (ready when credentials available) ===== */
+const KNACK_CONFIG = {
+  appId:   '660ed1cef07d6b437f7b1cd7',   // Set your Knack App ID here
+  apiKey:  '1be6f991-feb8-43a7-82cd-5e71b6e486e5',   // Set your Knack REST API Key here
+  objectKey: 'object_9', // e.g. 'object_1' — the object containing technicians
+  nameField: 'field_206', // e.g. 'field_1' — the field with the tech name
+  certField: '', // e.g. 'field_2' — cert level field
+};
+
+async function loadTechsFromKnack(){
+  const {appId,apiKey,objectKey,nameField,certField} = KNACK_CONFIG;
+  if(!appId||!apiKey||!objectKey){
+    showToast('Knack credentials not configured yet','error');
+    return;
+  }
+  try{
+    showToast('Loading technicians from Knack...');
+    const res = await fetch(`https://api.knack.com/v1/objects/${objectKey}/records?rows_per_page=100`,{
+      headers:{'X-Knack-Application-Id':appId,'X-Knack-REST-API-Key':apiKey}
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const fetched = (data.records||[]).map((r,i)=>({
+      name: r[nameField]||'Unknown',
+      cert: r[certField]||'',
+      methods:'',
+      color: techColor(i),
+    }));
+    if(!fetched.length){ showToast('No technicians found in Knack','error'); return; }
+    // Merge — add techs not already in roster
+    let added=0;
+    fetched.forEach(t=>{
+      if(!(state.technicians||[]).find(x=>x.name===t.name)){
+        if(!state.technicians) state.technicians=[];
+        state.technicians.push(t);
+        added++;
+      }
+    });
+    save();
+    renderTechRoster();
+    renderTab(activeTab);
+    showToast(`Loaded ${added} technician${added!==1?'s':''} from Knack`);
+  }catch(err){
+    showToast('Knack error: '+err.message,'error');
+  }
+}
+
 </script>
 
 <div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
@@ -1716,6 +2058,7 @@ checkIOSInstall();
   <img id="lightbox-img" src="" alt="Photo">
   <div class="photo-lightbox-caption" id="lightbox-caption"></div>
 </div>
+<input type="file" id="joint-notes-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleJointNotes(event)">
 <input type="file" id="row-photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleRowPhotos(event)">
 
 
