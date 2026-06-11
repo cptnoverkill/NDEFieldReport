@@ -13,6 +13,8 @@
 <link rel="manifest" id="pwa-manifest">
 <link rel="apple-touch-icon" id="pwa-icon">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 /* ── Theme variables ─────────────────────────── */
@@ -405,6 +407,30 @@ td textarea:placeholder-shown{
 .cal-inline-body.open{display:block}
 .cal-group-divider{height:3px;background:var(--color-bg-tertiary)}
 
+
+/* ── Grid styles ─────────────────────────── */
+.grid-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center}
+.grid-modal-overlay.open{display:flex}
+.grid-modal{background:var(--color-bg);border-radius:var(--radius-lg);border:0.5px solid var(--color-border);display:flex;flex-direction:column;width:96vw;max-width:1100px;height:90vh;overflow:hidden}
+.grid-modal-header{padding:10px 16px;border-bottom:0.5px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
+.grid-modal-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
+.grid-modal-body{flex:1;overflow:auto;padding:12px 16px}
+.grid-modal-footer{padding:8px 16px;border-top:0.5px solid var(--color-border);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
+.grid-table{border-collapse:collapse;font-size:11px;white-space:nowrap}
+.grid-table th{background:var(--color-bg-secondary);padding:3px 6px;text-align:center;font-weight:600;border:0.5px solid var(--color-border);font-size:10px;color:var(--color-text-secondary)}
+.grid-table td{padding:0;border:0.5px solid var(--color-border);position:relative}
+.grid-table td.row-label{background:var(--color-bg-secondary);padding:2px 6px;font-weight:600;font-size:10px;text-align:center;color:var(--color-text-secondary);cursor:default}
+.grid-cell-input{width:46px;height:26px;border:none;background:transparent;text-align:center;font-size:11px;font-family:inherit;color:inherit;padding:0;outline:none;cursor:pointer}
+.grid-cell-input:focus{outline:2px solid var(--color-info-border);outline-offset:-2px;background:var(--color-bg) !important;color:var(--color-text) !important;z-index:1;position:relative}
+.grid-cell-void{background:#111 !important;color:#fff;font-size:9px;font-weight:600;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center;height:26px;padding:0 3px}
+.grid-legend{display:flex;align-items:center;gap:6px;font-size:11px}
+.grid-legend-bar{width:120px;height:14px;border-radius:3px;border:0.5px solid var(--color-border)}
+.grid-stat{font-size:12px;font-weight:600;padding:3px 8px;border-radius:var(--radius-md);background:var(--color-bg-secondary)}
+.grid-open-btn{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border:0.5px solid var(--color-info-border);border-radius:var(--radius-md);background:var(--color-info-bg);color:var(--color-info-text);font-size:11px;cursor:pointer;white-space:nowrap}
+.grid-open-btn:hover{opacity:0.85}
+.aut-heatmap{display:block;border-radius:4px;cursor:crosshair}
+.paste-hint{font-size:11px;color:var(--color-text-secondary);font-style:italic}
+
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
 .nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:0.5px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
@@ -508,8 +534,6 @@ td textarea:placeholder-shown{
       <div class="field-group"><label class="field-label">Inspection end <span style="font-size:10px;color:var(--color-text-tertiary)" title="Auto-computed from row dates">auto</span></label><input type="date" id="cfg-date-end" oninput="updateConfig()" placeholder="auto"></div>
       <div class="field-group"><label class="field-label">Latitude</label><input id="cfg-lat" placeholder="35.33104" oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">Longitude</label><input id="cfg-lon" placeholder="-119.16183" oninput="updateConfig()"></div>
-      <div class="field-group"><label class="field-label">Procedure</label><input id="cfg-proc" placeholder="BP-4190P-507 Rev 1" oninput="updateConfig()"></div>
-      <div class="field-group"><label class="field-label">UTT scan distances (in) <span style="font-size:10px;color:var(--color-text-tertiary)" title="Comma-separated default scan positions auto-populated per joint">default</span></label><input id="cfg-uttScanDists" placeholder="3, 8, 13.5" oninput="updateConfig()" title="Comma-separated distances used when auto-populating 12pt UTT rows"></div>
     </div>
 
     <div class="section-divider">Technicians on project</div>
@@ -526,10 +550,15 @@ td textarea:placeholder-shown{
         <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add</button>
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
-        <button class="btn" onclick="openKnackPicker()" title="Select technicians from Knack" style="border-style:dashed"><i class="ti ti-cloud-download"></i> From Knack</button>
+        <button class="btn" onclick="openKnackPicker()" title="Select technicians from Knack" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Import from Knack</button>
       </div>
     </div>
 
+    <div class="section-divider">Project overview photos</div>
+    <div id="project-photo-strip" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
+    <div class="photo-zone" onclick="openProjectPhoto()" style="margin-bottom:12px">
+      <i class="ti ti-camera-plus"></i> Add project overview photo
+    </div>
     <div class="section-divider">Joints in scope</div>
     <div class="joints-wrap" id="joints-list"></div>
     <div class="add-joint-row">
@@ -568,7 +597,6 @@ td textarea:placeholder-shown{
 const TABS = [
   {id:'utt12',label:'12pt UTT',icon:'ti-ruler-2'},
   {id:'uttloc',label:'UTT Locations',icon:'ti-microscope'},
-  {id:'lsc',label:'LSC',icon:'ti-vector'},
   {id:'jointlen',label:'Joint Lengths',icon:'ti-dimensions'},
   {id:'va',label:'VA',icon:'ti-eye'},
   {id:'mt',label:'MT',icon:'ti-magnet'},
@@ -592,6 +620,7 @@ let state = {
   config:{},joints:[],photos:{},
   technicians:[],
   jointNotes:{},
+  projectPhotos:[],
   nri:{},
   scopeStatus:{},
   rowPhotos:{},
@@ -599,6 +628,7 @@ let state = {
   utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],
   va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],
   calrec:[],
+  ecGrids:{},mutGrids:{},autScans:{},
   ndeCards:{}
 };
 let activeTab = 'utt12';
@@ -611,6 +641,7 @@ function load(){
   if(s){ try{ state = JSON.parse(s); }catch(e){} }
   loadConfig();
   renderTechRoster();
+  renderProjectPhotos();
   renderJoints();
   renderTabs();
   renderTab(activeTab);
@@ -633,7 +664,7 @@ function save(){
 
 function loadConfig(){
   const c = state.config||{};
-  ['project','sap','job','line','mp','address','vendor','lat','lon','proc','uttScanDists'].forEach(k=>{
+  ['project','sap','job','line','mp','address','vendor','lat','lon'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) el.value = c[k]||'';
   });
@@ -645,7 +676,7 @@ function loadConfig(){
 
 function updateConfig(){
   if(!state.config) state.config={};
-  ['project','sap','job','line','mp','address','vendor','lat','lon','proc','uttScanDists'].forEach(k=>{
+  ['project','sap','job','line','mp','address','vendor','lat','lon'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) state.config[k] = el.value;
   });
@@ -690,7 +721,7 @@ function autoPopulateJoint(jt){
   const id = jt.id;
   // 12pt UTT — use configured scan distances, fall back to 3/8/13.5
   if(!state.utt12) state.utt12=[];
-  const distStr = (state.config||{}).uttScanDists || '3, 8, 13.5';
+  const distStr = ''; // default scan positions
   const dists   = distStr.split(',').map(d=>d.trim()).filter(Boolean);
   // If testing plan gave a quantity, honour it (pad or trim distances)
   const qty = parseInt(jt.uttQty)||dists.length;
@@ -738,8 +769,11 @@ function renderJoints(){
   el.innerHTML = joints.map((j,ji)=>{
     const notes = (state.jointNotes||{})[j.id]||[];
     const thumbs = notes.map((n,ni)=>`
-      <div class="jt-notes-thumb" onclick="openLightbox('${n.data}','${n.name} — ${n.timestamp.slice(0,10)}')">
+      <div class="jt-notes-thumb${n.isOverview?' overview-thumb':''}"
+           style="${n.isOverview?'border:2px solid var(--color-info-border)':''}"
+           onclick="openLightbox('${n.data}','${n.isOverview?'Overview: ':''}${n.name} — ${n.timestamp.slice(0,10)}')">
         <img src="${n.data}" alt="${n.name}">
+        ${n.isOverview?'<span style="position:absolute;bottom:2px;left:2px;background:var(--color-info-text);color:#fff;font-size:8px;padding:1px 3px;border-radius:2px;font-weight:700">OVW</span>':''}
         <button class="del-note" onclick="event.stopPropagation();removeJointNote('${j.id}',${ni})">×</button>
       </div>`).join('');
 
@@ -831,10 +865,13 @@ function renderJoints(){
         </div>
 
         <div class="jt-notes-row" style="border-top:0.5px solid var(--color-border);margin-top:4px">
-          <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes</span>
+          <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes and Overview Photos</span>
           <div class="jt-notes-thumbs">${thumbs}</div>
           <button class="jt-notes-add" onclick="openJointNotes('${j.id}')">
-            <i class="ti ti-camera-plus"></i> Add photo
+            <i class="ti ti-camera-plus"></i> Field note photo
+          </button>
+          <button class="jt-notes-add" onclick="openJointOverviewPhoto('${j.id}')" style="border-color:var(--color-info-border);color:var(--color-info-text)">
+            <i class="ti ti-camera-plus"></i> Overview photo
           </button>
         </div>
       </div>
@@ -869,7 +906,7 @@ function updateJointField(id, field, val){
 }
 
 const TAB_CATEGORIES = {
-  MPV: ['utt12','uttloc','lsc','aelsc','jointlen'],
+  MPV: ['utt12','uttloc','aelsc','jointlen'],
   'Flaw Detection': ['va','mt','aut','mut','muthand','pautbm','pautls'],
   'Equipment': ['calrec'],
 };
@@ -941,7 +978,7 @@ function renderUTT12(){
     const nwt = jt ? parseFloat(jt.nwt)||0 : 0;
     const low = mn!=='—' && nwt && parseFloat(mn)<nwt*0.8;
     return `<tr>
-      <td><select onchange="rowUpdate('utt12',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><select onchange="rowUpdate('utt12',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
       <td><select onchange="rowUpdate('utt12',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.5" value="${r.dist||''}" onchange="rowUpdate('utt12',${i},'dist',this.value)"></td>
       <td><select onchange="rowUpdate('utt12',${i},'bfg',this.value)">${BFG_AFG.map(v=>`<option${v===r.bfg?' selected':''}>${v}</option>`).join('')}</select></td>
@@ -963,7 +1000,7 @@ function renderUTT12(){
     <div class="alert alert-info"><i class="ti ti-info-circle"></i> Enter values as thousandths (e.g. 511 = 0.511"). Avg and Min auto-calculated. Min flagged red if &lt;80% NWT.</div>
     ${nriBar('utt12')}
     ${scopeSummaryTable('utt12','12-Point UTT')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — 12-Point UTT</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — 12-Point UTT</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('utt12',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('utt12')?'nri-locked':''}">  
     <div class="utt-table-wrap"><table class="utt-table">
       <thead><tr><th>Joint</th><th>Ref</th><th>Dist</th><th>BFG/AFG</th>${UTT12_CLOCKS.map(c=>`<th>${c}</th>`).join('')}<th>Avg (in)</th><th>Min (in)</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -991,11 +1028,11 @@ function renderUTTLoc(){
     const pct = pctVal!==null ? pctVal.toFixed(1)+'%' : '—';
     const pctWarn = pctVal!==null && pctVal>10;
     return `<tr>
-      <td><select onchange="rowUpdate('uttloc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><select onchange="rowUpdate('uttloc',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
       <td><input value="${r.ndtid||''}" placeholder="LSC-001" onchange="rowUpdate('uttloc',${i},'ndtid',this.value)" style="width:75px"></td>
       <td><select onchange="rowUpdate('uttloc',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.1" value="${r.dist||''}" onchange="rowUpdate('uttloc',${i},'dist',this.value)" style="width:55px"></td>
-      <td><select onchange="rowUpdate('uttloc',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('uttloc',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.1" value="${r.alen||''}" onchange="rowUpdate('uttloc',${i},'alen',this.value)" style="width:52px"></td>
       <td><input type="number" step="0.1" value="${r.awid||''}" onchange="rowUpdate('uttloc',${i},'awid',this.value)" style="width:52px"></td>
       <td><input type="number" step="0.001" value="${r.bfgmin||''}" onchange="rowUpdate('uttloc',${i},'bfgmin',this.value)" style="width:60px"></td>
@@ -1017,7 +1054,7 @@ function renderUTTLoc(){
     </div>
     ${nriBar('uttloc')}
     ${scopeSummaryTable('uttloc','UTT of Test Locations')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — UTT of Test Locations</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — UTT of Test Locations</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('uttloc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('uttloc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1034,7 +1071,7 @@ function renderUTTLoc(){
 function renderJointLen(){
   const rows = state.jointlen||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('jointlen',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('jointlen',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><select onchange="rowUpdate('jointlen',${i},'type',this.value)"><option>Pipe</option><option>Mfg Bend</option><option>Straight Tee</option><option>Reducing Tee</option><option>Reducer</option><option>Cap</option></select></td>
     <td><input type="number" step="0.01" value="${r.length||''}" onchange="rowUpdate('jointlen',${i},'length',this.value)" style="width:75px"></td>
     <td><input type="number" step="0.125" value="${r.od1||''}" onchange="rowUpdate('jointlen',${i},'od1',this.value)" style="width:60px"></td>
@@ -1107,12 +1144,12 @@ function nriLocked(tabId){ return !!(state.nri||{})[tabId]?.checked; }
 function renderVA(){
   const rows = state.va||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('va',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('va',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><input value="${r.indid||''}" placeholder="MD-001" onchange="rowUpdate('va',${i},'indid',this.value)" style="width:70px"></td>
-    <td><select onchange="rowUpdate('va',${i},'char',this.value)">${charo(r.char)}</select></td>
+    <td><select onchange="rowUpdate('va',${i},'char',this.value);renderTab('va')">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('va',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('va',${i},'dist',this.value)" style="width:55px"></td>
-    <td><select onchange="rowUpdate('va',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('va',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('va',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('va',${i},'wid',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('va',${i},'dep',this.value)" style="width:55px"></td>
@@ -1120,7 +1157,7 @@ function renderVA(){
     <td><select onchange="rowUpdate('va',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
     <td><select onchange="rowUpdate('va',${i},'photo',this.value)">${yno(r.photo)}</select></td>
     <td><input value="${r.notes||''}" placeholder="Notes..." onchange="rowUpdate('va',${i},'notes',this.value)" style="width:100px"></td>
-    <td><select class="tech-select" onchange="rowUpdate('va',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('va',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('va',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('va',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('va',${i})"><i class="ti ti-trash"></i></button></td>
+    <td><select class="tech-select" onchange="rowUpdate('va',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('va',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('va',i)}<td>${ecGridBtn(i)}</td><td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('va',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('va',${i})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No VA indications recorded');
   return `<div class="panel">
     <div class="panel-header">
@@ -1132,10 +1169,10 @@ function renderVA(){
     </div>
     ${nriBar('va')}
     ${scopeSummaryTable('va','Visual Assessment (VA)')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Visual Assessment (VA)</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Visual Assessment (VA)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('va',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('va')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>EC Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
@@ -1147,12 +1184,12 @@ function renderVA(){
 function renderMT(){
   const rows = state.mt||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('mt',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('mt',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><input value="${r.indid||''}" placeholder="LIN-001" onchange="rowUpdate('mt',${i},'indid',this.value)" style="width:70px"></td>
     <td><select onchange="rowUpdate('mt',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('mt',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mt',${i},'dist',this.value)" style="width:55px"></td>
-    <td><select onchange="rowUpdate('mt',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mt',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mt',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mt',${i},'wid',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('mt',${i},'ht',this.value)" style="width:55px"></td>
@@ -1173,7 +1210,7 @@ function renderMT(){
     </div>
     ${nriBar('mt')}
     ${scopeSummaryTable('mt','Magnetic Particle Testing (MT)')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Magnetic Particle Testing (MT)</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Magnetic Particle Testing (MT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mt',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mt')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1190,12 +1227,12 @@ function renderAUT(){
   const rowHtml = rows.length ? rows.map((r,i)=>{
     const pct = r.minwt&&r.wt ? (parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%' : '—';
     return `<tr>
-      <td><select onchange="rowUpdate('aut',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><select onchange="rowUpdate('aut',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
       <td><input value="${r.indid||''}" placeholder="EC-001" onchange="rowUpdate('aut',${i},'indid',this.value)" style="width:70px"></td>
       <td><select onchange="rowUpdate('aut',${i},'char',this.value)">${charo(r.char)}</select></td>
       <td><select onchange="rowUpdate('aut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('aut',${i},'dist',this.value)" style="width:55px"></td>
-      <td><select onchange="rowUpdate('aut',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aut',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('aut',${i},'len',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('aut',${i},'wid',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('aut',${i},'minwt',this.value);renderTab('aut')" style="width:60px"></td>
@@ -1215,14 +1252,15 @@ function renderAUT(){
     </div>
     ${nriBar('aut')}
     ${scopeSummaryTable('aut','Automated UT (AUT)')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Automated UT (AUT)</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Automated UT (AUT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('aut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
-    ${photoSection('aut')}
+    ${autScansPanel()}
+   ${photoSection('aut')}
   </div>`;
 }
 
@@ -1232,19 +1270,19 @@ function renderMUT(){
   const rowHtml = rows.length ? rows.map((r,i)=>{
     const pct = r.minwt&&r.wt ? (parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%' : '—';
     return `<tr>
-      <td><select onchange="rowUpdate('mut',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><select onchange="rowUpdate('mut',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
       <td><input value="${r.indid||''}" placeholder="LAM-001" onchange="rowUpdate('mut',${i},'indid',this.value)" style="width:70px"></td>
       <td><select onchange="rowUpdate('mut',${i},'char',this.value)">${charo(r.char)}</select></td>
       <td><select onchange="rowUpdate('mut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mut',${i},'dist',this.value)" style="width:55px"></td>
-      <td><select onchange="rowUpdate('mut',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mut',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mut',${i},'len',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mut',${i},'wid',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('mut',${i},'minwt',this.value);renderTab('mut')" style="width:60px"></td>
       <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('mut',${i},'wt',this.value);renderTab('mut')" style="width:60px"></td>
       <td><select onchange="rowUpdate('mut',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
       <td class="stat-cell">${pct}</td>
-      <td><select class="tech-select" onchange="rowUpdate('mut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mut',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('mut',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('mut',${i})"><i class="ti ti-trash"></i></button></td>
+      <td><select class="tech-select" onchange="rowUpdate('mut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mut',i)}<td>${mutGridBtn(i)}</td><td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('mut',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('mut',${i})"><i class="ti ti-trash"></i></button></td>
     </tr>`;
   }).join('') : emptyRow('No MUT indications recorded');
   return `<div class="panel">
@@ -1257,14 +1295,15 @@ function renderMUT(){
     </div>
     ${nriBar('mut')}
     ${scopeSummaryTable('mut','Manual UT (MUT)')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Manual UT (MUT)</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Manual UT (MUT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
-      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>MUT Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
-    ${photoSection('mut')}
+    ${mutGridsPanel()}
+   ${photoSection('mut')}
   </div>`;
 }
 
@@ -1272,7 +1311,7 @@ function renderMUT(){
 function renderMUTHand(){
   const rows = state.muthand||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('muthand',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('muthand',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><input value="${r.startxy||''}" placeholder="0,0" onchange="rowUpdate('muthand',${i},'startxy',this.value)" style="width:70px"></td>
     <td><input value="${r.endxy||''}" placeholder="12,24" onchange="rowUpdate('muthand',${i},'endxy',this.value)" style="width:70px"></td>
     <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('muthand',${i},'minwt',this.value)" style="width:65px"></td>
@@ -1290,7 +1329,7 @@ function renderMUTHand(){
     </div>
     ${nriBar('muthand')}
     ${scopeSummaryTable('muthand','MUT Hand Scans')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — MUT Hand Scans</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — MUT Hand Scans</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('muthand',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('muthand')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Start X,Y (Axial,Circ) in.</th><th>End X,Y (Axial,Circ) in.</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1305,12 +1344,12 @@ function renderMUTHand(){
 function renderPAUTBM(){
   const rows = state.pautbm||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('pautbm',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('pautbm',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><input value="${r.indid||''}" placeholder="IF-001" onchange="rowUpdate('pautbm',${i},'indid',this.value)" style="width:70px"></td>
     <td><select onchange="rowUpdate('pautbm',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('pautbm',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautbm',${i},'dist',this.value)" style="width:60px"></td>
-    <td><select onchange="rowUpdate('pautbm',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautbm',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautbm',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautbm',${i},'dep',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautbm',${i},'ht',this.value)" style="width:55px"></td>
@@ -1328,7 +1367,7 @@ function renderPAUTBM(){
     </div>
     ${nriBar('pautbm')}
     ${scopeSummaryTable('pautbm','PAUT Base Metal')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Base Metal</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Base Metal</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautbm',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautbm')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1343,12 +1382,12 @@ function renderPAUTBM(){
 function renderPAUTLS(){
   const rows = state.pautls||[];
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('pautls',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('pautls',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><input value="${r.indid||''}" placeholder="IF-001" onchange="rowUpdate('pautls',${i},'indid',this.value)" style="width:70px"></td>
     <td><select onchange="rowUpdate('pautls',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('pautls',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautls',${i},'dist',this.value)" style="width:60px"></td>
-    <td><select onchange="rowUpdate('pautls',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautls',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautls',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautls',${i},'dep',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautls',${i},'ht',this.value)" style="width:55px"></td>
@@ -1366,7 +1405,7 @@ function renderPAUTLS(){
     </div>
     ${nriBar('pautls')}
     ${scopeSummaryTable('pautls','PAUT Long Seam')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Long Seam</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Long Seam</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautls',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautls')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1564,15 +1603,27 @@ function scopeSummaryTable(tabId, methodLabel){
         : `<span class="pending-badge"><i class="ti ti-clock"></i> Pending</span>`;
 
       tableHtml += `<tr>
-        <td><strong>${jtId}</strong></td>
+        <td style="white-space:nowrap;font-size:13px;font-weight:700;padding:5px 10px">${jtId}</td>
         <td>${j.type||'—'}</td>
         <td>${j.od||'—'}"</td>
         <td>${j.nwt||'—'}"</td>
         <td>${j.seam||'—'}</td>
         <td>${badge}</td>
-        <td><input type="date" class="scope-date" value="${st.date||''}"
-            onchange="setScopeStatus('${tabId}','${jtId}','date',this.value);ensureNDECard('${methodId||tabId}',this.value,getScopeStatus('${tabId}','${jtId}').tech)"
-            title="Date ${methodLabel} was performed on ${jtId}"></td>
+        <td>
+          ${(()=>{
+            // Auto-compute max date from indication rows for this joint+tab
+            const autoDate = computeJointTabMaxDate('${tabId}','${jtId}');
+            const displayDate = st.date || autoDate || '';
+            // If autoDate differs from stored date, sync it silently
+            if(autoDate && st.date !== autoDate && !st.dateManual){
+              getScopeStatus('${tabId}','${jtId}').date = autoDate;
+            }
+            return `<input type="date" class="scope-date"
+              value="${displayDate}"
+              onchange="setScopeStatus('${tabId}','${jtId}','date',this.value);getScopeStatus('${tabId}','${jtId}').dateManual=true;ensureNDECard('${methodId||tabId}',this.value,getScopeStatus('${tabId}','${jtId}').tech)"
+              title="Date ${methodLabel} was performed on ${jtId} (auto-fills from latest row date)">`;
+          })()}
+        </td>
         ${(tabId==='pautbm'||tabId==='pautls')?`
         <td><input style="width:90px;padding:3px 6px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)"
             value="${((state.pautSpacing||{})[tabId]||{})[j.id]||''}"
@@ -1629,7 +1680,17 @@ function scopeSummaryTable(tabId, methodLabel){
   tableHtml += `</tbody></table>`;
 
   return `<div class="scope-section">
-    <div class="scope-banner"><i class="ti ti-list-check"></i> Joints in Scope — ${methodLabel}</div>
+    <div class="scope-banner" style="justify-content:space-between">
+      <span><i class="ti ti-list-check"></i> Joints in Scope — ${methodLabel}</span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;color:var(--color-text-secondary)">Apply tech to all:</span>
+        <select style="font-size:11px;padding:2px 6px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:140px"
+          onchange="if(this.value) bulkSetScopeTech('${tabId}',this.value);this.value=''">
+          <option value="">— select —</option>
+          ${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}
+        </select>
+      </span>
+    </div>
     <div class="table-wrap">${tableHtml}</div>
   </div>`;
 }
@@ -1792,7 +1853,7 @@ function renderAELSC(){
   const rows = state.aelsc||[];
   const nri  = (state.nri||{}).aelsc||{};
   const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('aelsc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
     <td><select onchange="rowUpdate('aelsc',${i},'lsctype',this.value)">
       <option value="">—</option>
       <option${r.lsctype==='ERW'?' selected':''}>ERW</option>
@@ -1814,7 +1875,7 @@ function renderAELSC(){
       <option${r.aemethod==='DE Only'?' selected':''}>DE Only</option>
       <option${r.aemethod==='N/A'?' selected':''}>N/A</option>
     </select></td>
-    <td><select onchange="rowUpdate('aelsc',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aelsc',${i},'clock',this.value)"></td>
     <td><select onchange="rowUpdate('aelsc',${i},'lsresult',this.value)">
       <option value="">—</option>
       <option${r.lsresult==='Confirmed ERW'?' selected':''}>Confirmed ERW</option>
@@ -1843,7 +1904,7 @@ function renderAELSC(){
     </div>
     ${nriBar('aelsc')}
     ${scopeSummaryTable('aelsc','Acid Etch / LSC')}
-    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aelsc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('aelsc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>LSC Type</th><th>AE Method</th><th>Clock Position</th><th>LS Result / Confirmation</th><th>AE Depth (in)</th><th>Photo?</th><th>Comments</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1928,7 +1989,7 @@ function exportJSON(){
 
 function clearAll(){
   if(!confirm('Clear ALL field data? This cannot be undone.')) return;
-  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
+  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},projectPhotos:[],nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},ecGrids:{},mutGrids:{},autScans:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
   localStorage.removeItem('nde_field_report');
   loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
 }
@@ -3721,33 +3782,1481 @@ function renderCalRec(){
   </div>`;
 }
 
+
+/* ===== Grid Engine ===== */
+
+// ── Color utilities ─────────────────────────────────────────────────────────
+// For MUT/AUT: thin=red, NWT=green, thick=blue
+// For EC depth: deep=red, shallow=green
+function thicknessColor(val, minVal, nwt, maxVal){
+  if(val===null||val===undefined||isNaN(val)) return 'transparent';
+  // Normalize 0-1 across min→max range
+  const range = maxVal - minVal || 1;
+  const t = Math.max(0, Math.min(1, (val - minVal) / range));
+  // Color stops: red(0) → yellow(0.4) → green(0.6) → cyan(0.8) → blue(1.0)
+  let r, g, b;
+  if(t < 0.25){
+    r=220; g=Math.round(t/0.25*180); b=30;
+  } else if(t < 0.5){
+    r=Math.round(220-(t-0.25)/0.25*180); g=200; b=30;
+  } else if(t < 0.75){
+    r=30; g=Math.round(200-(t-0.5)/0.25*60); b=Math.round((t-0.5)/0.25*140);
+  } else {
+    r=30; g=Math.round(140-(t-0.75)/0.25*100); b=Math.round(140+(t-0.75)/0.25*115);
+  }
+  return `rgb(${r},${g},${b})`;
+}
+
+function depthColor(depth, maxDepth){
+  if(depth===null||depth===undefined||isNaN(depth)||depth==='') return 'transparent';
+  const t = Math.max(0, Math.min(1, depth / (maxDepth||1)));
+  // Deep=red, shallow=green
+  const r = Math.round(t * 220);
+  const g = Math.round((1-t) * 200 + 30);
+  const b = 30;
+  return `rgb(${r},${g},${b})`;
+}
+
+function textColorFor(bg){
+  // Dark bg → white text, light bg → dark text
+  const m = bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
+  if(!m) return '#000';
+  const lum = (0.299*m[1] + 0.587*m[2] + 0.114*m[3]) / 255;
+  return lum > 0.45 ? '#111' : '#fff';
+}
+
+// Generate alpha row labels: A,B...Z,AA,AB...
+function alphaLabel(i){
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  if(i < 26) return letters[i];
+  const q = Math.floor(i/26)-1, r = i%26;
+  return letters[q]+letters[r];
+}
+
+// ── Legend canvas ────────────────────────────────────────────────────────────
+function drawLegend(canvasId, mode, minV, nwt, maxV){
+  const c = document.getElementById(canvasId);
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const w = c.width, h = c.height;
+  for(let x=0; x<w; x++){
+    const v = minV + (maxV-minV)*(x/w);
+    ctx.fillStyle = mode==='depth' ? depthColor(v, maxV) : thicknessColor(v, minV, nwt, maxV);
+    ctx.fillRect(x, 0, 1, h);
+  }
+}
+
+// ── Active grid state ─────────────────────────────────────────────────────────
+let _activeGrid = null; // {type, key, data}
+
+function closeGridModal(){ document.getElementById('grid-modal').classList.remove('open'); _activeGrid=null; }
+function closeAUTModal(){ document.getElementById('aut-import-modal').classList.remove('open'); }
+function closeMUTSetup(){ document.getElementById('mut-setup-modal').classList.remove('open'); }
+
+// ── Open grid modal ───────────────────────────────────────────────────────────
+function openGridModal(type, key){
+  let gridData;
+  if(type==='mut')  gridData = (state.mutGrids||{})[key];
+  else if(type==='ec')   gridData = (state.ecGrids||{})[key];
+  else if(type==='aut')  gridData = (state.autScans||{})[key];
+  if(!gridData){ showToast('Grid data not found','error'); return; }
+
+  _activeGrid = {type, key, data:gridData};
+  document.getElementById('grid-modal').classList.add('open');
+
+  const titles = {mut:'MUT Wall Thickness Grid', ec:'EC Depth Grid', aut:'AUT C-scan'};
+  document.getElementById('grid-modal-title').innerHTML =
+    `<i class="ti ti-grid-dots"></i> ${titles[type]||'Grid'} — ${gridData.label||key}`;
+  document.getElementById('grid-paste-hint').textContent =
+    type==='aut' ? '' : 'Tip: paste tab-separated data from Excel directly into any cell';
+
+  renderGridModal(type, gridData);
+}
+
+function renderGridModal(type, gridData){
+  const body = document.getElementById('grid-modal-body');
+  if(type==='aut'){
+    renderAUTHeatmap(body, gridData);
+    return;
+  }
+  // MUT or EC grid table
+  const {rows, cols, colStart, cells, voids, nwt, mode} = gridData;
+  const isEC = type==='ec';
+
+  // Compute stats
+  const vals = [];
+  for(let r=0; r<rows; r++) for(let c=0; c<cols; c++){
+    const v = cells[r]?.[c];
+    if(!voids?.[r]?.[c] && v!==''&&v!==null&&v!==undefined){
+      const n = parseFloat(v);
+      if(!isNaN(n)) vals.push(n);
+    }
+  }
+  const minV  = vals.length ? Math.min(...vals) : 0;
+  const maxV  = vals.length ? Math.max(...vals) : (nwt||1);
+  const avgV  = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+
+  document.getElementById('grid-stat-min').textContent = vals.length ? `MIN: ${minV.toFixed(3)}"` : '';
+  document.getElementById('grid-stat-max').textContent = vals.length ? `MAX: ${maxV.toFixed(3)}"` : '';
+  document.getElementById('grid-stat-avg').textContent = vals.length ? `AVG: ${avgV.toFixed(3)}"` : '';
+  drawLegend('grid-legend-canvas', isEC?'depth':'thickness', minV, nwt||0.5, maxV);
+
+  // Build table
+  let html = `<table class="grid-table"><thead><tr><th style="min-width:32px">Row</th>`;
+  for(let c=0; c<cols; c++) html += `<th>${(colStart||1)+c}</th>`;
+  html += `</tr></thead><tbody>`;
+
+  for(let r=0; r<rows; r++){
+    html += `<tr><td class="row-label">${alphaLabel(r)}</td>`;
+    for(let c=0; c<cols; c++){
+      const isVoid = voids?.[r]?.[c];
+      const val    = cells[r]?.[c];
+      const numVal = parseFloat(val);
+      const bg     = isVoid ? '' : (!isNaN(numVal) ? (isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt||0.5, maxV)) : 'transparent');
+      const fg     = isVoid ? '#fff' : textColorFor(bg||'transparent');
+
+      if(isVoid){
+        html += `<td><div class="grid-cell-void" onclick="toggleVoid('${type}','${_activeGrid.key}',${r},${c})"
+                   title="Click to un-void">Void</div></td>`;
+      } else {
+        html += `<td style="background:${bg}">
+          <input class="grid-cell-input" type="text"
+            value="${val??''}"
+            style="color:${fg};background:${bg}"
+            data-r="${r}" data-c="${c}"
+            onchange="setCellValue('${type}','${_activeGrid.key}',${r},${c},this.value)"
+            onpaste="handleGridPaste(event,'${type}','${_activeGrid.key}',${r},${c})"
+            oncontextmenu="event.preventDefault();toggleVoid('${type}','${_activeGrid.key}',${r},${c})">
+        </td>`;
+      }
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table>`;
+  body.innerHTML = html;
+}
+
+function setCellValue(type, key, r, c, val){
+  const store = type==='mut' ? state.mutGrids : state.ecGrids;
+  if(!store[key]) return;
+  if(!store[key].cells[r]) store[key].cells[r]=[];
+  store[key].cells[r][c] = val===''?'':parseFloat(val)||val;
+
+  // Sync EC max depth to indication row
+  if(type==='ec' && store[key].vaRowIdx !== undefined){
+    const allVals = [];
+    const {rows,cols,cells,voids} = store[key];
+    for(let rr=0;rr<rows;rr++) for(let cc=0;cc<cols;cc++){
+      if(!voids?.[rr]?.[cc]&&cells[rr]?.[cc]!==''&&cells[rr]?.[cc]!==undefined){
+        const n=parseFloat(cells[rr][cc]); if(!isNaN(n)) allVals.push(n);
+      }
+    }
+    if(allVals.length){
+      const maxD = Math.max(...allVals).toFixed(3);
+      const row = (state.va||[])[store[key].vaRowIdx];
+      if(row) row.dep = maxD;
+    }
+  }
+  save();
+  // Refresh just the stats + color without full re-render
+  renderGridModal(type, store[key]);
+}
+
+function toggleVoid(type, key, r, c){
+  const store = type==='mut' ? state.mutGrids : state.ecGrids;
+  if(!store[key]) return;
+  if(!store[key].voids) store[key].voids = {};
+  if(!store[key].voids[r]) store[key].voids[r] = {};
+  store[key].voids[r][c] = !store[key].voids[r][c];
+  save();
+  renderGridModal(type, store[key]);
+}
+
+function handleGridPaste(e, type, key, startR, startC){
+  e.preventDefault();
+  const text = (e.clipboardData || window.clipboardData).getData('text');
+  const rows = text.trim().split(/\r?\n/);
+  const store = type==='mut' ? state.mutGrids : state.ecGrids;
+  if(!store[key]) return;
+  const grid = store[key];
+
+  rows.forEach((row, ri)=>{
+    const cells = row.split(/\t|,/);
+    cells.forEach((cell, ci)=>{
+      const tr = startR+ri, tc = startC+ci;
+      if(tr < grid.rows && tc < grid.cols){
+        if(!grid.cells[tr]) grid.cells[tr]=[];
+        const v = parseFloat(cell.trim());
+        grid.cells[tr][tc] = isNaN(v) ? '' : v;
+      }
+    });
+  });
+  save();
+  renderGridModal(type, grid);
+}
+
+// ── MUT grid creation ─────────────────────────────────────────────────────────
+let _mutSetupType = 'mut'; // 'mut' or 'ec'
+let _mutSetupVAIdx = null;
+let _mutSetupMUTRowIdx = null;
+
+function openMUTSetup(type, vaRowIdx){
+  _mutSetupType = type;
+  _mutSetupVAIdx = vaRowIdx !== undefined ? vaRowIdx : null;
+  const joints = state.joints||[];
+  const sel = document.getElementById('mut-setup-joint');
+  sel.innerHTML = joints.map(j=>`<option value="${j.id}">${j.id}</option>`).join('');
+  const title = type==='ec' ? 'New EC Depth Grid' : 'New MUT Wall Thickness Grid';
+  document.getElementById('mut-setup-title').innerHTML = `<i class="ti ti-grid-dots"></i> ${title}`;
+  if(type==='ec'){
+    document.getElementById('mut-setup-rows').value = 10;
+    document.getElementById('mut-setup-cols').value = 10;
+    document.getElementById('mut-setup-label').value =
+      vaRowIdx!==null ? `EC Grid — ${(state.va||[])[vaRowIdx]?.jt||''}` : 'EC Depth Grid';
+    // Pre-select joint from the VA row
+    if(vaRowIdx!==null){
+      const jt = (state.va||[])[vaRowIdx]?.jt;
+      if(jt) sel.value = jt;
+    }
+  }
+  document.getElementById('mut-setup-modal').classList.add('open');
+}
+
+function createMUTGrid(){
+  const rows     = parseInt(document.getElementById('mut-setup-rows').value)||20;
+  const cols     = parseInt(document.getElementById('mut-setup-cols').value)||10;
+  const colStart = parseInt(document.getElementById('mut-setup-colstart').value)||1;
+  const nwt      = parseFloat(document.getElementById('mut-setup-nwt').value)||0;
+  const label    = document.getElementById('mut-setup-label').value.trim()||(_mutSetupType==='ec'?'EC Grid':'MUT Grid');
+  const joint    = document.getElementById('mut-setup-joint').value;
+
+  const key = `${_mutSetupType}_${joint}_${Date.now()}`;
+  const gridData = {
+    key, type:_mutSetupType, joint, label, rows, cols, colStart, nwt,
+    cells: Array.from({length:rows},()=>Array(cols).fill('')),
+    voids: {},
+    vaRowIdx: _mutSetupVAIdx,
+    createdAt: new Date().toISOString(),
+  };
+
+  if(_mutSetupType==='mut'){
+    if(!state.mutGrids) state.mutGrids={};
+    state.mutGrids[key] = gridData;
+    // Link back to MUT indication row if created from a row button
+    if(_mutSetupMUTRowIdx !== null && state.mut?.[_mutSetupMUTRowIdx]){
+      state.mut[_mutSetupMUTRowIdx].mutGridKey = key;
+      _mutSetupMUTRowIdx = null;
+    }
+  } else {
+    if(!state.ecGrids) state.ecGrids={};
+    state.ecGrids[key] = gridData;
+    // Link to VA row
+    if(_mutSetupVAIdx!==null && state.va?.[_mutSetupVAIdx]){
+      state.va[_mutSetupVAIdx].ecGridKey = key;
+    }
+  }
+  save();
+  closeMUTSetup();
+  renderTab(activeTab);
+  setTimeout(()=>openGridModal(_mutSetupType, key), 100);
+  showToast(`${_mutSetupType==='ec'?'EC':'MUT'} grid created`);
+}
+
+// ── AUT import ────────────────────────────────────────────────────────────────
+function openAUTImport(){
+  const sel = document.getElementById('aut-import-joint');
+  sel.innerHTML = (state.joints||[]).map(j=>`<option value="${j.id}">${j.id}</option>`).join('');
+  document.getElementById('aut-paste-area').value = '';
+  document.getElementById('aut-import-label').value = '';
+  document.getElementById('aut-nwt').value = '';
+  document.getElementById('aut-import-modal').classList.add('open');
+}
+
+function handleAUTFile(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{ document.getElementById('aut-paste-area').value = ev.target.result; };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+function processAUTImport(){
+  const raw   = document.getElementById('aut-paste-area').value.trim();
+  const joint = document.getElementById('aut-import-joint').value;
+  const label = document.getElementById('aut-import-label').value.trim()||`${joint} AUT Scan`;
+  const nwt   = parseFloat(document.getElementById('aut-nwt').value)||0;
+  const delimSel = document.getElementById('aut-delim').value;
+
+  if(!raw){ showToast('Paste or import data first','error'); return; }
+
+  const lines = raw.split(/\r?\n/).filter(l=>l.trim());
+  let delim = ',';
+  if(delimSel !== 'auto'){
+    delim = delimSel;
+  } else {
+    const first = lines[0]||'';
+    if(first.includes('\t'))      delim = '\t';
+    else if(first.includes(','))  delim = ',';
+    else if(first.includes(';'))  delim = ';';
+    else                           delim = ' ';
+  }
+
+  const data = lines.map(l=>
+    l.split(delim).map(v=>{
+      const n = parseFloat(v.trim().replace(/[^0-9.\-]/g,''));
+      return isNaN(n) ? null : n;
+    })
+  ).filter(r => r.some(v => v !== null));
+
+  if(!data.length || !data[0].length){
+    showToast('Could not parse data — check delimiter setting','error'); return;
+  }
+
+  const key = `aut_${joint}_${Date.now()}`;
+  if(!state.autScans) state.autScans={};
+  state.autScans[key] = {key, joint, label, nwt, data, createdAt:new Date().toISOString()};
+  save();
+  closeAUTModal();
+  renderTab(activeTab);
+  setTimeout(()=>openGridModal('aut', key), 100);
+  showToast(`AUT scan imported — ${data.length} rows × ${data[0]?.length||0} cols`);
+}
+
+// ── AUT heatmap renderer ──────────────────────────────────────────────────────
+function renderAUTHeatmap(container, gridData){
+  const {data, nwt} = gridData;
+  if(!data||!data.length){ container.innerHTML='<div class="empty-state">No data</div>'; return; }
+
+  const rows = data.length;
+  const cols = Math.max(...data.map(r=>r.length));
+
+  const allVals = data.flat().filter(v=>v!==null&&!isNaN(v));
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+
+  document.getElementById('grid-stat-min').textContent = `MIN: ${minV.toFixed(3)}"`;
+  document.getElementById('grid-stat-max').textContent = `MAX: ${maxV.toFixed(3)}"`;
+  const avg = allVals.reduce((a,b)=>a+b,0)/allVals.length;
+  document.getElementById('grid-stat-avg').textContent = `AVG: ${avg.toFixed(3)}"`;
+  drawLegend('grid-legend-canvas', 'thickness', minV, nwt||0.5, maxV);
+
+  // Render onto canvas — each cell = cellW × cellH pixels
+  const cellW = Math.max(3, Math.min(12, Math.floor(900/cols)));
+  const cellH = Math.max(6, Math.min(18, Math.floor(500/rows)));
+  const cW = cols * cellW, cH = rows * cellH;
+
+  container.innerHTML = `
+    <div style="overflow:auto">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--color-text-secondary);padding:0 4px;white-space:nowrap;align-self:center">Y-Axis · Scan (Circ.)</div>
+        <div>
+          <div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:2px">X-Axis · Index (Axial)</div>
+          <canvas id="aut-canvas" width="${cW}" height="${cH}" class="aut-heatmap"></canvas>
+          <div id="aut-hover" style="font-size:11px;color:var(--color-text-secondary);margin-top:4px;min-height:16px"></div>
+        </div>
+        <div>
+          <canvas id="aut-scale" width="20" height="${cH}"></canvas>
+        </div>
+      </div>
+    </div>`;
+
+  const canvas = document.getElementById('aut-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Draw cells
+  data.forEach((row, ri)=>{
+    row.forEach((val, ci)=>{
+      ctx.fillStyle = val===null ? '#333' : thicknessColor(val, minV, nwt||0.5, maxV);
+      ctx.fillRect(ci*cellW, ri*cellH, cellW, cellH);
+    });
+  });
+
+  // Draw color scale bar on side canvas
+  const sc = document.getElementById('aut-scale');
+  const sctx = sc.getContext('2d');
+  for(let y=0;y<cH;y++){
+    const t = 1 - y/cH;
+    const v = minV + (maxV-minV)*t;
+    sctx.fillStyle = thicknessColor(v, minV, nwt||0.5, maxV);
+    sctx.fillRect(0,y,20,1);
+  }
+  // Scale labels
+  sctx.fillStyle = 'var(--color-text, #000)';
+  sctx.font = '9px sans-serif';
+
+  // Hover tooltip
+  canvas.onmousemove = (e)=>{
+    const rect = canvas.getBoundingClientRect();
+    const ci = Math.floor((e.clientX-rect.left)/cellW);
+    const ri = Math.floor((e.clientY-rect.top)/cellH);
+    const val = data[ri]?.[ci];
+    const hover = document.getElementById('aut-hover');
+    if(hover) hover.textContent = val!==null&&val!==undefined
+      ? `Axial ${ci} · Circ row ${ri} · WT: ${val.toFixed(3)}"`
+      : '';
+  };
+}
+
+// ── EC grid button in VA rows ──────────────────────────────────────────────────
+function ecGridBtn(rowIdx){
+  const row = (state.va||[])[rowIdx];
+  if(!row) return '<span style="font-size:10px;color:var(--color-text-tertiary)">—</span>';
+
+  const isEC = (row.char||'').toLowerCase().includes('corrosion') ||
+               (row.char||'') === 'External Corrosion';
+
+  if(!isEC){
+    // Show a dimmed hint so the column isn't blank
+    return `<span style="font-size:10px;color:var(--color-border-secondary);white-space:nowrap" title="Set characterization to External Corrosion or Corrosion/Pitting to enable EC grid">EC Grid</span>`;
+  }
+
+  const existingKey = row.ecGridKey;
+  if(existingKey && (state.ecGrids||{})[existingKey]){
+    return `<button class="grid-open-btn" onclick="openGridModal('ec','${existingKey}')" title="Open EC depth grid">
+      <i class="ti ti-grid-dots"></i> EC Grid
+    </button>`;
+  }
+  return `<button class="grid-open-btn" style="border-color:var(--color-success-text);color:var(--color-success-text)"
+      onclick="openMUTSetup('ec',${rowIdx})" title="Create EC depth grid for this indication">
+    <i class="ti ti-plus"></i> New EC Grid
+  </button>`;
+}
+
+// ── Render grids lists in MUT and AUT tabs ─────────────────────────────────────
+function mutGridsPanel(){
+  const grids = Object.values(state.mutGrids||{});
+  const html = grids.map(g=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);margin-bottom:6px">
+      <i class="ti ti-grid-dots" style="color:var(--color-info-text)"></i>
+      <strong style="font-size:13px">${g.label}</strong>
+      <span style="font-size:11px;color:var(--color-text-secondary)">${g.joint} · ${g.rows}×${g.cols} · NWT ${g.nwt||'?'}"</span>
+      <div style="margin-left:auto;display:flex;gap:5px">
+        <button class="btn btn-sm" onclick="openGridModal('mut','${g.key}')"><i class="ti ti-eye"></i> Open</button>
+        <button class="icon-btn" onclick="deleteMUTGrid('${g.key}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('') || `<div class="empty-state"><i class="ti ti-grid-dots"></i>No MUT grids yet</div>`;
+
+  return `<div style="margin-top:12px">
+    <div class="section-divider"><i class="ti ti-grid-dots"></i> MUT Wall Thickness Grids</div>
+    <button class="btn btn-primary" style="margin-bottom:8px" onclick="openMUTSetup('mut')">
+      <i class="ti ti-plus"></i> New MUT grid
+    </button>
+    ${html}
+  </div>`;
+}
+
+function autScansPanel(){
+  const scans = Object.values(state.autScans||{});
+  const html = scans.map(s=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);margin-bottom:6px">
+      <i class="ti ti-chart-area" style="color:var(--color-info-text)"></i>
+      <strong style="font-size:13px">${s.label}</strong>
+      <span style="font-size:11px;color:var(--color-text-secondary)">${s.joint} · ${s.data?.length||0} rows × ${s.data?.[0]?.length||0} cols</span>
+      <div style="margin-left:auto;display:flex;gap:5px">
+        <button class="btn btn-sm" onclick="openGridModal('aut','${s.key}')"><i class="ti ti-eye"></i> View C-scan</button>
+        <button class="icon-btn" onclick="deleteAUTScan('${s.key}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('') || `<div class="empty-state"><i class="ti ti-chart-area"></i>No AUT scans imported yet</div>`;
+
+  return `<div style="margin-top:12px">
+    <div class="section-divider"><i class="ti ti-chart-area"></i> AUT C-scan Data</div>
+    <button class="btn btn-primary" style="margin-bottom:8px" onclick="openAUTImport()">
+      <i class="ti ti-upload"></i> Import AUT scan
+    </button>
+    ${html}
+  </div>`;
+}
+
+function deleteMUTGrid(key){
+  if(!confirm('Delete this MUT grid?')) return;
+  delete state.mutGrids[key];
+  save(); renderTab(activeTab);
+}
+function deleteAUTScan(key){
+  if(!confirm('Delete this AUT scan?')) return;
+  delete state.autScans[key];
+  save(); renderTab(activeTab);
+}
+
+
+/* ===== Project overview photos ===== */
+function openProjectPhoto(){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*'; inp.multiple=true;
+  inp.onchange = async e=>{
+    if(!state.projectPhotos) state.projectPhotos=[];
+    for(const f of Array.from(e.target.files)){
+      const compressed = await compressImage(f, 1200, 0.80);
+      state.projectPhotos.push(compressed);
+    }
+    save();
+    renderProjectPhotos();
+  };
+  inp.click();
+}
+
+function removeProjectPhoto(idx){
+  if(!confirm('Remove this project photo?')) return;
+  state.projectPhotos.splice(idx,1);
+  save(); renderProjectPhotos();
+}
+
+function renderProjectPhotos(){
+  const el = document.getElementById('project-photo-strip');
+  if(!el) return;
+  const photos = state.projectPhotos||[];
+  el.innerHTML = photos.map((p,i)=>`
+    <div class="photo-thumb" onclick="openLightbox('${p.data}','${p.name}')">
+      <img src="${p.data}" alt="${p.name}">
+      <button class="del-photo" onclick="event.stopPropagation();removeProjectPhoto(${i})">×</button>
+    </div>`).join('');
+}
+
+/* ===== Joint overview photos ===== */
+async function openJointOverviewPhoto(jtId){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*'; inp.multiple=true;
+  inp.onchange = async e=>{
+    if(!state.jointNotes) state.jointNotes={};
+    if(!state.jointNotes[jtId]) state.jointNotes[jtId]=[];
+    for(const f of Array.from(e.target.files)){
+      const compressed = await compressImage(f, 1200, 0.80);
+      // Tag as overview photo
+      compressed.isOverview = true;
+      state.jointNotes[jtId].unshift(compressed); // overviews go first
+    }
+    save(); renderJoints();
+  };
+  inp.click();
+}
+
+
+/* Auto-compute max date from indication rows for a joint+tab */
+function computeJointTabMaxDate(tabId, jtId){
+  const TAB_DATE_TABS = {
+    utt12:['utt12'], uttloc:['uttloc'],
+    lsc:['lsc'], aelsc:['aelsc'],
+    va:['va'], mt:['mt'], aut:['aut'], mut:['mut'],
+    muthand:['muthand'], pautbm:['pautbm'], pautls:['pautls'],
+  };
+  const tabs = TAB_DATE_TABS[tabId] || [tabId];
+  const dates = [];
+  tabs.forEach(t=>{
+    (state[t]||[]).forEach(r=>{
+      if(r.jt === jtId && r.date) dates.push(r.date);
+    });
+  });
+  // Also check scopeStatus rows for this tab+joint
+  if(!dates.length) return '';
+  dates.sort();
+  return dates[dates.length-1]; // max date
+}
+
+
+/* ===== Bulk tech fill ===== */
+function bulkSetScopeTech(tabId, techName){
+  (state.joints||[]).forEach(j=>{
+    const st = getScopeStatus(tabId, j.id);
+    st.tech = techName;
+  });
+  save();
+  renderTab(activeTab);
+  showToast(`Set all ${tabId.toUpperCase()} scope rows to ${techName}`);
+}
+
+function bulkSetRowTech(tabId, techName){
+  (state[tabId]||[]).forEach((r,i)=>{ r.tech = techName; });
+  save();
+  renderTab(activeTab);
+  showToast(`Set all ${tabId.toUpperCase()} rows to ${techName}`);
+}
+
+
+/* ===== In-browser PDF Generator — Acuren Report Style ===== */
+
+const ACRONYMS = 'Acid Etching (AE), After Grind (AFG), Automated Ultrasonic Testing (AUT), Average (Avg), Axial (Ax.), Before Grind (BFG), Circumferential (Circ.), Direct Examination (DE), Electric Resistance Weld (ERW), Feature (FT), Feet (ft), Furnace Butt Weld (FBW), Fusion Line (FL), Heat Affected Zone (HAZ), Inches (in), Inner Diameter (I.D.), Inner Radius (I.R.), In-service Welding (ISW), Joint (JT), Magnetic Particle Testing (MT), Manual Ultrasonic Thickness Testing (MUT), Maximum (Max), Minimum (Min), No-relevant Indications (NRI), Outer Diameter (O.D.), Outer Radius (O.R.), Phased Array Ultrasonic Testing (PAUT), Phased Array-Automated Ultrasonic Testing (PA-AUT), Position (Pos), Preparation (Prep), Station Feature Location (SFL), Top Dead Center (TDC), Ultrasonic Thickness Testing (UTT), Up / Down Stream (U/S), (D/S), Visual Assessment (VA), Wall Thickness (WT), Wet Fluorescent Magnetic Particle Testing (WFMT)';
+
+const R_BLUE  = [31, 56, 100];
+const R_LBLUE = [68, 114, 196];
+const R_LGRAY = [242, 242, 242];
+const R_MGRAY = [166, 166, 166];
+const R_WHITE = [255, 255, 255];
+const R_BLACK = [0, 0, 0];
+const R_DKBLUE= [31, 56, 100];
+
+// ── Page setup ───────────────────────────────────────────────────────────────
+function newDoc(){ return new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'letter'}); }
+const PW = 215.9; // letter width mm
+const PH = 279.4; // letter height mm
+const ML = 12.7;  // margins
+const MR = PW - 12.7;
+const TW = MR - ML; // usable width
+
+// ── Header bar (every page) ──────────────────────────────────────────────────
+function pageHeader(doc, y=0){
+  // Top address line
+  doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.setTextColor(...R_BLACK);
+  doc.text('Acuren Inspection Services', PW/2, y+5, {align:'center'});
+  doc.setFont('helvetica','normal');
+  doc.text('1433 Moffat Blvd. Manteca, CA. 95336', PW/2, y+10, {align:'center'});
+  doc.setFontSize(8);
+  doc.text('Template Rev. 1.0', MR, y+5, {align:'right'});
+  doc.text(`Report Issued: ${new Date().toLocaleDateString('en-US',{month:'2-digit',day:'2-digit',year:'numeric'})}`, MR, y+10, {align:'right'});
+  // Thin rule
+  doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.3);
+  doc.line(ML, y+13, MR, y+13);
+  return y+16;
+}
+
+// ── Footer ───────────────────────────────────────────────────────────────────
+function addFooters(doc){
+  const n = doc.internal.getNumberOfPages();
+  for(let i=1;i<=n;i++){
+    doc.setPage(i);
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(...R_MGRAY);
+    doc.text(`Page ${i} of ${n}`, PW/2, PH-6, {align:'center'});
+  }
+}
+
+// ── Cover page ───────────────────────────────────────────────────────────────
+async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
+  let y = pageHeader(doc);
+
+  // "Acuren Inspection Services Final Report"
+  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(...R_BLACK);
+  doc.text('Acuren Inspection Services Final Report', PW/2, y+10, {align:'center'});
+  y += 16;
+
+  // Info table — two column layout with blue left cells
+  const infoRows = [
+    ['Project Name', cfg.project||''],
+    ['Address', cfg.address||''],
+    ['Report Name', `${cfg.project||''}_${methodTitle.replace(/[^a-z0-9]/gi,'_')}_Report`],
+    null, // spacer row for 2-col
+  ];
+  const infoRows2col = [
+    ['SAP Order Number', cfg.sap||'',          'Acuren Job Number', cfg.job||''],
+    ['Line Number / MP', [cfg.line,cfg.mp].filter(Boolean).join(' / ')||'', 'Work Stream', 'Asset Engineering'],
+    ['Latitude',         cfg.lat||'',           'Inspection Start',  cfg.date_start||''],
+    ['Longitude',        cfg.lon||'',           'Inspection End',    cfg.date_end||''],
+  ];
+
+  const rowH = 7, col1W = 38, col2W = TW/2 - col1W - 2;
+  const col3W = 38, col4W = TW/2 - col3W - 2;
+
+  // Single-col rows
+  ['Project Name','Address','Report Name'].forEach((label,ri)=>{
+    const val = ri===0?cfg.project||'': ri===1?cfg.address||'': `${cfg.project||''} — ${methodTitle} Report`;
+    doc.setFillColor(...R_DKBLUE);
+    doc.rect(ML, y, col1W, rowH, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(label, ML+1, y+5);
+    doc.setFillColor(...R_LGRAY);
+    doc.rect(ML+col1W, y, TW-col1W, rowH, 'F');
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal');
+    doc.text(String(val), ML+col1W+2, y+5);
+    doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+    doc.rect(ML, y, TW, rowH, 'S');
+    y += rowH;
+  });
+
+  // Two-col rows
+  infoRows2col.forEach(([l1,v1,l2,v2])=>{
+    const half = TW/2;
+    doc.setFillColor(...R_DKBLUE);
+    doc.rect(ML, y, col1W, rowH, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(l1, ML+1, y+5);
+    doc.setFillColor(...R_LGRAY);
+    doc.rect(ML+col1W, y, half-col1W, rowH, 'F');
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal');
+    doc.text(String(v1), ML+col1W+2, y+5);
+
+    doc.setFillColor(...R_DKBLUE);
+    doc.rect(ML+half, y, col3W, rowH, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFont('helvetica','bold');
+    doc.text(l2, ML+half+1, y+5);
+    doc.setFillColor(...R_LGRAY);
+    doc.rect(ML+half+col3W, y, half-col3W, rowH, 'F');
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal');
+    doc.text(String(v2), ML+half+col3W+2, y+5);
+
+    doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+    doc.rect(ML, y, TW, rowH, 'S');
+    doc.line(ML+half, y, ML+half, y+rowH);
+    y += rowH;
+  });
+  y += 6;
+
+  // Report title
+  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(...R_BLACK);
+  doc.text(methodTitle.toUpperCase() + ' REPORT', PW/2, y+6, {align:'center'});
+  y += 12;
+
+  // Overview photo (project photo or first joint photo)
+  const allPhotos = [...(state.projectPhotos||[])];
+  (state.joints||[]).forEach(j=>{
+    (state.jointNotes[j.id]||[]).filter(p=>p.isOverview).forEach(p=>allPhotos.push(p));
+  });
+
+  if(allPhotos.length){
+    const ph = allPhotos[0];
+    const maxH = 90, maxW = TW;
+    try{
+      const img = new Image();
+      await new Promise(res=>{ img.onload=res; img.src=ph.data; });
+      const aspect = img.width/img.height;
+      let iw = maxW, ih = maxW/aspect;
+      if(ih > maxH){ ih=maxH; iw=maxH*aspect; }
+      doc.addImage(ph.data,'JPEG', ML+(TW-iw)/2, y, iw, ih, undefined, 'FAST');
+      y += ih + 4;
+    }catch(e){ y += 4; }
+  }
+
+  // City caption
+  const city = (cfg.address||'').split(',').slice(-2).join(',').trim() || cfg.address||'';
+  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(...R_BLACK);
+  doc.text(city, PW/2, y+6, {align:'center'});
+  y += 14;
+
+  // Prepared by / Reviewed by
+  const prepTech = techs[0] || {name:'', certLevel:'', title:'Pipeline Integrity Technician'};
+  const reviewer = {name:'Ken Criss', title:'NDE Operations Manager'};
+  const boxW = TW/2 - 4;
+
+  doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.setFillColor(...R_DKBLUE);
+  doc.rect(ML, y, boxW, 6, 'F');
+  doc.setTextColor(...R_WHITE);
+  doc.text('Report Prepared by:', ML+boxW/2, y+4, {align:'center'});
+
+  doc.setFillColor(...R_DKBLUE);
+  doc.rect(ML+boxW+8, y, boxW, 6, 'F');
+  doc.text('Reviewed and Approved by:', ML+boxW+8+boxW/2, y+4, {align:'center'});
+  y += 8;
+
+  doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text(prepTech.name||'', ML+boxW/2, y+5, {align:'center'});
+  doc.text(reviewer.name, ML+boxW+8+boxW/2, y+5, {align:'center'});
+  y += 6;
+  doc.setFontSize(8);
+  doc.text(prepTech.title||'Sr. Pipeline Integrity Technician', ML+boxW/2, y+4, {align:'center'});
+  doc.text(reviewer.title, ML+boxW+8+boxW/2, y+4, {align:'center'});
+}
+
+// ── Cal / parameter data sheet ────────────────────────────────────────────────
+function buildCalSheet(doc, methodId, methodLabel){
+  const cards = Object.values(state.ndeCards||{}).filter(c=>c.method===methodId);
+  if(!cards.length) return;
+
+  cards.forEach((card,ci)=>{
+    doc.addPage();
+    let y = pageHeader(doc);
+
+    // Title
+    doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(...R_BLACK);
+    doc.text(`${methodLabel} Data Sheet Technician #${ci+1}`, PW/2, y+6, {align:'center'});
+    y += 10;
+
+    // Parameter block
+    const paramRows = [
+      ['Procedure Used:', card.procedure||'', 'Revision No:', card.revNo||''],
+      ['(UT) Unit Brand:', card.utUnit||'', 'Model:', card.utModel||'', 'Serial Number:', card.utSerial||''],
+      ['Cal Due Date:', card.calDue||'', 'Cal In Time:', card.calIn||'', 'Cal Out Time:', card.calOut||''],
+      ['Transducer Manufacture:', card.transManuf||'', 'Model:', card.transModel||'', 'Serial Number:', card.transSerial||''],
+      ['Size/Dia. (Inches):', card.transSize||'', 'Element:', card.elementQty||'', 'Frequency (MHz):', card.frequency||''],
+      ['Screen Range (In.):', card.screenRange||'', 'Ref+Scan (dB):', card.refScanDb||'', 'Velocity (In./µsec.):', card.velocity||''],
+      ['Cal Block Used (In):', card.calBlock||'', 'Material:', card.calBlockMaterial||'', 'Serial Number:', card.calBlockSerial||''],
+      ['Couplant Type:', card.couplant||'', 'Batch No:', card.couplantBatch||'', 'Cal Block Temp. +/- 25°F:', card.calBlockTemp||'Yes'],
+      ['Technician:', card.tech||'', 'Certification Level:', card.certLevel||'', 'Inspection Date:', card.date||'Daily'],
+    ];
+
+    // Blue header row for parameter section
+    doc.setFillColor(...R_DKBLUE);
+    doc.rect(ML, y, TW, 6, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text(`${methodLabel} Testing Parameters:`, ML+2, y+4);
+    doc.setTextColor(...R_BLACK);
+    y += 6;
+
+    const rowH = 6;
+    paramRows.forEach(row=>{
+      const cellW = TW / (row.length);
+      let x = ML;
+      row.forEach((cell, ci2)=>{
+        const isBold = ci2%2===0; // labels are bold
+        doc.setFont('helvetica', isBold?'bold':'normal');
+        doc.setFontSize(7.5);
+        doc.setFillColor(...(isBold ? R_LGRAY : R_WHITE));
+        doc.rect(x, y, cellW, rowH, 'F');
+        doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.15);
+        doc.rect(x, y, cellW, rowH, 'S');
+        doc.text(String(cell), x+1, y+4, {maxWidth: cellW-2});
+        x += cellW;
+      });
+      y += rowH;
+    });
+    y += 4;
+
+    // Acronyms block
+    doc.setFillColor(...R_DKBLUE);
+    doc.rect(ML, y, TW, 6, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
+    doc.text('Acronyms and Abbreviations Used', PW/2, y+4, {align:'center'});
+    y += 6;
+    doc.setFillColor(...R_LGRAY); doc.rect(ML, y, TW, 22, 'F');
+    doc.setDrawColor(...R_MGRAY); doc.rect(ML, y, TW, 22, 'S');
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal'); doc.setFontSize(6.5);
+    const lines = doc.splitTextToSize(ACRONYMS, TW-4);
+    doc.text(lines, ML+2, y+4);
+    y += 24;
+  });
+}
+
+// ── Scope summary table ────────────────────────────────────────────────────────
+function buildScopeTable(doc, tabId, methodLabel, extraCols, y){
+  const joints = state.joints||[];
+  if(!joints.length) return y;
+
+  // Section header
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 7, 'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text(`${methodLabel} Inspection Scope Summary`, PW/2, y+5, {align:'center'});
+  doc.setTextColor(...R_BLACK);
+  y += 7;
+
+  const head = [['Joint\n(JT-#)','Feature\nType','Outer\nDia. (in.)','Nominal WT\n(in.)','Long Seam\n(hh:mm)','Surface\nCondition',methodLabel,'UTT Scan\nTest Locs',...(extraCols||[])]];
+  const body = joints.map(j=>{
+    const st = getScopeStatus(tabId, j.id);
+    const autoDate = computeJointTabMaxDate(tabId, j.id);
+    return [j.id, j.type||'Pipe', j.od?j.od+'"':'—', j.nwt?j.nwt+'"':'—',
+      j.seam||'—', 'Media Blasted', st.done?'Yes':'No', 'No',
+      ...(extraCols||[]).map(()=>'')];
+  });
+
+  doc.autoTable({
+    head, body, startY:y, margin:{left:ML, right:ML},
+    headStyles:{fillColor:R_DKBLUE, textColor:R_WHITE, fontSize:7, fontStyle:'bold', cellPadding:1.5, halign:'center'},
+    bodyStyles:{fontSize:7.5, cellPadding:1.5, halign:'center'},
+    columnStyles:{0:{fontStyle:'bold'}, 1:{halign:'left'}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY, lineWidth:0.2},
+  });
+  y = doc.lastAutoTable.finalY;
+
+  // Field notes
+  y += 2;
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...R_BLACK);
+  doc.text('Field Notes:', ML, y+4);
+  y += 5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setFillColor(...R_WHITE); doc.rect(ML, y, TW, 12, 'F');
+  doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2); doc.rect(ML, y, TW, 12, 'S');
+  y += 14;
+  return y;
+}
+
+// ── UTT12 data table ───────────────────────────────────────────────────────────
+function buildUTT12Table(doc, y){
+  const rows = state.utt12||[];
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 7, 'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('12pt UTT Wall Thickness (in.)', PW/2, y+5, {align:'center'});
+  y += 7;
+
+  if(!rows.length){
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','italic'); doc.setFontSize(8);
+    doc.text('No UTT data recorded.', ML+2, y+5); return y+10;
+  }
+
+  const head = [['Joint\n(JT-#)','Ref\nGW','Dist\n(in.)','BFG\nor AFG','12:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00','Average\nMeasured\nWT','Minimum\nMeasured\nWT']];
+  const body = rows.map(r=>{
+    const vals = Array.isArray(r.vals)?r.vals:Array(12).fill('');
+    const nums = vals.map(v=>parseFloat(v)).filter(v=>!isNaN(v));
+    const avg = nums.length?(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(3):'—';
+    const mn  = nums.length?Math.min(...nums).toFixed(3):'—';
+    return [r.jt||'',r.ref||'U/S',r.dist||'',r.bfg||'BFG',...vals.map(v=>v||''),avg,mn];
+  });
+
+  doc.autoTable({
+    head, body, startY:y, margin:{left:ML,right:ML},
+    headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
+    bodyStyles:{fontSize:7,cellPadding:1.2,halign:'center'},
+    columnStyles:{0:{fontStyle:'bold',cellWidth:14},1:{cellWidth:9},2:{cellWidth:9},3:{cellWidth:9},16:{fontStyle:'bold'},17:{fontStyle:'bold',textColor:[198,40,40]}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY,lineWidth:0.15},
+  });
+  y = doc.lastAutoTable.finalY;
+  // Field notes box
+  y += 2;
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text('Field Notes:', ML, y+4);
+  y += 5;
+  doc.setFillColor(...R_WHITE); doc.rect(ML,y,TW,12,'F');
+  doc.setDrawColor(...R_MGRAY); doc.rect(ML,y,TW,12,'S');
+  return y+14;
+}
+
+// ── UTT Locations table ────────────────────────────────────────────────────────
+function buildUTTLocTable(doc, y){
+  const rows = state.uttloc||[];
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Ultrasonic Inspection of Material Property Verification Test Locations', PW/2, y+5, {align:'center'});
+  y += 7;
+  if(!rows.length){
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','italic'); doc.setFontSize(8);
+    doc.text('No test location UTT data recorded.', ML+2, y+5); return y+10;
+  }
+  const head=[['Joint\n(JT-#)','Test Location\n(NDT-#)','Ref\nGW','Dist\n(in.)','Clock\n(hh:mm)','Area\nLength','Area\nWidth','BFG\nMin','BFG\nMax','AFG\nMin','AFG\nMax','%\nRemoved','UTT\nResults']];
+  const body=rows.map(r=>{
+    const bm=parseFloat(r.bfgmin||0),am=parseFloat(r.afgmin||0);
+    const pct=bm?((bm-am)/bm*100).toFixed(1)+'%':'—';
+    const warn=bm&&((bm-am)/bm*100)>10;
+    return [r.jt||'',r.ndtid||'',r.ref||'U/S',r.dist||'',r.clock||'',r.alen||'',r.awid||'',r.bfgmin||'',r.bfgmax||'',r.afgmin||'',r.afgmax||'',pct,r.result||'NRI'];
+  });
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+    headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
+    bodyStyles:{fontSize:7,cellPadding:1.2,halign:'center'},
+    columnStyles:{0:{fontStyle:'bold'},11:{fontStyle:'bold'}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+  return doc.lastAutoTable.finalY+4;
+}
+
+// ── Generic flaw table ─────────────────────────────────────────────────────────
+function buildFlawTable(doc, tabId, title, y){
+  const rows=state[tabId]||[];
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text(title, PW/2, y+5,{align:'center'});
+  y+=7; doc.setTextColor(...R_BLACK);
+  if(!rows.length){
+    doc.setFont('helvetica','italic'); doc.setFontSize(9);
+    doc.setFillColor(...R_LGRAY); doc.rect(ML,y,TW,14,'F');
+    doc.setDrawColor(...R_MGRAY); doc.rect(ML,y,TW,14,'S');
+    doc.text('No indications were found at the time of inspection.', PW/2, y+9,{align:'center'});
+    return y+18;
+  }
+  const isPAUT=tabId==='pautbm'||tabId==='pautls';
+  const isAUT=tabId==='aut'||tabId==='mut';
+  let head,body;
+  if(isPAUT){
+    head=[['Joint\n(JT-#)','Indication\nID','Indication\nCharacterization','Ref\nGW','Dist\n(in.)','Clock\n(hh:mm)','Length\n(in.)','Depth\n(in.)','Height\n(in.)','Wall WT\n(in.)','N/L']];
+    body=rows.map(r=>[r.jt,r.indid||'',r.char||'',r.ref||'',r.dist||'',r.clock||'',r.len||'',r.dep||'',r.ht||'',r.wt||'',r.nl||'']);
+  } else if(isAUT){
+    head=[['Joint\n(JT-#)','Indication\nID','Indication\nCharacterization','Ref\nGW','Dist\n(in.)','Clock\n(hh:mm)','Length\n(in.)','Width\n(in.)','Min WT\n(in.)','Wall WT\n(in.)','N/L','%\nWall Loss']];
+    body=rows.map(r=>{
+      const wl=r.minwt&&r.wt?((1-parseFloat(r.minwt)/parseFloat(r.wt))*100).toFixed(1)+'%':'—';
+      return [r.jt,r.indid||'',r.char||'',r.ref||'',r.dist||'',r.clock||'',r.len||'',r.wid||'',r.minwt||'',r.wt||'',r.nl||'',wl];
+    });
+  } else {
+    const isVA=tabId==='va';
+    head=[['Joint\n(JT-#)','Indication\nID','Indication\nCharacterization','Ref\nGW','Dist\n(in.)','Clock\n(hh:mm)','Length\n(in.)','Width\n(in.)',isVA?'Depth\n(in.)':'Height\n(in.)','Wall WT\n(in.)','N/L']];
+    body=rows.map(r=>[r.jt,r.indid||'',r.char||'',r.ref||'',r.dist||'',r.clock||'',r.len||'',r.wid||'',r.dep||r.ht||'',r.wt||'',r.nl||'']);
+  }
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+    headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
+    bodyStyles:{fontSize:7.5,cellPadding:1.5,halign:'center'},
+    columnStyles:{0:{fontStyle:'bold'},1:{fontStyle:'bold'}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+  return doc.lastAutoTable.finalY+4;
+}
+
+// ── LSC summary table ──────────────────────────────────────────────────────────
+function buildLSCTable(doc, y){
+  const groups=state.lscGroups||[];
+  const rows=state.aelsc||[];
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('Inspection Results Summary', PW/2, y+5,{align:'center'});
+  y+=7; doc.setTextColor(...R_BLACK);
+  const head=[['Joint (JT-#)','Long Seam Characterization','Clock Position (hh:mm)','Comments']];
+  const body=groups.length
+    ? groups.flatMap(g=>g.joints.map(jid=>[jid,g.seam||'—',g.clock||'—',g.notes||'']))
+    : rows.map(r=>[r.jt||'',r.lsctype||'—',r.clock||'—',r.notes||'']);
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+    headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:7,fontStyle:'bold',cellPadding:2,halign:'center'},
+    bodyStyles:{fontSize:7.5,cellPadding:2,halign:'center'},
+    columnStyles:{0:{fontStyle:'bold',cellWidth:25},3:{halign:'left'}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+  return doc.lastAutoTable.finalY+4;
+}
+
+// ── Joint photos section ───────────────────────────────────────────────────────
+async function buildPhotosSection(doc, tabId, title){
+  // Collect overview photos for each joint
+  const joints=state.joints||[];
+  let added=false;
+  for(const j of joints){
+    const ovwPhotos=((state.jointNotes||{})[j.id]||[]).filter(p=>p.isOverview);
+    const rowPhotos=Object.values((state.rowPhotos||{})[tabId]||{}).flat();
+    const allPics=[...ovwPhotos,...rowPhotos].slice(0,4);
+    if(!allPics.length) continue;
+
+    doc.addPage(); let y=pageHeader(doc);
+    doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(`${title} Overview Photo(s)`, PW/2, y+5,{align:'center'});
+    y+=9; added=true;
+
+    for(let pi=0;pi<allPics.length;pi+=1){
+      const p=allPics[pi];
+      try{
+        const img=new Image();
+        await new Promise(res=>{img.onload=res;img.src=p.data;});
+        const maxH=110,maxW=TW;
+        const aspect=img.width/img.height;
+        let iw=maxW,ih=maxW/aspect;
+        if(ih>maxH){ih=maxH;iw=maxH*aspect;}
+        if(y+ih>PH-20){doc.addPage();y=pageHeader(doc);}
+        doc.addImage(p.data,'JPEG',ML+(TW-iw)/2,y,iw,ih,undefined,'FAST');
+        y+=ih+3;
+        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...R_BLACK);
+        doc.text(`${j.id} ${pi===0&&p.isOverview?'Overview':'Overview'} Photo`,PW/2,y+4,{align:'center'});
+        y+=8;
+      }catch(e){}
+    }
+  }
+}
+
+// ── Main entry ─────────────────────────────────────────────────────────────────
+async function generatePDF(){
+  const scope   = document.querySelector('input[name="pdf-scope"]:checked')?.value||'full';
+  const method  = document.getElementById('pdf-method-select')?.value;
+  const inclCal = document.getElementById('pdf-include-cal')?.checked;
+  const inclPic = document.getElementById('pdf-include-photos')?.checked;
+
+  if(!window.jspdf){ showToast('PDF library not loaded — check internet connection','error'); return; }
+
+  document.getElementById('pdf-progress').style.display='block';
+  await new Promise(r=>setTimeout(r,50));
+
+  try{
+    const cfg  = state.config||{};
+    const proj = cfg.project||'NDE Report';
+    const techs= state.technicians||[];
+
+    const METHOD_MAP=[
+      {id:'utt12',  label:'Ultrasonic Thickness Testing (UTT)', calId:'utt',
+        build: async(doc)=>{
+          let y=buildScopeTable(doc,'utt12','12-PT UTT',[],0);
+          if(state.uttloc?.length){ doc.addPage(); y=pageHeader(doc); y=buildUTTLocTable(doc,y); }
+          doc.addPage(); y=pageHeader(doc); buildUTT12Table(doc,y);
+          if(inclPic) await buildPhotosSection(doc,'utt12','UTT');
+        }},
+      {id:'uttloc', label:'UTT of Test Locations', calId:'utt',
+        build: async(doc)=>{ let y=pageHeader(doc); buildUTTLocTable(doc,y); }},
+      {id:'aelsc',  label:'Long Seam Characterization (LSC)', calId:'aelsc',
+        build: async(doc)=>{ let y=buildScopeTable(doc,'aelsc','AE/LSC',[],0); doc.addPage(); y=pageHeader(doc); buildLSCTable(doc,y); }},
+      {id:'jointlen',label:'Joint Lengths', calId:null,
+        build: async(doc)=>{
+          let y=pageHeader(doc);
+          const rows=state.jointlen||[];
+          const head=[['Joint (JT-#)','Feature Type','Length (in.)','OD1 (in.)','NWT1 (in.)','OD2 (in.)','NWT2 (in.)','Notes']];
+          const body=rows.map(r=>[r.jt,r.type||'Pipe',r.length||'',r.od1||'',r.nwt1||'',r.od2||'N/A',r.nwt2||'N/A',r.notes||'']);
+          doc.setFillColor(...R_DKBLUE);doc.rect(ML,y,TW,7,'F');
+          doc.setTextColor(...R_WHITE);doc.setFontSize(9);doc.setFont('helvetica','bold');
+          doc.text('Joint Lengths (in.)',PW/2,y+5,{align:'center'});y+=7;
+          doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+            headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:7,fontStyle:'bold',cellPadding:2,halign:'center'},
+            bodyStyles:{fontSize:7.5,cellPadding:2,halign:'center'},
+            columnStyles:{0:{fontStyle:'bold'}},alternateRowStyles:{fillColor:R_LGRAY},
+            styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+        }},
+      {id:'va',    label:'Visual Assessment (VA)',     calId:'mt',  build:async(doc)=>{ let y=buildScopeTable(doc,'va','Visual Assessment (VA)',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'va','VT Indications',y);y=await buildGridsSection(doc,'va',y); if(inclPic) await buildPhotosSection(doc,'va','VA'); }},
+      {id:'mt',    label:'Magnetic Particle Testing (MT)', calId:'mt', build:async(doc)=>{ let y=buildScopeTable(doc,'mt','MT',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'mt','MT Indications',y); if(inclPic) await buildPhotosSection(doc,'mt','MT'); }},
+      {id:'aut',   label:'Automated UT (AUT)',         calId:'aut', build:async(doc)=>{ let y=buildScopeTable(doc,'aut','AUT',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'aut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'aut',y); if(inclPic) await buildPhotosSection(doc,'aut','AUT'); }},
+      {id:'mut',   label:'Manual UT (MUT)',            calId:'mut', build:async(doc)=>{ let y=buildScopeTable(doc,'mut','MUT',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'mut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'mut',y); if(inclPic) await buildPhotosSection(doc,'mut','MUT'); }},
+      {id:'muthand',label:'MUT Hand Scans',            calId:'mut', build:async(doc)=>{ let y=pageHeader(doc); buildFlawTable(doc,'muthand','MUT Hand Scan Results',y); }},
+      {id:'pautbm',label:'PAUT Base Metal',            calId:'paut',build:async(doc)=>{ let y=buildScopeTable(doc,'pautbm','PAUT BM',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'pautbm','PAUT Base Metal Indications (All Measurements are from the USGW)',y); if(inclPic) await buildPhotosSection(doc,'pautbm','PAUT'); }},
+      {id:'pautls',label:'PAUT Long Seam',             calId:'paut',build:async(doc)=>{ let y=buildScopeTable(doc,'pautls','PAUT LS',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'pautls','PAUT Long Seam Indications',y); if(inclPic) await buildPhotosSection(doc,'pautls','PAUT LS'); }},
+    ];
+
+    const methods=scope==='full'?METHOD_MAP:METHOD_MAP.filter(m=>m.id===method);
+    const seenCal=new Set();
+
+    for(let mi=0;mi<methods.length;mi++){
+      const m=methods[mi];
+      const doc=newDoc();
+
+      // Cover page
+      await buildCoverPage(doc, cfg, m.label, techs, state.projectPhotos||[]);
+
+      // Cal sheet
+      if(inclCal && m.calId && !seenCal.has(m.calId)){
+        seenCal.add(m.calId);
+        buildCalSheet(doc, m.calId, m.label);
+      }
+
+      // Data page
+      doc.addPage();
+      pageHeader(doc);
+
+      // Run method-specific builder
+      doc.setPage(doc.internal.getNumberOfPages()); // ensure on last page
+      // Re-get current Y (after header)
+      await m.build(doc);
+
+      addFooters(doc);
+
+      const fname=`${proj.replace(/[^a-z0-9]/gi,'_')}_${m.label.replace(/[^a-z0-9]/gi,'_')}.pdf`;
+      if(scope==='full' && methods.length>1){
+        // For full report, save each method separately
+        doc.save(fname);
+        await new Promise(r=>setTimeout(r,300));
+      } else {
+        doc.save(fname);
+      }
+    }
+
+    document.getElementById('pdf-progress').style.display='none';
+    closePDFModal();
+    showToast(scope==='full'?`Generated ${methods.length} PDF reports`:'PDF downloaded');
+
+  }catch(err){
+    document.getElementById('pdf-progress').style.display='none';
+    console.error('PDF error:',err);
+    showToast('PDF error: '+err.message,'error');
+  }
+}
+
+
+/* ===== Grid → Canvas → PDF helpers ===== */
+
+// Render a MUT or EC grid to an offscreen canvas and return dataURL
+function gridToCanvas(gridData, type){
+  const {rows, cols, colStart=1, cells=[], voids={}, nwt=0.5} = gridData;
+  const isEC = type === 'ec';
+
+  // Compute value range
+  const vals = [];
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    if(!voids[r]?.[c]){
+      const v = parseFloat(cells[r]?.[c]);
+      if(!isNaN(v)) vals.push(v);
+    }
+  }
+  const minV = vals.length ? Math.min(...vals) : 0;
+  const maxV = vals.length ? Math.max(...vals) : (nwt||1);
+  const avgV = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0;
+
+  // Cell sizing — target ~700px wide max
+  const cellW = Math.max(28, Math.min(60, Math.floor(680 / cols)));
+  const cellH = 20;
+  const labelW = 28;
+  const headerH = 20;
+  const canvasW = labelW + cols * cellW + 2;
+  const canvasH = headerH + rows * cellH + 28; // +28 for stats footer
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvasW, canvasH);
+
+  // Column headers
+  ctx.fillStyle = '#1F3864';
+  ctx.fillRect(0, 0, canvasW, headerH);
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${Math.min(11, cellW/3)}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Grid title
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillText(gridData.label||'Grid', labelW/2, headerH/2);
+
+  for(let c=0;c<cols;c++){
+    ctx.fillText(String(colStart+c), labelW + c*cellW + cellW/2, headerH/2);
+  }
+
+  // Rows
+  for(let r=0;r<rows;r++){
+    // Row label
+    ctx.fillStyle = '#e8eaf6';
+    ctx.fillRect(0, headerH + r*cellH, labelW, cellH);
+    ctx.strokeStyle = '#aaa';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(0, headerH + r*cellH, labelW, cellH);
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(alphaLabel(r), labelW/2, headerH + r*cellH + cellH/2);
+
+    // Cells
+    for(let c=0;c<cols;c++){
+      const x = labelW + c*cellW;
+      const y = headerH + r*cellH;
+      const isVoid = voids[r]?.[c];
+      const val = cells[r]?.[c];
+      const numVal = parseFloat(val);
+
+      if(isVoid){
+        ctx.fillStyle = '#111';
+        ctx.fillRect(x, y, cellW, cellH);
+        ctx.fillStyle = '#fff';
+        ctx.font = '8px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Void', x+cellW/2, y+cellH/2);
+      } else {
+        const bg = !isNaN(numVal)
+          ? (isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt, maxV))
+          : '#f5f5f5';
+        ctx.fillStyle = bg;
+        ctx.fillRect(x, y, cellW, cellH);
+        ctx.strokeStyle = '#ccc';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(x, y, cellW, cellH);
+
+        if(!isNaN(numVal)){
+          const fgMatch = bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
+          const lum = fgMatch ? (0.299*fgMatch[1]+0.587*fgMatch[2]+0.114*fgMatch[3])/255 : 0.5;
+          ctx.fillStyle = lum > 0.45 ? '#111' : '#fff';
+          ctx.font = `${Math.min(10, cellW/4)}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(numVal.toFixed(3), x+cellW/2, y+cellH/2);
+        }
+      }
+    }
+  }
+
+  // Stats footer
+  const fy = headerH + rows*cellH + 4;
+  ctx.fillStyle = '#1F3864';
+  ctx.fillRect(0, fy, canvasW, 24);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  if(vals.length){
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fillText(`MIN: ${minV.toFixed(3)}"`, 8, fy+12);
+    ctx.fillStyle = '#69db7c';
+    ctx.fillText(`MAX: ${maxV.toFixed(3)}"`, canvasW/3, fy+12);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`AVG: ${avgV.toFixed(3)}"`, canvasW*2/3, fy+12);
+  }
+
+  return { dataUrl: canvas.toDataURL('image/png'), w: canvasW, h: canvasH, stats:{minV,maxV,avgV} };
+}
+
+// Render AUT heatmap to canvas dataURL
+function autScanToCanvas(scanData){
+  const {data, nwt=0.5} = scanData;
+  if(!data?.length) return null;
+  const rows = data.length;
+  const cols = Math.max(...data.map(r=>r.length));
+  const allVals = data.flat().filter(v=>v!==null&&!isNaN(v));
+  if(!allVals.length) return null;
+  const minV = Math.min(...allVals);
+  const maxV = Math.max(...allVals);
+
+  // Scale to fit nicely on letter paper: target 170mm wide ≈ 650px at 96dpi
+  const cellW = Math.max(2, Math.min(10, Math.floor(640/cols)));
+  const cellH = Math.max(4, Math.min(14, Math.floor(480/rows)));
+  const scaleBarW = 18;
+  const canvasW = cols*cellW + scaleBarW + 4;
+  const canvasH = rows*cellH + 30; // header + footer
+
+  const canvas = document.createElement('canvas');
+  canvas.width = canvasW; canvas.height = canvasH;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,canvasW,canvasH);
+
+  // Title
+  ctx.fillStyle = '#1F3864';
+  ctx.fillRect(0,0,canvasW,16);
+  ctx.fillStyle='#fff'; ctx.font='bold 10px sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(scanData.label||'AUT C-scan', (canvasW-scaleBarW)/2, 8);
+
+  // Heatmap cells
+  data.forEach((row,ri)=>{
+    row.forEach((val,ci)=>{
+      ctx.fillStyle = val===null ? '#333' : thicknessColor(val, minV, nwt, maxV);
+      ctx.fillRect(ci*cellW, 16+ri*cellH, cellW, cellH);
+    });
+  });
+
+  // Color scale bar (right side)
+  const sbx = cols*cellW+2;
+  for(let y=0;y<rows*cellH;y++){
+    const t = 1 - y/(rows*cellH);
+    const v = minV + (maxV-minV)*t;
+    ctx.fillStyle = thicknessColor(v, minV, nwt, maxV);
+    ctx.fillRect(sbx, 16+y, scaleBarW-2, 1);
+  }
+
+  // Stats footer
+  const fy = 16+rows*cellH+2;
+  ctx.fillStyle='#1F3864'; ctx.fillRect(0,fy,canvasW,12);
+  ctx.fillStyle='#ff6b6b'; ctx.font='bold 9px sans-serif';
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.fillText(`MIN: ${minV.toFixed(3)}"`, 4, fy+6);
+  ctx.fillStyle='#69db7c';
+  ctx.fillText(`MAX: ${maxV.toFixed(3)}"`, canvasW/3, fy+6);
+  ctx.fillStyle='#fff';
+  ctx.fillText(`NWT: ${nwt}"`, canvasW*2/3, fy+6);
+
+  const avg = allVals.reduce((a,b)=>a+b,0)/allVals.length;
+  return { dataUrl: canvas.toDataURL('image/png'), w: canvasW, h: canvasH,
+           stats:{minV,maxV,avgV:avg} };
+}
+
+// Add a grid image to a PDF page, handling page overflow
+function addGridToPDF(doc, imgData, w, h, y, label){
+  // Scale to fit page width
+  const scale = Math.min(1, TW / (w * 0.264583)); // px to mm (96dpi)
+  const imgW = w * 0.264583 * scale;
+  const imgH = h * 0.264583 * scale;
+
+  // Check if we need a new page
+  if(y + imgH + 14 > PH - 15){
+    doc.addPage();
+    y = pageHeader(doc);
+  }
+
+  // Label
+  doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+  doc.setTextColor(31,56,100);
+  doc.text(label, ML, y+5);
+  y += 7;
+
+  try{
+    doc.addImage(imgData, 'PNG', ML, y, imgW, imgH, undefined, 'FAST');
+  }catch(e){ console.warn('Grid image failed:', e); }
+  y += imgH + 6;
+  return y;
+}
+
+// Build all grids section for a given method context
+async function buildGridsSection(doc, tabId, y){
+  let hasGrids = false;
+
+  // EC grids — linked to VA indication rows
+  if(tabId === 'va'){
+    const ecGrids = Object.values(state.ecGrids||{});
+    for(const grid of ecGrids){
+      if(!hasGrids){
+        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
+        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+        doc.text('EC Depth Grids', PW/2, y+5, {align:'center'});
+        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
+      }
+      const result = gridToCanvas(grid, 'ec');
+      // Find linked VA indication
+      const vaRow = (state.va||[]).find(r=>r.ecGridKey===grid.key);
+      const lbl = `${grid.label||grid.key}${vaRow?` — ${vaRow.jt} ${vaRow.indid||''}`:''} (Max Depth: ${result.stats.minV.toFixed(3)}")`;
+      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
+    }
+  }
+
+  // MUT grids — linked to MUT indication rows
+  if(tabId === 'mut'){
+    const mutGrids = Object.values(state.mutGrids||{});
+    for(const grid of mutGrids){
+      if(!hasGrids){
+        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
+        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+        doc.text('MUT Wall Thickness Grids', PW/2, y+5, {align:'center'});
+        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
+      }
+      const result = gridToCanvas(grid, 'mut');
+      const mutRow = (state.mut||[]).find(r=>r.mutGridKey===grid.key);
+      const lbl = `${grid.label||grid.key}${mutRow?` — ${mutRow.jt} ${mutRow.indid||''}`:''} (Min WT: ${result.stats.minV.toFixed(3)}", NWT: ${grid.nwt||'?'}")`;
+      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
+    }
+  }
+
+  // AUT scans
+  if(tabId === 'aut'){
+    const autScans = Object.values(state.autScans||{});
+    for(const scan of autScans){
+      if(!hasGrids){
+        if(y + 20 > PH-15){ doc.addPage(); y = pageHeader(doc); }
+        doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
+        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+        doc.text('AUT C-scan Data', PW/2, y+5, {align:'center'});
+        doc.setTextColor(...R_BLACK); y+=9; hasGrids=true;
+      }
+      const result = autScanToCanvas(scan);
+      if(!result) continue;
+      const lbl = `${scan.label||scan.key} — Joint ${scan.joint} (${scan.data?.length||0} rows × ${scan.data?.[0]?.length||0} cols, NWT: ${scan.nwt||'?'}")`;
+      y = addGridToPDF(doc, result.dataUrl, result.w, result.h, y, lbl);
+    }
+  }
+
+  return y;
+}
+
 </script>
 
 <div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:460px">
     <div class="modal-title"><i class="ti ti-file-type-pdf" style="color:#c62828"></i> Generate PDF Report</div>
-    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px">
-      The PDF generator runs locally via Python and produces a formatted report matching the Acuren UTT report style.
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:16px">
+      Generates a formatted Acuren-style report directly in your browser — no Python, no install.
     </p>
     <div class="modal-step">
-      <strong>Step 1</strong> — Export your field data<br>
-      <span style="color:var(--color-text-secondary);font-size:12px">Click the button below to download the JSON file</span><br>
-      <button class="btn btn-primary" style="margin-top:8px;font-size:12px" onclick="exportJSONForPDF()"><i class="ti ti-download"></i> Download field_data.json</button>
+      <strong>Report scope</strong>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+          <input type="radio" name="pdf-scope" value="full" checked style="accent-color:#1F3864">
+          <span><strong>Full report</strong> — all methods in one PDF</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+          <input type="radio" name="pdf-scope" value="method" style="accent-color:#1F3864">
+          <span><strong>Single method</strong> — select below</span>
+        </label>
+        <select id="pdf-method-select" style="margin-left:24px;padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);width:calc(100% - 24px)">
+          <option value="utt12">12-Point UTT</option>
+          <option value="uttloc">UTT of Test Locations</option>
+          <option value="aelsc">AE / Long Seam Characterization</option>
+          <option value="jointlen">Joint Lengths</option>
+          <option value="va">Visual Assessment (VA)</option>
+          <option value="mt">Magnetic Particle Testing (MT)</option>
+          <option value="aut">Automated UT (AUT)</option>
+          <option value="mut">Manual UT (MUT)</option>
+          <option value="muthand">MUT Hand Scans</option>
+          <option value="pautbm">PAUT Base Metal</option>
+          <option value="pautls">PAUT Long Seam</option>
+        </select>
+      </div>
     </div>
     <div class="modal-step">
-      <strong>Step 2</strong> — Install requirements (one time only)<br>
-      <code>pip install reportlab Pillow</code>
+      <strong>Options</strong>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="pdf-include-photos" style="accent-color:#1F3864">
+          Include overview photos (increases file size)
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="pdf-include-cal" checked style="accent-color:#1F3864">
+          Include NDE parameter / cal records
+        </label>
+      </div>
     </div>
-    <div class="modal-step">
-      <strong>Step 3</strong> — Run the PDF generator<br>
-      <span style="color:var(--color-text-secondary);font-size:12px">Place <b>generate_pdf.py</b> in the same folder as the JSON, then run:</span>
-      <code>python generate_pdf.py field_data.json</code>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-pdf" style="flex:1;font-size:13px" onclick="generatePDF()">
+        <i class="ti ti-file-type-pdf"></i> Generate &amp; Download PDF
+      </button>
+      <button class="btn modal-close" onclick="closePDFModal()">Cancel</button>
     </div>
-    <div class="modal-step">
-      <strong>Step 4</strong> — Open the output PDF<br>
-      <span style="color:var(--color-text-secondary);font-size:12px">The PDF will be saved in the same folder as the JSON file.</span>
+    <div id="pdf-progress" style="display:none;margin-top:10px;font-size:12px;color:var(--color-text-secondary);text-align:center">
+      <i class="ti ti-loader"></i> Building PDF...
     </div>
-    <button class="btn modal-close" onclick="closePDFModal()">Close</button>
   </div>
 </div>
 
@@ -3944,5 +5453,132 @@ function renderCalRec(){
   </div>
 </div>
 
+
+<!-- Grid modal (shared for EC, MUT, AUT) -->
+<div class="grid-modal-overlay" id="grid-modal" onclick="if(event.target===this)closeGridModal()">
+  <div class="grid-modal">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title" id="grid-modal-title"><i class="ti ti-grid-dots"></i> Grid</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-left:auto">
+        <span id="grid-stat-min" class="grid-stat" style="color:var(--color-danger-text)"></span>
+        <span id="grid-stat-max" class="grid-stat" style="color:var(--color-success-text)"></span>
+        <span id="grid-stat-avg" class="grid-stat"></span>
+      </div>
+    </div>
+    <div class="grid-modal-body" id="grid-modal-body">
+      <!-- Grid rendered here -->
+    </div>
+    <div class="grid-modal-footer">
+      <div class="grid-legend">
+        <span style="font-size:11px;color:var(--color-text-secondary)">Low</span>
+        <canvas class="grid-legend-bar" id="grid-legend-canvas" width="120" height="14"></canvas>
+        <span style="font-size:11px;color:var(--color-text-secondary)">High</span>
+      </div>
+      <span class="paste-hint" id="grid-paste-hint"></span>
+      <div style="display:flex;gap:6px;margin-left:auto">
+        <button class="btn" onclick="closeGridModal()"><i class="ti ti-x"></i> Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUT import modal -->
+<div class="grid-modal-overlay" id="aut-import-modal" onclick="if(event.target===this)closeAUTModal()">
+  <div class="grid-modal" style="max-height:70vh;width:500px">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title"><i class="ti ti-upload"></i> Import AUT C-scan Data</div>
+    </div>
+    <div class="grid-modal-body" style="overflow-y:auto">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">
+        Paste or import CSV/TSV data from your AUT software. Rows = circumferential (Y-axis), columns = axial index (X-axis). Each cell = wall thickness reading.
+      </p>
+      <div style="margin-bottom:8px">
+        <label class="field-label">Joint</label>
+        <select id="aut-import-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <option value="">— Select joint —</option>
+        </select>
+      </div>
+      <div style="margin-bottom:8px">
+        <label class="field-label">Label / description</label>
+        <input id="aut-import-label" placeholder="e.g. JT-02 AUT Scan 4/10/26" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+      </div>
+      <div style="margin-bottom:8px">
+        <label class="field-label">Paste data (tab or comma separated) or <button class="btn btn-sm" onclick="document.getElementById('aut-file-input').click()"><i class="ti ti-upload"></i> Import CSV file</button></label>
+        <textarea id="aut-paste-area" rows="8" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste CSV/TSV data here..."></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="flex:1"><label class="field-label">NWT (in.) for color scale</label>
+          <input id="aut-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div style="flex:1"><label class="field-label">Delimiter</label>
+          <select id="aut-delim" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+            <option value="auto">Auto-detect</option>
+            <option value="	">Tab</option>
+            <option value=",">Comma</option>
+            <option value=" ">Space</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="grid-modal-footer">
+      <button class="btn" onclick="closeAUTModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="processAUTImport()"><i class="ti ti-check"></i> Import & Render</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="aut-file-input" accept=".csv,.txt,.tsv" style="display:none" onchange="handleAUTFile(event)">
+
+<!-- MUT / EC grid setup modal -->
+<div class="grid-modal-overlay" id="mut-setup-modal" onclick="if(event.target===this)closeMUTSetup()">
+  <div class="grid-modal" style="max-height:60vh;width:460px">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title" id="mut-setup-title"><i class="ti ti-grid-dots"></i> New Grid</div>
+    </div>
+    <div class="grid-modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><label class="field-label">Joint</label>
+          <select id="mut-setup-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
+        </div>
+        <div><label class="field-label">Label / description</label>
+          <input id="mut-setup-label" placeholder="e.g. JT-01 MUT Grid" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">Rows (circumferential)</label>
+          <input id="mut-setup-rows" type="number" value="20" min="1" max="100" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">Columns (axial)</label>
+          <input id="mut-setup-cols" type="number" value="10" min="1" max="200" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">First col # (axial start)</label>
+          <input id="mut-setup-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">NWT (in.) for color scale</label>
+          <input id="mut-setup-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--color-text-secondary)">Row labels will be A, B, C... Z, AA, AB... Right-click any cell to mark as Void Due to Shape.</p>
+    </div>
+    <div class="grid-modal-footer">
+      <button class="btn" onclick="closeMUTSetup()">Cancel</button>
+      <button class="btn btn-primary" onclick="createMUTGrid()"><i class="ti ti-plus"></i> Create grid</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="project-photo-input" accept="image/*" capture="environment" style="display:none" multiple>
+<datalist id="clock-options">
+  <option>N/A</option>
+  <option>12:00</option><option>12:30</option>
+  <option>1:00</option><option>1:30</option>
+  <option>2:00</option><option>2:30</option>
+  <option>3:00</option><option>3:30</option>
+  <option>4:00</option><option>4:30</option>
+  <option>5:00</option><option>5:30</option>
+  <option>6:00</option><option>6:30</option>
+  <option>7:00</option><option>7:30</option>
+  <option>8:00</option><option>8:30</option>
+  <option>9:00</option><option>9:30</option>
+  <option>10:00</option><option>10:30</option>
+  <option>11:00</option><option>11:30</option>
+</datalist>
 </body>
 </html>
