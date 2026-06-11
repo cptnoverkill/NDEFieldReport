@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NDE Field Report</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NDE Report">
+<meta name="application-name" content="NDE Report">
+<meta name="theme-color" content="#1F3864">
+<link rel="manifest" id="pwa-manifest">
+<link rel="apple-touch-icon" id="pwa-icon">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -183,6 +191,20 @@ tr:hover td{background:var(--color-bg-secondary)}
 .tech-chip .tc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tech-chip .chip-meta{color:var(--color-text-secondary);font-size:11px}
 .tech-select{padding:2px 5px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:90px}
+
+
+.install-banner{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);
+  box-shadow:0 8px 32px rgba(0,0,0,0.2);padding:12px 16px;z-index:9999;
+  width:calc(100% - 32px);max-width:420px;align-items:center;gap:12px;flex-wrap:wrap}
+.install-banner.show{display:flex}
+.install-banner-icon{width:40px;height:40px;border-radius:10px;background:#1F3864;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.install-banner-icon i{color:#fff;font-size:20px}
+.install-banner-text{flex:1;min-width:0}
+.install-banner-text strong{display:block;font-size:13px;font-weight:600}
+.install-banner-text span{font-size:12px;color:var(--color-text-secondary)}
+.install-banner-btns{display:flex;gap:6px}
 
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
@@ -1487,6 +1509,154 @@ function loadTheme(){
   setTheme(saved);
 }
 
+
+/* ===== PWA / Install ===== */
+
+// Dynamically create and inject the web app manifest as a blob
+function injectManifest(){
+  const manifest = {
+    name: 'NDE Field Report',
+    short_name: 'NDE Report',
+    description: 'Field data entry for NDE inspection methods',
+    start_url: './',
+    display: 'standalone',
+    orientation: 'any',
+    background_color: '#1F3864',
+    theme_color: '#1F3864',
+    icons: [
+      { src: generateIcon(192), sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+      { src: generateIcon(512), sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+    ]
+  };
+  const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').href = url;
+  document.getElementById('pwa-icon').href = generateIcon(180);
+}
+
+// Generate a simple PNG icon as a data URL using canvas
+function generateIcon(size){
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  // Background
+  ctx.fillStyle = '#1F3864';
+  ctx.beginPath();
+  const r = size * 0.18;
+  ctx.roundRect(0, 0, size, size, r);
+  ctx.fill();
+  // Clipboard icon in white
+  ctx.fillStyle = '#ffffff';
+  ctx.font = `bold ${size * 0.52}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('⚙', size / 2, size / 2 + size * 0.04);
+  // "NDE" label
+  ctx.font = `bold ${size * 0.13}px sans-serif`;
+  ctx.fillStyle = '#90c4f4';
+  ctx.fillText('NDE', size / 2, size * 0.82);
+  return canvas.toDataURL('image/png');
+}
+
+// Service worker for offline caching
+function registerServiceWorker(){
+  if(!('serviceWorker' in navigator)) return;
+  const swCode = `
+    const CACHE = 'nde-report-v1';
+    const ICON_CDN = 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css';
+    const XLSX_CDN = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+    self.addEventListener('install', e => {
+      e.waitUntil(
+        caches.open(CACHE).then(c => c.addAll(['./', ICON_CDN, XLSX_CDN]).catch(()=>{}))
+      );
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys =>
+        Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))
+      ));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(cached => cached || fetch(e.request).then(resp => {
+          if(resp && resp.status === 200 && resp.type !== 'opaque'){
+            const clone = resp.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
+          }
+          return resp;
+        }).catch(() => cached || new Response('Offline', {status:503})))
+      );
+    });
+  `;
+  const swBlob = new Blob([swCode], {type:'application/javascript'});
+  const swUrl  = URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).then(reg => {
+    console.log('SW registered:', reg.scope);
+  }).catch(e => console.warn('SW registration failed:', e));
+}
+
+// Install prompt handling
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  // Only show if not dismissed before
+  if(!localStorage.getItem('pwa_dismissed')){
+    setTimeout(()=> document.getElementById('install-banner').classList.add('show'), 1500);
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').classList.remove('show');
+  deferredInstallPrompt = null;
+});
+
+function installPWA(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(choice => {
+      document.getElementById('install-banner').classList.remove('show');
+      deferredInstallPrompt = null;
+    });
+  } else {
+    // iOS Safari — no prompt API, show instructions
+    showIOSInstructions();
+  }
+}
+
+function dismissInstall(){
+  document.getElementById('install-banner').classList.remove('show');
+  localStorage.setItem('pwa_dismissed', '1');
+}
+
+function showIOSInstructions(){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const msg = isIOS
+    ? 'To install on iPhone/iPad:\n1. Tap the Share button (□↑) in Safari\n2. Scroll down and tap "Add to Home Screen"\n3. Tap Add'
+    : 'To install:\n• Chrome: tap the ⋮ menu → "Add to Home Screen" or "Install App"\n• Safari: tap Share (□↑) → "Add to Home Screen"';
+  alert(msg);
+}
+
+// iOS Safari — show install hint after a delay if on iOS and not installed
+function checkIOSInstall(){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone = window.navigator.standalone === true;
+  if(isIOS && !isStandalone && !localStorage.getItem('pwa_dismissed')){
+    setTimeout(()=>{
+      const banner = document.getElementById('install-banner');
+      const btn = document.getElementById('install-btn');
+      btn.innerHTML = '<i class="ti ti-share"></i> How to install';
+      banner.classList.add('show');
+    }, 2000);
+  }
+}
+
+// Init PWA
+injectManifest();
+registerServiceWorker();
+checkIOSInstall();
+
 </script>
 
 <div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
@@ -1547,6 +1717,19 @@ function loadTheme(){
   <div class="photo-lightbox-caption" id="lightbox-caption"></div>
 </div>
 <input type="file" id="row-photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleRowPhotos(event)">
+
+
+<div class="install-banner" id="install-banner">
+  <div class="install-banner-icon"><i class="ti ti-clipboard-check"></i></div>
+  <div class="install-banner-text">
+    <strong>Add to Home Screen</strong>
+    <span>Install for offline access — works like a native app</span>
+  </div>
+  <div class="install-banner-btns">
+    <button class="btn btn-primary" onclick="installPWA()" id="install-btn" style="font-size:12px"><i class="ti ti-download"></i> Install</button>
+    <button class="btn" onclick="dismissInstall()" style="font-size:12px">Later</button>
+  </div>
+</div>
 
 </body>
 </html>
