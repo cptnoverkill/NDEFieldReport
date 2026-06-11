@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NDE Field Report</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+/* ── Theme variables ─────────────────────────── */
+/* Light (default) */
+:root,[data-theme="light"]{
+  --color-bg:#ffffff;--color-bg-secondary:#f4f4f4;--color-bg-tertiary:#ebebeb;
+  --color-text:#1a1a1a;--color-text-secondary:#555;--color-text-tertiary:#999;
+  --color-border:#d0d0d0;--color-border-secondary:#bbb;
+  --color-info-bg:#e6f1fb;--color-info-text:#185fa5;--color-info-border:#b5d4f4;
+  --color-danger-bg:#fcebeb;--color-danger-text:#a32d2d;--color-danger-border:#f7c1c1;
+  --color-warning-bg:#faeeda;--color-warning-text:#854f0b;--color-warning-border:#fac775;
+  --color-success-bg:#eaf3de;--color-success-text:#3b6d11;
+  --radius-md:8px;--radius-lg:12px;
+}
+/* Dark */
+[data-theme="dark"]{
+  --color-bg:#1e1e1e;--color-bg-secondary:#2a2a2a;--color-bg-tertiary:#111;
+  --color-text:#e8e8e8;--color-text-secondary:#aaa;--color-text-tertiary:#666;
+  --color-border:#3a3a3a;--color-border-secondary:#4a4a4a;
+  --color-info-bg:#0c3a6b;--color-info-text:#90c4f4;--color-info-border:#1a5a9a;
+  --color-danger-bg:#3d1010;--color-danger-text:#f7c1c1;--color-danger-border:#8b1a1a;
+  --color-warning-bg:#4a2800;--color-warning-text:#fac775;--color-warning-border:#7a4a00;
+  --color-success-bg:#1a3d08;--color-success-text:#a0d470;
+}
+/* Midnight blue */
+[data-theme="midnight"]{
+  --color-bg:#0d1b2a;--color-bg-secondary:#162032;--color-bg-tertiary:#0a1520;
+  --color-text:#cfe0f0;--color-text-secondary:#7fa8c8;--color-text-tertiary:#4a7090;
+  --color-border:#1e3a52;--color-border-secondary:#2a4e6e;
+  --color-info-bg:#0a2d4a;--color-info-text:#60b8f0;--color-info-border:#1a5080;
+  --color-danger-bg:#2d0a0a;--color-danger-text:#f7a0a0;--color-danger-border:#6a1010;
+  --color-warning-bg:#2d1a00;--color-warning-text:#f0c060;--color-warning-border:#5a3800;
+  --color-success-bg:#082a10;--color-success-text:#70d490;
+}
+/* Field tan (easy on eyes outdoors) */
+[data-theme="tan"]{
+  --color-bg:#fdf6ec;--color-bg-secondary:#f2e8d8;--color-bg-tertiary:#e8d8c0;
+  --color-text:#2d1f0a;--color-text-secondary:#6b4e2a;--color-text-tertiary:#9a7a50;
+  --color-border:#d4b896;--color-border-secondary:#c4a07a;
+  --color-info-bg:#e8f0f8;--color-info-text:#1a5080;--color-info-border:#a0c4e0;
+  --color-danger-bg:#fce8e8;--color-danger-text:#8b1a1a;--color-danger-border:#e0a0a0;
+  --color-warning-bg:#fdf0d0;--color-warning-text:#6a3800;--color-warning-border:#e0c060;
+  --color-success-bg:#e8f4e0;--color-success-text:#2a5a10;
+}
+/* Auto (follows OS) */
+@media(prefers-color-scheme:dark){
+  [data-theme="auto"]{
+    --color-bg:#1e1e1e;--color-bg-secondary:#2a2a2a;--color-bg-tertiary:#111;
+    --color-text:#e8e8e8;--color-text-secondary:#aaa;--color-text-tertiary:#666;
+    --color-border:#3a3a3a;--color-border-secondary:#4a4a4a;
+    --color-info-bg:#0c3a6b;--color-info-text:#90c4f4;--color-info-border:#1a5a9a;
+    --color-danger-bg:#3d1010;--color-danger-text:#f7c1c1;--color-danger-border:#8b1a1a;
+    --color-warning-bg:#4a2800;--color-warning-text:#fac775;--color-warning-border:#7a4a00;
+    --color-success-bg:#1a3d08;--color-success-text:#a0d470;
+  }
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--color-text);background:var(--color-bg-tertiary);min-height:100vh}
+.app{max-width:960px;margin:0 auto;padding:1rem}
+.header{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.app-title{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
+.app-subtitle{font-size:12px;color:var(--color-text-secondary);margin-top:3px}
+.header-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.save-status{font-size:11px;color:var(--color-text-secondary);display:flex;align-items:center;gap:5px}
+.dot{width:7px;height:7px;border-radius:50%;background:#4caf50;display:inline-block;transition:background 0.3s}
+.config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:1rem}
+.field-group{display:flex;flex-direction:column;gap:3px}
+.field-label{font-size:11px;color:var(--color-text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
+input,select,textarea{width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--color-info-border);outline-offset:1px}
+textarea{resize:vertical;min-height:52px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:transparent;color:var(--color-text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s}
+.btn:hover{background:var(--color-bg-secondary)}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text)}
+.btn-primary:hover{opacity:0.85}
+.btn-danger{background:var(--color-danger-bg);border-color:var(--color-danger-border);color:var(--color-danger-text)}
+.btn-sm{padding:4px 9px;font-size:12px}
+.section-divider{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border)}
+.joints-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.joint-chip{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;font-size:12px}
+.joint-chip strong{font-weight:600}
+.joint-chip .chip-meta{color:var(--color-text-secondary)}
+.icon-btn{background:transparent;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:2px 4px;border-radius:4px;line-height:1;font-size:15px;display:inline-flex;align-items:center}
+.icon-btn:hover{color:var(--color-danger-text)}
+.add-joint-row{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap}
+.add-joint-row input,.add-joint-row select{flex:1;min-width:80px;max-width:140px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem}
+.tab{padding:6px 12px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background 0.15s}
+.tab:hover{background:var(--color-bg-secondary)}
+.tab.active{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text);font-weight:600}
+.tab-badge{display:inline-block;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px;font-weight:600}
+.panel{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem 1.25rem}
+.panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.panel-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
+.panel-actions{display:flex;gap:6px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--color-bg-secondary);padding:6px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em}
+td{padding:4px 5px;border-bottom:0.5px solid var(--color-border);vertical-align:middle}
+td input,td select{padding:3px 6px;font-size:12px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-bg-secondary)}
+.alert{padding:8px 12px;border-radius:var(--radius-md);font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:6px}
+.alert-info{background:var(--color-info-bg);color:var(--color-info-text);border:0.5px solid var(--color-info-border)}
+.alert-danger{background:var(--color-danger-bg);color:var(--color-danger-text);border:0.5px solid var(--color-danger-border)}
+.val-low{color:var(--color-danger-text);font-weight:600}
+.photo-section{margin-top:14px}
+.photo-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.photo-thumb{position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:0.5px solid var(--color-border);flex-shrink:0}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.del-photo{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;padding:2px 5px;line-height:1.2;font-weight:600}
+.photo-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--radius-md);padding:14px 10px;text-align:center;cursor:pointer;font-size:12px;color:var(--color-text-secondary);transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.photo-zone:hover{background:var(--color-bg-secondary)}
+.photo-zone i{font-size:20px}
+.stat-cell{font-weight:600;white-space:nowrap;font-size:12px}
+
+.row-cam-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;color:var(--color-text-secondary);padding:3px 6px;font-size:13px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;transition:background 0.15s}
+.row-cam-btn:hover{background:var(--color-bg-secondary);color:var(--color-info-text)}
+.row-cam-btn.has-photos{border-color:#4caf50;color:#2e7d32;background:var(--color-success-bg)}
+.row-photo-strip{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.row-photo-thumb{position:relative;width:44px;height:44px;border-radius:5px;overflow:hidden;border:0.5px solid var(--color-border);flex-shrink:0;cursor:pointer}
+.row-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.row-photo-thumb .rpt-del{position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:3px;font-size:9px;cursor:pointer;padding:1px 3px;line-height:1.2;font-weight:700}
+.photo-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.photo-lightbox.open{display:flex}
+.photo-lightbox img{max-width:90vw;max-height:80vh;border-radius:8px;object-fit:contain}
+.photo-lightbox-caption{color:#ddd;font-size:12px}
+.photo-lightbox-close{position:absolute;top:16px;right:20px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1}
+
+
+.theme-picker{position:relative;display:inline-flex}
+.theme-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);padding:5px 10px;cursor:pointer;color:var(--color-text);font-size:13px;display:flex;align-items:center;gap:5px;font-family:inherit}
+.theme-btn:hover{background:var(--color-bg-secondary)}
+.theme-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:500;min-width:180px;overflow:hidden}
+.theme-dropdown.open{display:block}
+.theme-option{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--color-text);border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.theme-option:hover{background:var(--color-bg-secondary)}
+.theme-option.active{background:var(--color-info-bg);color:var(--color-info-text)}
+.theme-swatch{width:14px;height:14px;border-radius:3px;border:0.5px solid rgba(0,0,0,0.15);flex-shrink:0}
+
+
+.utt-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.utt-table{border-collapse:collapse;font-size:11.5px;white-space:nowrap}
+.utt-table th{background:var(--color-bg-secondary);padding:5px 6px;text-align:center;font-weight:600;font-size:10.5px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.02em}
+.utt-table td{padding:3px 4px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);vertical-align:middle}
+.utt-table tr:hover td{background:var(--color-bg-secondary)}
+.utt-table input[type=number]{width:48px;padding:3px 4px;font-size:11.5px;text-align:center;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.utt-table select{padding:3px 4px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:60px;width:auto}
+.utt-table td:nth-child(1) select{min-width:72px}
+.utt-table td:nth-child(2) select{min-width:52px}
+.utt-table td:nth-child(4) select{min-width:52px}
+.utt-table .stat-col{font-weight:600;font-size:11.5px;text-align:center;min-width:52px;white-space:nowrap}
+.utt-table .val-low{color:var(--color-danger-text);font-weight:700}
+
+
+.date-input{width:110px;padding:3px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.date-input::-webkit-calendar-picker-indicator{opacity:0.5;cursor:pointer}
+
+
+.scope-section{margin-bottom:16px}
+.scope-banner{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.scope-banner i{font-size:13px}
+.ind-banner{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+.scope-table{width:100%;border-collapse:collapse;font-size:12px}
+.scope-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap}
+.scope-table td{padding:4px 8px;border-bottom:0.5px solid var(--color-border);font-size:12px;vertical-align:middle}
+.scope-table tr:last-child td{border-bottom:none}
+.scope-table tr:hover td{background:var(--color-bg-secondary)}
+.done-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-success-bg);color:var(--color-success-text);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
+.pending-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:20px;padding:2px 8px;font-size:11px;white-space:nowrap}
+.scope-date{width:110px;padding:3px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+
+
+.tech-chip{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border)}
+.tech-chip .tc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tech-chip .chip-meta{color:var(--color-text-secondary);font-size:11px}
+.tech-select{padding:2px 5px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:90px}
+
+.empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
+.empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
+.nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:0.5px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
+.nri-bar.inactive{background:var(--color-bg-secondary);border-color:var(--color-border)}
+.nri-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.nri-toggle input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#3b6d11}
+.nri-label{font-size:13px;font-weight:600;color:var(--color-success-text)}
+.nri-bar.inactive .nri-label{color:var(--color-text-secondary);font-weight:400}
+.nri-comment{flex:1;min-width:200px}
+.nri-comment textarea{font-size:12px;min-height:40px;border-color:var(--color-border);background:var(--color-bg)}
+.nri-locked{opacity:0.45;pointer-events:none;user-select:none}
+@media(max-width:640px){
+  .app{padding:0.5rem}
+  .config-grid{grid-template-columns:1fr 1fr}
+  .add-joint-row input,.add-joint-row select{max-width:100%}
+  .panel{padding:0.75rem}
+
+  /* Header — stack title above actions */
+  .header-top{flex-direction:column;align-items:flex-start;gap:8px}
+  .header-actions{width:100%;justify-content:flex-start;flex-wrap:wrap;gap:5px}
+
+  /* Action buttons — icon only on mobile, keep touch target large */
+  .btn-label{display:none}
+  .btn,.theme-btn{min-height:38px;min-width:38px;padding:6px 10px;justify-content:center}
+
+  /* Theme dropdown opens downward but anchored to left on small screens */
+  .theme-dropdown{right:auto;left:0;min-width:160px}
+
+  /* Tabs — smaller text, scroll horizontally */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;gap:3px}
+  .tab{font-size:11px;padding:5px 9px;white-space:nowrap;flex-shrink:0}
+
+  /* Tables — ensure they scroll */
+  .table-wrap,.utt-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+  /* Scope summary table on mobile */
+  .scope-table{font-size:11px}
+  .scope-table th,.scope-table td{padding:3px 5px}
+
+  /* Photo thumbs smaller on mobile */
+  .photo-thumb{width:56px;height:56px}
+  .row-photo-thumb{width:36px;height:36px}
+}
+
+.btn-excel{background:#e6f4ea;border-color:#81c784;color:#2e7d32}
+.btn-excel:hover{background:#c8e6c9}
+.btn-pdf{background:#fce8e6;border-color:#ef9a9a;color:#c62828}
+.btn-pdf:hover{background:#ffcdd2}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--color-bg);border-radius:var(--radius-lg);border:0.5px solid var(--color-border);padding:1.5rem;max-width:560px;width:90%;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.modal-step{background:var(--color-bg-secondary);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:8px;font-size:13px}
+.modal-step code{background:var(--color-bg-tertiary);border-radius:4px;padding:2px 6px;font-family:monospace;font-size:12px;display:block;margin-top:6px;word-break:break-all}
+.modal-close{margin-top:14px;width:100%}
+.progress-banner{background:var(--color-info-bg);border:0.5px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+.progress-banner.show{display:block}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <div class="app-title"><i class="ti ti-file-check"></i> NDE Field Report</div>
+        <div class="app-subtitle" id="project-subtitle">Configure project details below</div>
+      </div>
+      <div class="header-actions">
+        <span class="save-status"><span class="dot" id="save-dot"></span><span id="save-text" class="btn-label">Saved</span></span>
+        <div class="theme-picker">
+          <button class="theme-btn" onclick="toggleThemeDropdown()" id="theme-toggle-btn" aria-label="Change theme">
+            <i class="ti ti-palette"></i><span id="theme-label" class="btn-label"> Theme</span>
+          </button>
+          <div class="theme-dropdown" id="theme-dropdown">
+            <button class="theme-option" onclick="setTheme('auto')" data-t="auto"><span class="theme-swatch" style="background:linear-gradient(135deg,#fff 50%,#222 50%)"></span>Auto (OS)</button>
+            <button class="theme-option" onclick="setTheme('light')" data-t="light"><span class="theme-swatch" style="background:#ffffff"></span>Light</button>
+            <button class="theme-option" onclick="setTheme('dark')" data-t="dark"><span class="theme-swatch" style="background:#1e1e1e"></span>Dark</button>
+            <button class="theme-option" onclick="setTheme('midnight')" data-t="midnight"><span class="theme-swatch" style="background:#0d1b2a"></span>Midnight</button>
+            <button class="theme-option" onclick="setTheme('tan')" data-t="tan"><span class="theme-swatch" style="background:#fdf6ec;border-color:#c4a07a"></span>Field Tan</button>
+          </div>
+        </div>
+        <button class="btn" onclick="exportJSON()" title="Export JSON data"><i class="ti ti-download"></i><span class="btn-label"> Export JSON</span></button>
+        <button class="btn btn-excel" onclick="exportDFPR()" title="Export DFPR Excel"><i class="ti ti-table"></i><span class="btn-label"> Export DFPR</span></button>
+        <button class="btn btn-pdf" onclick="showPDFModal()" title="Generate PDF report"><i class="ti ti-file-type-pdf"></i><span class="btn-label"> Generate PDF</span></button>
+        <button class="btn btn-danger" onclick="clearAll()" title="Clear all data"><i class="ti ti-trash"></i><span class="btn-label"> Clear all</span></button>
+      </div>
+    </div>
+
+    <div class="config-grid">
+      <div class="field-group"><label class="field-label">Project name</label><input id="cfg-project" placeholder="A-934 SFL 077 Kern River..." oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">SAP order #</label><input id="cfg-sap" placeholder="84025084" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Acuren job #</label><input id="cfg-job" placeholder="286-J258040" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Line / MP</label><input id="cfg-line" placeholder="77 / 0" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Address</label><input id="cfg-address" placeholder="3301 S Allen Rd, Bakersfield, CA" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Field NDE vendor</label><input id="cfg-vendor" placeholder="Acuren" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Inspection date</label><input type="date" id="cfg-date" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Latitude</label><input id="cfg-lat" placeholder="35.33104" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Longitude</label><input id="cfg-lon" placeholder="-119.16183" oninput="updateConfig()"></div>
+      <div class="field-group"><label class="field-label">Procedure</label><input id="cfg-proc" placeholder="BP-4190P-507 Rev 1" oninput="updateConfig()"></div>
+    </div>
+
+    <div class="section-divider">Technicians on project</div>
+    <div class="joints-wrap" id="tech-roster-list"></div>
+    <div class="add-joint-row">
+      <div class="field-group"><label class="field-label">Name</label><input id="new-tech-name" placeholder="Tyler Laviolette" onkeydown="if(event.key==='Enter')addTechnician()" style="max-width:160px"></div>
+      <div class="field-group"><label class="field-label">Cert level</label>
+        <select id="new-tech-cert" style="max-width:80px"><option value="">—</option><option>I</option><option>II</option><option>III</option></select>
+      </div>
+      <div class="field-group"><label class="field-label">Method(s)</label>
+        <input id="new-tech-methods" placeholder="UTT, MT, PAUT..." style="max-width:160px">
+      </div>
+      <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
+        <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add technician</button>
+      </div>
+    </div>
+
+    <div class="section-divider">Joints in scope</div>
+    <div class="joints-wrap" id="joints-list"></div>
+    <div class="add-joint-row">
+      <div class="field-group"><label class="field-label">Joint ID</label><input id="new-joint" placeholder="JT-01" onkeydown="if(event.key==='Enter')addJoint()" style="max-width:100px"></div>
+      <div class="field-group"><label class="field-label">Feature type</label>
+        <select id="new-jt-type" style="max-width:140px"><option>Pipe</option><option>Mfg Bend</option><option>Straight Tee</option><option>Reducing Tee</option><option>Reducer</option><option>Cap</option></select>
+      </div>
+      <div class="field-group"><label class="field-label">OD (in)</label><input id="new-jt-od" placeholder="34" type="number" style="max-width:80px"></div>
+      <div class="field-group"><label class="field-label">NWT (in)</label><input id="new-jt-nwt" placeholder="0.500" type="number" step="0.001" style="max-width:85px"></div>
+      <div class="field-group"><label class="field-label">Long seam</label>
+        <input id="new-jt-seam" list="seam-options" placeholder="ERW, DSAW, Seamless..." style="max-width:140px" autocomplete="off">
+        <datalist id="seam-options">
+          <option>Unknown</option>
+          <option>ERW</option>
+          <option>DSAW</option>
+          <option>SSAW</option>
+          <option>Seamless</option>
+          <option>FBW</option>
+          <option>Lap</option>
+          <option>A.O. Smith</option>
+          <option>Flash Weld</option>
+          <option>Spiral Weld</option>
+        </datalist>
+      </div>
+      <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label><button class="btn btn-primary" onclick="addJoint()"><i class="ti ti-plus"></i> Add joint</button></div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tab-bar"></div>
+  <div id="tab-content"></div>
+</div>
+
+<input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handlePhotos(event)">
+
+<script>
+const TABS = [
+  {id:'utt12',label:'12pt UTT',icon:'ti-ruler-2'},
+  {id:'uttloc',label:'UTT Locations',icon:'ti-microscope'},
+  {id:'lsc',label:'LSC',icon:'ti-vector'},
+  {id:'jointlen',label:'Joint Lengths',icon:'ti-dimensions'},
+  {id:'va',label:'VA',icon:'ti-eye'},
+  {id:'mt',label:'MT',icon:'ti-magnet'},
+  {id:'aut',label:'AUT',icon:'ti-scan'},
+  {id:'mut',label:'MUT',icon:'ti-wave-sine'},
+  {id:'muthand',label:'MUT Hand Scans',icon:'ti-hand-grab'},
+  {id:'pautbm',label:'PAUT BM',icon:'ti-layers-subtract'},
+  {id:'pautls',label:'PAUT LS',icon:'ti-timeline'},
+  {id:'aelsc',label:'AE/LSC',icon:'ti-flask'},
+];
+
+const CLOCK = ['N/A','12:00','12:30','1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00','5:30','6:00','6:30','7:00','7:30','8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30'];
+const REF_GW = ['U/S','D/S','Branch'];
+const BFG_AFG = ['BFG','AFG'];
+const IND_CHAR = ['Linear','Linear Colony','Linear Manufacture','Intermittent Linear','Gouges','Corrosion/Pitting','Arc Strike','Weld Deposit','Undercut','Dent','Mechanical Damage','Lamination','Mill Scale','Incomplete Fusion','Porosity','Cluster Porosity','External Corrosion'];
+const NL = ['N','L'];
+const UTT12_CLOCKS = ['12:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00'];
+
+let state = {
+  config:{},joints:[],photos:{},
+  technicians:[],
+  nri:{},
+  scopeStatus:{},
+  rowPhotos:{},
+  utt12:[],uttloc:[],lsc:[],jointlen:[],
+  va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]
+};
+let activeTab = 'utt12';
+let photoTarget = null;
+let saveTimer = null;
+
+function load(){
+  renderTechRoster();
+  const s = localStorage.getItem('nde_field_report');
+  if(s){ try{ state = JSON.parse(s); }catch(e){} }
+  loadConfig();
+  renderTechRoster();
+  renderJoints();
+  renderTabs();
+  renderTab(activeTab);
+  updateSubtitle();
+}
+
+function save(){
+  clearTimeout(saveTimer);
+  document.getElementById('save-dot').style.background='#ff9800';
+  document.getElementById('save-text').textContent='Saving...';
+  saveTimer = setTimeout(()=>{
+    try{ localStorage.setItem('nde_field_report', JSON.stringify(state)); }catch(e){ alert('Storage full — export your data now!'); }
+    document.getElementById('save-dot').style.background='#4caf50';
+    document.getElementById('save-text').textContent='Saved';
+  }, 600);
+}
+
+function loadConfig(){
+  const c = state.config||{};
+  ['project','sap','job','line','address','vendor','date','lat','lon','proc'].forEach(k=>{
+    const el = document.getElementById('cfg-'+k);
+    if(el) el.value = c[k]||'';
+  });
+}
+
+function updateConfig(){
+  if(!state.config) state.config={};
+  ['project','sap','job','line','address','vendor','tech','cert','date','lat','lon','proc'].forEach(k=>{
+    const el = document.getElementById('cfg-'+k);
+    if(el) state.config[k] = el.value;
+  });
+  updateSubtitle();
+  save();
+}
+
+function updateSubtitle(){
+  const c = state.config||{};
+  const parts = [c.project, c.address, c.date].filter(Boolean);
+  document.getElementById('project-subtitle').textContent = parts.length ? parts.join(' · ') : 'Configure project details below';
+}
+
+function addJoint(){
+  const id = (document.getElementById('new-joint').value||'').trim().toUpperCase();
+  if(!id){ alert('Enter a joint ID.'); return; }
+  if((state.joints||[]).find(j=>j.id===id)){ alert(id+' already in scope.'); return; }
+  if(!state.joints) state.joints=[];
+  const jt = {
+    id,
+    type: document.getElementById('new-jt-type').value,
+    od: document.getElementById('new-jt-od').value,
+    nwt: document.getElementById('new-jt-nwt').value,
+    seam: document.getElementById('new-jt-seam').value,
+  };
+  state.joints.push(jt);
+  autoPopulateJoint(jt);
+  document.getElementById('new-joint').value='';
+  renderJoints();
+  renderTabs();
+  save();
+}
+
+// Auto-populate a blank row for this joint in each relevant tab
+function autoPopulateJoint(jt){
+  const id = jt.id;
+  // 12pt UTT — 3 standard scan positions (U/S 3, U/S 8, U/S 13.5)
+  if(!state.utt12) state.utt12=[];
+  [{dist:'3'},{dist:'8'},{dist:'13.5'}].forEach(pos=>{
+    state.utt12.push({jt:id, ref:'U/S', dist:pos.dist, bfg:'BFG',
+      vals:Array(12).fill(''), date:''});
+  });
+  // Joint Lengths
+  if(!state.jointlen) state.jointlen=[];
+  state.jointlen.push({jt:id, type:jt.type||'Pipe', length:'', od1:jt.od||'', od2:'N/A', notes:'', date:''});
+  // VA — one blank row per joint
+  if(!state.va) state.va=[];
+  state.va.push({jt:id, indid:'', char:'', ref:'U/S', dist:'', clock:'N/A',
+    len:'', wid:'', dep:'', wt:'', nl:'L', photo:'', notes:'', date:''});
+  // MT — one blank row per joint
+  if(!state.mt) state.mt=[];
+  state.mt.push({jt:id, indid:'', char:'', ref:'U/S', dist:'', clock:'N/A',
+    len:'', wid:'', ht:'', wt:'', nl:'L', blphoto:'', wlphoto:'', pautphoto:'', date:''});
+  // AE/LSC
+  if(!state.aelsc) state.aelsc=[];
+  state.aelsc.push({jt:id, lsctype:'', aemethod:'', clock:'N/A',
+    aedepth:'', comments:'', photo:'', date:''});
+}
+
+function removeJoint(id){
+  if(!confirm('Remove '+id+' from scope?')) return;
+  state.joints = (state.joints||[]).filter(j=>j.id!==id);
+  renderJoints();
+  renderTab(activeTab);
+  save();
+}
+
+function renderJoints(){
+  const el = document.getElementById('joints-list');
+  if(!el) return;
+  const joints = state.joints||[];
+  if(!joints.length){ el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No joints added yet</span>'; return; }
+  el.innerHTML = joints.map(j=>`
+    <div class="joint-chip">
+      <strong>${j.id}</strong>
+      <span class="chip-meta">${j.type} · OD ${j.od||'?'}" · NWT ${j.nwt||'?'}" · ${j.seam||'?'}</span>
+      <button class="icon-btn" onclick="removeJoint('${j.id}')" aria-label="Remove ${j.id}"><i class="ti ti-x" style="font-size:12px"></i></button>
+    </div>`).join('');
+}
+
+function renderTabs(){
+  const bar = document.getElementById('tab-bar');
+  bar.innerHTML = TABS.map(t=>{
+    const count = (state[t.id]||[]).length;
+    return `<button class="tab${activeTab===t.id?' active':''}" onclick="switchTab('${t.id}')">
+      <i class="ti ${t.icon}" style="font-size:13px;vertical-align:-1px"></i> ${t.label}${count>0?`<span class="tab-badge">${count}</span>`:''}
+    </button>`;
+  }).join('');
+}
+
+function switchTab(id){
+  activeTab = id;
+  renderTabs();
+  renderTab(id);
+}
+
+function renderTab(id){
+  const el = document.getElementById('tab-content');
+  if(id==='utt12') el.innerHTML = renderUTT12();
+  else if(id==='uttloc') el.innerHTML = renderUTTLoc();
+  else if(id==='lsc') el.innerHTML = renderLSC();
+  else if(id==='jointlen') el.innerHTML = renderJointLen();
+  else if(id==='va') el.innerHTML = renderVA();
+  else if(id==='mt') el.innerHTML = renderMT();
+  else if(id==='aut') el.innerHTML = renderAUT();
+  else if(id==='mut') el.innerHTML = renderMUT();
+  else if(id==='muthand') el.innerHTML = renderMUTHand();
+  else if(id==='pautbm') el.innerHTML = renderPAUTBM();
+  else if(id==='pautls') el.innerHTML = renderPAUTLS();
+  else if(id==='aelsc') el.innerHTML = renderAELSC();
+}
+
+function jo(sel){ return (state.joints||[]).map(j=>`<option${j.id===sel?' selected':''}>${j.id}</option>`).join(''); }
+function co(sel){ return CLOCK.map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
+function charo(sel){ return [''].concat(IND_CHAR).map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
+function yno(sel){ return ['','Yes','No','N/A'].map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
+function rgo(sel){ return REF_GW.map(v=>`<option${v===sel?' selected':''}>${v}</option>`).join(''); }
+
+function emptyRow(msg){
+  return `<tr><td colspan="20"><div class="empty-state"><i class="ti ti-table-off"></i>${msg}</div></td></tr>`;
+}
+
+/* ===== 12pt UTT ===== */
+function renderUTT12(){
+  const rows = state.utt12||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    const vals = r.vals||Array(12).fill('');
+    const filled = vals.filter(v=>v!=='');
+    const avg = filled.length ? (filled.reduce((a,b)=>a+parseFloat(b),0)/filled.length/1000).toFixed(3) : '—';
+    const mn  = filled.length ? (Math.min(...filled.map(v=>parseFloat(v)))/1000).toFixed(3) : '—';
+    const jt  = (state.joints||[]).find(j=>j.id===r.jt);
+    const nwt = jt ? parseFloat(jt.nwt)||0 : 0;
+    const low = mn!=='—' && nwt && parseFloat(mn)<nwt*0.8;
+    return `<tr>
+      <td><select onchange="rowUpdate('utt12',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><select onchange="rowUpdate('utt12',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+      <td><input type="number" step="0.5" value="${r.dist||''}" onchange="rowUpdate('utt12',${i},'dist',this.value)"></td>
+      <td><select onchange="rowUpdate('utt12',${i},'bfg',this.value)">${BFG_AFG.map(v=>`<option${v===r.bfg?' selected':''}>${v}</option>`).join('')}</select></td>
+      ${vals.map((v,ci)=>`<td><input type="number" step="1" value="${v}" onchange="uttVal(${i},${ci},this.value)"></td>`).join('')}
+      <td class="stat-col">${avg}</td>
+      <td class="stat-col${low?' val-low':''}">${mn}${low?' ⚠':''}</td>
+      <td><select class="tech-select" onchange="rowUpdate('utt12',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('utt12',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('utt12',i)}<td><button class="icon-btn" onclick="removeRow('utt12',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="20"><div class="empty-state"><i class="ti ti-table-off"></i>No readings yet — click Add reading</div></td></tr>`;
+
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-ruler-2"></i> 12-Point UTT Wall Thickness</span>
+      <div class="panel-actions${nriLocked('utt12')?' nri-locked':''}">
+        <button class="btn" onclick="addUTT12Row()"><i class="ti ti-plus"></i> Add reading</button>
+        <button class="btn" onclick="openPhoto('utt12')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    <div class="alert alert-info"><i class="ti ti-info-circle"></i> Enter values as thousandths (e.g. 511 = 0.511"). Avg and Min auto-calculated. Min flagged red if &lt;80% NWT.</div>
+    ${nriBar('utt12')}
+    ${scopeSummaryTable('utt12','12-Point UTT')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — 12-Point UTT</div>
+    <div class="${nriLocked('utt12')?'nri-locked':''}">  
+    <div class="utt-table-wrap"><table class="utt-table">
+      <thead><tr><th>Joint</th><th>Ref</th><th>Dist</th><th>BFG/AFG</th>${UTT12_CLOCKS.map(c=>`<th>${c}</th>`).join('')}<th>Avg (in)</th><th>Min (in)</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('utt12')}
+  </div>`;
+}
+function addUTT12Row(){
+  if(!state.utt12) state.utt12=[];
+  state.utt12.push({jt:(state.joints||[])[0]?.id||'',ref:'U/S',dist:'',bfg:'BFG',vals:Array(12).fill('')});
+  save(); renderTab('utt12');
+}
+function uttVal(i,ci,v){
+  if(!state.utt12[i].vals) state.utt12[i].vals=Array(12).fill('');
+  state.utt12[i].vals[ci]=v; save(); renderTab('utt12');
+}
+
+/* ===== UTT Locations ===== */
+function renderUTTLoc(){
+  const rows = state.uttloc||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    const pct = r.bfgmin&&r.afgmin ? ((parseFloat(r.bfgmin)-parseFloat(r.afgmin))/parseFloat(r.bfgmin)*100).toFixed(1)+'%' : '—';
+    return `<tr>
+      <td><select onchange="rowUpdate('uttloc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><input value="${r.ndtid||''}" placeholder="LSC-001" onchange="rowUpdate('uttloc',${i},'ndtid',this.value)" style="width:75px"></td>
+      <td><select onchange="rowUpdate('uttloc',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+      <td><input type="number" step="0.1" value="${r.dist||''}" onchange="rowUpdate('uttloc',${i},'dist',this.value)" style="width:55px"></td>
+      <td><select onchange="rowUpdate('uttloc',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input type="number" step="0.1" value="${r.alen||''}" onchange="rowUpdate('uttloc',${i},'alen',this.value)" style="width:52px"></td>
+      <td><input type="number" step="0.1" value="${r.awid||''}" onchange="rowUpdate('uttloc',${i},'awid',this.value)" style="width:52px"></td>
+      <td><input type="number" step="0.001" value="${r.bfgmin||''}" onchange="rowUpdate('uttloc',${i},'bfgmin',this.value)" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.bfgmax||''}" onchange="rowUpdate('uttloc',${i},'bfgmax',this.value)" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.afgmin||''}" onchange="rowUpdate('uttloc',${i},'afgmin',this.value)" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.afgmax||''}" onchange="rowUpdate('uttloc',${i},'afgmax',this.value)" style="width:60px"></td>
+      <td class="stat-cell">${pct}</td>
+      <td><select onchange="rowUpdate('uttloc',${i},'result',this.value)"><option value="">—</option><option${r.result==='NRI'?' selected':''}>NRI</option><option${r.result==='Indication Found'?' selected':''}>Indication Found</option></select></td>
+      <td><select class="tech-select" onchange="rowUpdate('uttloc',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('uttloc',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('uttloc',i)}<td><button class="icon-btn" onclick="removeRow('uttloc',${i})"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('') : emptyRow('No test locations yet — click Add row');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-microscope"></i> UTT of Material Property Verification Test Locations</span>
+      <div class="panel-actions${nriLocked('uttloc')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('uttloc',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',result:''})"><i class="ti ti-plus"></i> Add row</button>
+        <button class="btn" onclick="openPhoto('uttloc')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('uttloc')}
+    ${scopeSummaryTable('uttloc','UTT of Test Locations')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — UTT of Test Locations</div>
+    <div class="${nriLocked('uttloc')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('uttloc')}
+  </div>`;
+}
+
+/* ===== LSC ===== */
+function renderLSC(){
+  const rows = state.lsc||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('lsc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('lsc',${i},'lsctype',this.value)"><option value="">—</option><option>ERW</option><option>DSAW</option><option>SSAW</option><option>Seamless</option><option>FBW</option><option>Lap</option><option>A.O.Smith</option></select></td>
+    <td><select onchange="rowUpdate('lsc',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><textarea rows="2" onchange="rowUpdate('lsc',${i},'comments',this.value)">${r.comments||''}</textarea></td>
+    <td><select onchange="rowUpdate('lsc',${i},'photo',this.value)">${yno(r.photo)}</select></td>
+    <td><select class="tech-select" onchange="rowUpdate('lsc',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('lsc',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('lsc',i)}<td><button class="icon-btn" onclick="removeRow('lsc',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No LSC entries yet');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-vector"></i> Long Seam Characterization (LSC)</span>
+      <div class="panel-actions${nriLocked('lsc')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('lsc',{jt:(state.joints||[])[0]?.id||'',clock:'N/A',photo:''})"><i class="ti ti-plus"></i> Add row</button>
+        <button class="btn" onclick="openPhoto('lsc')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('lsc')}
+    ${scopeSummaryTable('lsc','Long Seam Characterization')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Long Seam Characterization</div>
+    <div class="${nriLocked('lsc')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>LSC type</th><th>Clock position</th><th>Comments</th><th>Photo taken?</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('lsc')}
+  </div>`;
+}
+
+/* ===== Joint Lengths ===== */
+function renderJointLen(){
+  const rows = state.jointlen||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('jointlen',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('jointlen',${i},'type',this.value)"><option>Pipe</option><option>Mfg Bend</option><option>Straight Tee</option><option>Reducing Tee</option><option>Reducer</option><option>Cap</option></select></td>
+    <td><input type="number" step="0.01" value="${r.length||''}" onchange="rowUpdate('jointlen',${i},'length',this.value)" style="width:75px"></td>
+    <td><input type="number" step="0.125" value="${r.od1||''}" onchange="rowUpdate('jointlen',${i},'od1',this.value)" style="width:60px"></td>
+    <td><input value="${r.od2||''}" placeholder="N/A" onchange="rowUpdate('jointlen',${i},'od2',this.value)" style="width:60px"></td>
+    <td><textarea rows="2" onchange="rowUpdate('jointlen',${i},'notes',this.value)">${r.notes||''}</textarea></td>
+    <td><select class="tech-select" onchange="rowUpdate('jointlen',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('jointlen',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('jointlen',i)}<td><button class="icon-btn" onclick="removeRow('jointlen',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No joint lengths recorded yet');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-dimensions"></i> Joint Lengths</span>
+      <button class="btn" onclick="addRow('jointlen',{jt:(state.joints||[])[0]?.id||'',type:'Pipe'})"><i class="ti ti-plus"></i> Add row</button>
+    </div>
+    ${scopeSummaryTable('jointlen','Joint Lengths')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Measured Lengths — Joint Lengths</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Feature type</th><th>Length (in)</th><th>OD1 (in)</th><th>OD2 (in)</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ===== No Indications bar ===== */
+function nriBar(tabId){
+  if(!state.nri) state.nri={};
+  const checked = !!state.nri[tabId]?.checked;
+  const comment = state.nri[tabId]?.comment||'';
+  const defaultComment = {
+    va:'No visual assessment indications observed.',
+    mt:'No magnetic particle testing indications detected.',
+    aut:'No AUT/UTT grid indications detected.',
+    mut:'No manual ultrasonic testing indications detected.',
+    muthand:'No MUT hand scan indications detected.',
+    pautbm:'No PAUT base metal indications detected.',
+    pautls:'No PAUT long seam indications detected.',
+    lsc:'Long seam characterization — no anomalies noted.',
+    aelsc:'AE/LSC complete — no anomalies noted. Long seam confirmed.',
+    utt12:'12-point UTT complete — no indications found.',
+    uttloc:'UTT of test locations complete — no indications found.',
+  }[tabId]||'No indications detected.';
+  return `<div class="nri-bar${checked?'':' inactive'}">
+    <label class="nri-toggle">
+      <input type="checkbox" ${checked?'checked':''} onchange="toggleNRI('${tabId}',this.checked)">
+      <span class="nri-label"><i class="ti ti-circle-check" style="vertical-align:-2px"></i> No indications${checked?' — recorded':''}</span>
+    </label>
+    <div class="nri-comment" style="${checked?'':'opacity:0.4;pointer-events:none'}">
+      <textarea placeholder="${defaultComment}" onchange="setNRIComment('${tabId}',this.value)">${comment}</textarea>
+    </div>
+  </div>`;
+}
+
+function toggleNRI(tabId, checked){
+  if(!state.nri) state.nri={};
+  if(!state.nri[tabId]) state.nri[tabId]={};
+  state.nri[tabId].checked = checked;
+  save(); renderTab(tabId);
+}
+
+function setNRIComment(tabId, val){
+  if(!state.nri) state.nri={};
+  if(!state.nri[tabId]) state.nri[tabId]={};
+  state.nri[tabId].comment = val;
+  save();
+}
+
+function nriLocked(tabId){ return !!(state.nri||{})[tabId]?.checked; }
+
+/* ===== VA ===== */
+function renderVA(){
+  const rows = state.va||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('va',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><input value="${r.indid||''}" placeholder="MD-001" onchange="rowUpdate('va',${i},'indid',this.value)" style="width:70px"></td>
+    <td><select onchange="rowUpdate('va',${i},'char',this.value)">${charo(r.char)}</select></td>
+    <td><select onchange="rowUpdate('va',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+    <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('va',${i},'dist',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('va',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('va',${i},'len',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('va',${i},'wid',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('va',${i},'dep',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('va',${i},'wt',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('va',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+    <td><select onchange="rowUpdate('va',${i},'photo',this.value)">${yno(r.photo)}</select></td>
+    <td><input value="${r.notes||''}" placeholder="Notes..." onchange="rowUpdate('va',${i},'notes',this.value)" style="width:100px"></td>
+    <td><select class="tech-select" onchange="rowUpdate('va',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('va',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('va',i)}<td><button class="icon-btn" onclick="removeRow('va',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No VA indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-eye"></i> VA Indications</span>
+      <div class="panel-actions${nriLocked('va')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('va',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'L',photo:''})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('va')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('va')}
+    ${scopeSummaryTable('va','Visual Assessment (VA)')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Visual Assessment (VA)</div>
+    <div class="${nriLocked('va')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('va')}
+  </div>`;
+}
+
+/* ===== MT ===== */
+function renderMT(){
+  const rows = state.mt||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('mt',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><input value="${r.indid||''}" placeholder="LIN-001" onchange="rowUpdate('mt',${i},'indid',this.value)" style="width:70px"></td>
+    <td><select onchange="rowUpdate('mt',${i},'char',this.value)">${charo(r.char)}</select></td>
+    <td><select onchange="rowUpdate('mt',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+    <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mt',${i},'dist',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('mt',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mt',${i},'len',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mt',${i},'wid',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('mt',${i},'ht',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('mt',${i},'wt',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('mt',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+    <td><select onchange="rowUpdate('mt',${i},'blphoto',this.value)">${yno(r.blphoto)}</select></td>
+    <td><select onchange="rowUpdate('mt',${i},'wlphoto',this.value)">${yno(r.wlphoto)}</select></td>
+    <td><select onchange="rowUpdate('mt',${i},'pautphoto',this.value)">${yno(r.pautphoto)}</select></td>
+    <td><select class="tech-select" onchange="rowUpdate('mt',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mt',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mt',i)}<td><button class="icon-btn" onclick="removeRow('mt',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No MT indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-magnet"></i> MT Indications</span>
+      <div class="panel-actions${nriLocked('mt')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('mt',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'L'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('mt')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('mt')}
+    ${scopeSummaryTable('mt','Magnetic Particle Testing (MT)')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Magnetic Particle Testing (MT)</div>
+    <div class="${nriLocked('mt')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('mt')}
+  </div>`;
+}
+
+/* ===== AUT ===== */
+function renderAUT(){
+  const rows = state.aut||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    const pct = r.minwt&&r.wt ? (parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%' : '—';
+    return `<tr>
+      <td><select onchange="rowUpdate('aut',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><input value="${r.indid||''}" placeholder="EC-001" onchange="rowUpdate('aut',${i},'indid',this.value)" style="width:70px"></td>
+      <td><select onchange="rowUpdate('aut',${i},'char',this.value)">${charo(r.char)}</select></td>
+      <td><select onchange="rowUpdate('aut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+      <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('aut',${i},'dist',this.value)" style="width:55px"></td>
+      <td><select onchange="rowUpdate('aut',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('aut',${i},'len',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('aut',${i},'wid',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('aut',${i},'minwt',this.value);renderTab('aut')" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('aut',${i},'wt',this.value);renderTab('aut')" style="width:60px"></td>
+      <td><select onchange="rowUpdate('aut',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+      <td class="stat-cell">${pct}</td>
+      <td><select class="tech-select" onchange="rowUpdate('aut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('aut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('aut',i)}<td><button class="icon-btn" onclick="removeRow('aut',${i})"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('') : emptyRow('No AUT indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-scan"></i> AUT Indications</span>
+      <div class="panel-actions${nriLocked('aut')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('aut',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'L'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('aut')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('aut')}
+    ${scopeSummaryTable('aut','Automated UT (AUT)')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Automated UT (AUT)</div>
+    <div class="${nriLocked('aut')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('aut')}
+  </div>`;
+}
+
+/* ===== MUT ===== */
+function renderMUT(){
+  const rows = state.mut||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    const pct = r.minwt&&r.wt ? (parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%' : '—';
+    return `<tr>
+      <td><select onchange="rowUpdate('mut',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+      <td><input value="${r.indid||''}" placeholder="LAM-001" onchange="rowUpdate('mut',${i},'indid',this.value)" style="width:70px"></td>
+      <td><select onchange="rowUpdate('mut',${i},'char',this.value)">${charo(r.char)}</select></td>
+      <td><select onchange="rowUpdate('mut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+      <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mut',${i},'dist',this.value)" style="width:55px"></td>
+      <td><select onchange="rowUpdate('mut',${i},'clock',this.value)">${co(r.clock)}</select></td>
+      <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mut',${i},'len',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mut',${i},'wid',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('mut',${i},'minwt',this.value);renderTab('mut')" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('mut',${i},'wt',this.value);renderTab('mut')" style="width:60px"></td>
+      <td><select onchange="rowUpdate('mut',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+      <td class="stat-cell">${pct}</td>
+      <td><select class="tech-select" onchange="rowUpdate('mut',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('mut',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('mut',i)}<td><button class="icon-btn" onclick="removeRow('mut',${i})"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('') : emptyRow('No MUT indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-wave-sine"></i> MUT Indications</span>
+      <div class="panel-actions${nriLocked('mut')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('mut',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'L'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('mut')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('mut')}
+    ${scopeSummaryTable('mut','Manual UT (MUT)')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Manual UT (MUT)</div>
+    <div class="${nriLocked('mut')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('mut')}
+  </div>`;
+}
+
+/* ===== MUT Hand Scans ===== */
+function renderMUTHand(){
+  const rows = state.muthand||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('muthand',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><input value="${r.startxy||''}" placeholder="0,0" onchange="rowUpdate('muthand',${i},'startxy',this.value)" style="width:70px"></td>
+    <td><input value="${r.endxy||''}" placeholder="12,24" onchange="rowUpdate('muthand',${i},'endxy',this.value)" style="width:70px"></td>
+    <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('muthand',${i},'minwt',this.value)" style="width:65px"></td>
+    <td><select onchange="rowUpdate('muthand',${i},'indfound',this.value)">${yno(r.indfound)}</select></td>
+    <td><textarea rows="2" onchange="rowUpdate('muthand',${i},'notes',this.value)">${r.notes||''}</textarea></td>
+    <td><select class="tech-select" onchange="rowUpdate('muthand',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('muthand',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('muthand',i)}<td><button class="icon-btn" onclick="removeRow('muthand',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No hand scan results recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-hand-grab"></i> MUT Hand Scan Results</span>
+      <div class="panel-actions${nriLocked('muthand')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('muthand',{jt:(state.joints||[])[0]?.id||''})"><i class="ti ti-plus"></i> Add scan</button>
+        <button class="btn" onclick="openPhoto('muthand')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('muthand')}
+    ${scopeSummaryTable('muthand','MUT Hand Scans')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — MUT Hand Scans</div>
+    <div class="${nriLocked('muthand')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Start (X,Y)</th><th>End (X,Y)</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('muthand')}
+  </div>`;
+}
+
+/* ===== PAUT BM ===== */
+function renderPAUTBM(){
+  const rows = state.pautbm||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('pautbm',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><input value="${r.indid||''}" placeholder="IF-001" onchange="rowUpdate('pautbm',${i},'indid',this.value)" style="width:70px"></td>
+    <td><select onchange="rowUpdate('pautbm',${i},'char',this.value)">${charo(r.char)}</select></td>
+    <td><select onchange="rowUpdate('pautbm',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+    <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautbm',${i},'dist',this.value)" style="width:60px"></td>
+    <td><select onchange="rowUpdate('pautbm',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautbm',${i},'len',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautbm',${i},'dep',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautbm',${i},'ht',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('pautbm',${i},'wt',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('pautbm',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+    <td><select class="tech-select" onchange="rowUpdate('pautbm',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautbm',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautbm',i)}<td><button class="icon-btn" onclick="removeRow('pautbm',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No PAUT base metal indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-layers-subtract"></i> PAUT Base Metal Indications</span>
+      <div class="panel-actions${nriLocked('pautbm')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('pautbm',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'N'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('pautbm')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('pautbm')}
+    ${scopeSummaryTable('pautbm','PAUT Base Metal')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Base Metal</div>
+    <div class="${nriLocked('pautbm')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('pautbm')}
+  </div>`;
+}
+
+/* ===== PAUT LS ===== */
+function renderPAUTLS(){
+  const rows = state.pautls||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('pautls',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><input value="${r.indid||''}" placeholder="IF-001" onchange="rowUpdate('pautls',${i},'indid',this.value)" style="width:70px"></td>
+    <td><select onchange="rowUpdate('pautls',${i},'char',this.value)">${charo(r.char)}</select></td>
+    <td><select onchange="rowUpdate('pautls',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+    <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautls',${i},'dist',this.value)" style="width:60px"></td>
+    <td><select onchange="rowUpdate('pautls',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautls',${i},'len',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautls',${i},'dep',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautls',${i},'ht',this.value)" style="width:55px"></td>
+    <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('pautls',${i},'wt',this.value)" style="width:55px"></td>
+    <td><select onchange="rowUpdate('pautls',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+    <td><select class="tech-select" onchange="rowUpdate('pautls',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('pautls',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('pautls',i)}<td><button class="icon-btn" onclick="removeRow('pautls',${i})"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No PAUT long seam indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-timeline"></i> PAUT Long Seam Indications</span>
+      <div class="panel-actions${nriLocked('pautls')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('pautls',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'N'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('pautls')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('pautls')}
+    ${scopeSummaryTable('pautls','PAUT Long Seam')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Long Seam</div>
+    <div class="${nriLocked('pautls')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('pautls')}
+  </div>`;
+}
+
+/* ===== Technician roster ===== */
+const TECH_COLORS = ['#1a6fa8','#c55a11','#2e7d32','#6a1f7a','#b71c1c',
+  '#00695c','#4527a0','#ad6800','#1565c0','#558b2f'];
+
+function techColor(idx){ return TECH_COLORS[idx % TECH_COLORS.length]; }
+
+function addTechnician(){
+  const name = (document.getElementById('new-tech-name').value||'').trim();
+  if(!name){ alert('Enter a technician name.'); return; }
+  if(!state.technicians) state.technicians=[];
+  if(state.technicians.find(t=>t.name===name)){ alert(name+' already added.'); return; }
+  state.technicians.push({
+    name,
+    cert: document.getElementById('new-tech-cert').value,
+    methods: document.getElementById('new-tech-methods').value,
+    color: techColor(state.technicians.length),
+  });
+  document.getElementById('new-tech-name').value='';
+  document.getElementById('new-tech-methods').value='';
+  renderTechRoster();
+  renderTabs(); // update tab badges
+  if(activeTab) renderTab(activeTab);
+  save();
+}
+
+function removeTechnician(name){
+  if(!confirm('Remove '+name+' from roster?')) return;
+  state.technicians = (state.technicians||[]).filter(t=>t.name!==name);
+  renderTechRoster();
+  renderTab(activeTab);
+  save();
+}
+
+function renderTechRoster(){
+  const el = document.getElementById('tech-roster-list');
+  if(!el) return;
+  const techs = state.technicians||[];
+  if(!techs.length){
+    el.innerHTML='<span style="font-size:12px;color:var(--color-text-tertiary)">No technicians added yet</span>';
+    return;
+  }
+  el.innerHTML = techs.map((t,i)=>`
+    <div class="tech-chip" style="border-color:${t.color}20;background:${t.color}12">
+      <span class="tc-dot" style="background:${t.color}"></span>
+      <strong style="color:${t.color}">${t.name}</strong>
+      <span class="chip-meta">Level ${t.cert||'?'} · ${t.methods||'All methods'}</span>
+      <button class="icon-btn" onclick="removeTechnician('${t.name.replace(/'/g,"\\'")}')"><i class="ti ti-x" style="font-size:11px"></i></button>
+    </div>`).join('');
+}
+
+// Returns <option> tags for a technician select, including blank + all techs
+function to(selected){
+  const techs = state.technicians||[];
+  const blankOpt = `<option value="">— Technician —</option>`;
+  return blankOpt + techs.map(t=>
+    `<option value="${t.name}" ${t.name===selected?'selected':''}>${t.name} (Lvl ${t.cert||'?'})</option>`
+  ).join('');
+}
+
+// Returns a coloured badge span for a tech name
+function techBadge(name){
+  if(!name) return '<span style="color:var(--color-text-tertiary);font-size:11px">—</span>';
+  const t = (state.technicians||[]).find(t=>t.name===name);
+  const col = t ? t.color : '#888';
+  return `<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:${col}"><span style="width:7px;height:7px;border-radius:50%;background:${col};display:inline-block;flex-shrink:0"></span>${name}</span>`;
+}
+
+/* ===== Scope summary helpers ===== */
+
+// scopeStatus[tabId][jtId] = {done: bool, date: ''}
+// stored inside state.scopeStatus
+function getScopeStatus(tabId, jtId){
+  if(!state.scopeStatus) state.scopeStatus={};
+  if(!state.scopeStatus[tabId]) state.scopeStatus[tabId]={};
+  if(!state.scopeStatus[tabId][jtId]) state.scopeStatus[tabId][jtId]={done:false,date:''};
+  return state.scopeStatus[tabId][jtId];
+}
+
+function setScopeStatus(tabId, jtId, field, val){
+  getScopeStatus(tabId, jtId); // ensure exists
+  state.scopeStatus[tabId][jtId][field] = val;
+  save();
+  renderTab(tabId);
+}
+
+// Renders the "Joints in Scope for this Method" summary table
+function scopeSummaryTable(tabId, methodLabel){
+  const joints = state.joints||[];
+  if(!joints.length) return `<div class="alert alert-info" style="margin-bottom:0"><i class="ti ti-info-circle"></i> No joints in scope yet — add joints in the project header above.</div>`;
+  const rows = joints.map(j=>{
+    const st = getScopeStatus(tabId, j.id);
+    const badge = st.done
+      ? `<span class="done-badge"><i class="ti ti-check"></i> Completed ${st.date?'· '+st.date:''}</span>`
+      : `<span class="pending-badge"><i class="ti ti-clock"></i> Pending</span>`;
+    return `<tr>
+      <td><strong>${j.id}</strong></td>
+      <td>${j.type||'—'}</td>
+      <td>${j.od||'—'}"</td>
+      <td>${j.nwt||'—'}"</td>
+      <td>${j.seam||'—'}</td>
+      <td>${badge}</td>
+      <td><input type="date" class="scope-date" value="${st.date||''}"
+          onchange="setScopeStatus('${tabId}','${j.id}','date',this.value)"
+          title="Date ${methodLabel} was performed on ${j.id}"></td>
+      <td>
+        <select class="tech-select" onchange="setScopeStatus('${tabId}','${j.id}','tech',this.value)">
+          ${to(st.tech||'')}
+        </select>
+      </td>
+      <td>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px">
+          <input type="checkbox" ${st.done?'checked':''} style="width:14px;height:14px;cursor:pointer;accent-color:#3b6d11"
+              onchange="setScopeStatus('${tabId}','${j.id}','done',this.checked)">
+          Done
+        </label>
+      </td>
+    </tr>`;
+  }).join('');
+  return `<div class="scope-section">
+    <div class="scope-banner"><i class="ti ti-list-check"></i> Joints in Scope — ${methodLabel}</div>
+    <div class="table-wrap"><table class="scope-table">
+      <thead><tr><th>Joint</th><th>Feature Type</th><th>OD</th><th>NWT</th><th>Seam Type</th><th>Status</th><th>Date Performed</th><th>Technician</th><th>Mark Done</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ===== AE/LSC ===== */
+function renderAELSC(){
+  const rows = state.aelsc||[];
+  const nri  = (state.nri||{}).aelsc||{};
+  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
+    <td><select onchange="rowUpdate('aelsc',${i},'jt',this.value)">${jo(r.jt)}</select></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'lsctype',this.value)">
+      <option value="">—</option>
+      <option${r.lsctype==='ERW'?' selected':''}>ERW</option>
+      <option${r.lsctype==='DSAW'?' selected':''}>DSAW</option>
+      <option${r.lsctype==='SSAW'?' selected':''}>SSAW</option>
+      <option${r.lsctype==='Seamless'?' selected':''}>Seamless</option>
+      <option${r.lsctype==='FBW'?' selected':''}>FBW</option>
+      <option${r.lsctype==='Lap'?' selected':''}>Lap</option>
+      <option${r.lsctype==='A.O. Smith'?' selected':''}>A.O. Smith</option>
+      <option${r.lsctype==='Flash Weld'?' selected':''}>Flash Weld</option>
+      <option${r.lsctype==='Spiral Weld'?' selected':''}>Spiral Weld</option>
+      <option${r.lsctype==='Unknown'?' selected':''}>Unknown</option>
+    </select></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'aemethod',this.value)">
+      <option value="">—</option>
+      <option${r.aemethod==='Acid Etch'?' selected':''}>Acid Etch</option>
+      <option${r.aemethod==='Replica Tape'?' selected':''}>Replica Tape</option>
+      <option${r.aemethod==='Grind & Etch'?' selected':''}>Grind & Etch</option>
+      <option${r.aemethod==='DE Only'?' selected':''}>DE Only</option>
+      <option${r.aemethod==='N/A'?' selected':''}>N/A</option>
+    </select></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'clock',this.value)">${co(r.clock)}</select></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'lsresult',this.value)">
+      <option value="">—</option>
+      <option${r.lsresult==='Confirmed ERW'?' selected':''}>Confirmed ERW</option>
+      <option${r.lsresult==='Confirmed DSAW'?' selected':''}>Confirmed DSAW</option>
+      <option${r.lsresult==='Confirmed SSAW'?' selected':''}>Confirmed SSAW</option>
+      <option${r.lsresult==='Confirmed Seamless'?' selected':''}>Confirmed Seamless</option>
+      <option${r.lsresult==='Confirmed FBW'?' selected':''}>Confirmed FBW</option>
+      <option${r.lsresult==='Indeterminate'?' selected':''}>Indeterminate</option>
+      <option${r.lsresult==='No Seam Visible'?' selected':''}>No Seam Visible</option>
+    </select></td>
+    <td><input value="${r.aedepth||''}" placeholder="e.g. 0.010" onchange="rowUpdate('aelsc',${i},'aedepth',this.value)" style="width:70px"></td>
+    <td><select onchange="rowUpdate('aelsc',${i},'photo',this.value)">${yno(r.photo)}</select></td>
+    <td><textarea rows="1" style="min-height:28px;width:120px" onchange="rowUpdate('aelsc',${i},'comments',this.value)">${r.comments||''}</textarea></td>
+    <td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('aelsc',${i},'date',this.value)" title="Inspection date"></td>
+    <td><select class="tech-select" onchange="rowUpdate('aelsc',${i},'tech',this.value)">${to(r.tech||'')}</select></td>
+    ${rowPhotoCell('aelsc',i)}<td><button class="icon-btn" onclick="removeRow('aelsc',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+  </tr>`).join('') : emptyRow('No AE/LSC entries — joints added to scope auto-populate here');
+
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-flask"></i> Acid Etch / Long Seam Characterization (AE/LSC)</span>
+      <div class="panel-actions${nriLocked('aelsc')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('aelsc',{jt:(state.joints||[])[0]?.id||'',lsctype:'',aemethod:'',clock:'N/A',lsresult:'',aedepth:'',photo:'',comments:'',date:''})"><i class="ti ti-plus"></i> Add row</button>
+        <button class="btn" onclick="openPhoto('aelsc')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('aelsc')}
+    ${scopeSummaryTable('aelsc','Acid Etch / LSC')}
+    <div class="ind-banner"><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</div>
+    <div class="${nriLocked('aelsc')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>LSC Type</th><th>AE Method</th><th>Clock Position</th><th>LS Result / Confirmation</th><th>AE Depth (in)</th><th>Photo?</th><th>Comments</th><th>Tech</th><th>Date</th><th>📷</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+    ${photoSection('aelsc')}
+  </div>`;
+}
+
+/* ===== Photos ===== */
+function photoSection(tabId){
+  const photos = (state.photos||{})[tabId]||[];
+  const thumbs = photos.map((p,i)=>`<div class="photo-thumb"><img src="${p.data}" alt="Photo ${i+1}"><button class="del-photo" onclick="removePhoto('${tabId}',${i})" aria-label="Remove photo">×</button></div>`).join('');
+  return `<div class="photo-section">
+    <div class="section-divider">Photos — ${tabId.toUpperCase()} (${photos.length})</div>
+    <div class="photo-thumbs">${thumbs}</div>
+    <div class="photo-zone" onclick="openPhoto('${tabId}')"><i class="ti ti-camera-plus"></i> Tap to capture or upload photos</div>
+  </div>`;
+}
+
+function openPhoto(tabId){
+  photoTarget = tabId;
+  document.getElementById('photo-input').click();
+}
+
+function handlePhotos(e){
+  const files = Array.from(e.target.files);
+  if(!state.photos) state.photos={};
+  files.forEach(f=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      if(!state.photos[photoTarget]) state.photos[photoTarget]=[];
+      state.photos[photoTarget].push({name:f.name,data:ev.target.result,timestamp:new Date().toISOString()});
+      save(); renderTab(activeTab);
+    };
+    reader.readAsDataURL(f);
+  });
+  e.target.value='';
+}
+
+function removePhoto(tabId,idx){
+  if(!confirm('Remove this photo?')) return;
+  state.photos[tabId].splice(idx,1);
+  save(); renderTab(activeTab);
+}
+
+/* ===== Generic helpers ===== */
+function addRow(tabId, defaults){
+  if(!state[tabId]) state[tabId]=[];
+  state[tabId].push({...defaults});
+  save(); renderTabs(); renderTab(tabId);
+}
+
+function rowUpdate(tabId,i,k,v){
+  state[tabId][i][k]=v; save();
+}
+
+function removeRow(tabId,i){
+  state[tabId].splice(i,1);
+  save(); renderTabs(); renderTab(tabId);
+}
+
+/* ===== Export ===== */
+function exportJSON(){
+  const exportState = JSON.parse(JSON.stringify(state));
+  const blob = new Blob([JSON.stringify(exportState,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const proj = (state.config?.project||'nde_report').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
+  const d = new Date().toISOString().slice(0,10);
+  a.download = proj+'_'+d+'.json';
+  a.click();
+}
+
+function clearAll(){
+  if(!confirm('Clear ALL field data? This cannot be undone.')) return;
+  state = {config:{},joints:[],photos:{},technicians:[],nri:{},scopeStatus:{},rowPhotos:{},utt12:[],uttloc:[],lsc:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[]};
+  localStorage.removeItem('nde_field_report');
+  loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
+}
+
+load();
+loadTheme();
+
+// Close theme dropdown on outside click
+document.addEventListener('click', e=>{
+  const dd = document.getElementById('theme-dropdown');
+  const btn = document.getElementById('theme-toggle-btn');
+  if(dd && !dd.contains(e.target) && !btn.contains(e.target)){
+    dd.classList.remove('open');
+  }
+});
+
+function showPDFModal(){ document.getElementById('pdf-modal').classList.add('open'); }
+function closePDFModal(){ document.getElementById('pdf-modal').classList.remove('open'); }
+function showDFPRModal(){ document.getElementById('dfpr-modal').classList.add('open'); }
+function closeDFPRModal(){ document.getElementById('dfpr-modal').classList.remove('open'); }
+function exportDFPR(){ showDFPRModal(); }
+
+function exportJSONForPDF(){
+  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const proj = (state.config?.project||'nde_report').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
+  a.download = proj+'_field_data.json';
+  a.click();
+}
+
+function buildXLSX(){
+  const prog = document.getElementById('dfpr-progress');
+  prog.classList.add('show');
+  prog.textContent = 'Building Excel workbook... please wait';
+  setTimeout(()=>{
+    try{
+      const wb = XLSX.utils.book_new();
+      const cfg = state.config||{};
+      const joints = state.joints||[];
+      const UTT_CLOCKS=['12:00','1:00','2:00','3:00','4:00','5:00','6:00','7:00','8:00','9:00','10:00','11:00'];
+      const fmtClock=(v)=>{if(!v||v==='N/A')return '';return String(v);};
+      const nriRow=(tab,msg)=>{const n=(state.nri||{})[tab];return(n&&n.checked&&!(state[tab]&&state[tab].length))?[[n.comment||msg]]:null;};
+
+      // 12pt UTT
+      const uttHdr=['Joint','Ref GW','Dist from GW (in.)','BFG/AFG',...UTT_CLOCKS,'Avg Wall Thickness','Min Wall Thickness'];
+      const uttRows=(state.utt12||[]).map(r=>{
+        const vals=(r.vals||[]).map(v=>v===''?null:parseInt(v));
+        const filled=vals.filter(v=>v!==null);
+        const avg=filled.length?(filled.reduce((a,b)=>a+b,0)/filled.length/1000).toFixed(3):'';
+        const mn=filled.length?(Math.min(...filled)/1000).toFixed(3):'';
+        return [r.jt,r.ref,r.dist,r.bfg,...vals,avg,mn];
+      });
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([uttHdr,...(nriRow('utt12','No readings.')||uttRows)]),'12pt UTT');
+
+      // UTT Locations
+      const ulHdr=['Joint','NDT #','Ref GW','Dist (in)','Clock','Area L','Area W','BFG Min','BFG Max','AFG Min','AFG Max','% Removed','Result'];
+      const ulRows=(state.uttloc||[]).map(r=>{
+        const bm=parseFloat(r.bfgmin||0),am=parseFloat(r.afgmin||0);
+        return[r.jt,r.ndtid,r.ref,r.dist,fmtClock(r.clock),r.alen,r.awid,r.bfgmin,r.bfgmax,r.afgmin,r.afgmax,bm?((bm-am)/bm*100).toFixed(1)+'%':'',r.result];
+      });
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([ulHdr,...(nriRow('uttloc','No test locations.')||ulRows)]),'UTT of Test Locations');
+
+      // LSC
+      const lHdr=['Joint','LSC Type','Clock','Comments','Photo?'];
+      const lRows=(state.lsc||[]).map(r=>[r.jt,r.lsctype,fmtClock(r.clock),r.comments,r.photo]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([lHdr,...(nriRow('lsc','No LSC anomalies.')||lRows)]),'LSC Results');
+
+      // Joint Lengths
+      const jHdr=['Joint','Feature Type','Length (in)','OD1 (in)','OD2 (in)','Notes'];
+      const jRows=(state.jointlen||[]).map(r=>[r.jt,r.type,r.length,r.od1,r.od2||'N/A',r.notes]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([jHdr,...jRows]),'Joint Lengths');
+
+      // VA
+      const vaH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Width','Depth','Wall WT','N/L','Photo','Notes'];
+      const vaR=(state.va||[]).map(r=>[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.wid,r.dep,r.wt,r.nl,r.photo,r.notes]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([vaH,...(nriRow('va','No VA indications.')||vaR)]),'VA Indications');
+
+      // MT
+      const mtH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Width','Height','Wall WT','N/L','BL Photo','WL Photo','PAUT Photo'];
+      const mtR=(state.mt||[]).map(r=>[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.wid,r.ht,r.wt,r.nl,r.blphoto,r.wlphoto,r.pautphoto]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([mtH,...(nriRow('mt','No MT indications.')||mtR)]),'MT Indications');
+
+      // AUT
+      const auH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Width','Min WT','Wall WT','N/L','% Wall Loss'];
+      const auR=(state.aut||[]).map(r=>{const p=r.minwt&&r.wt?(parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%':'';return[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.wid,r.minwt,r.wt,r.nl,p];});
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([auH,...(nriRow('aut','No AUT indications.')||auR)]),'AUT Indications');
+
+      // MUT
+      const muH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Width','Min WT','Wall WT','N/L','% Wall Loss'];
+      const muR=(state.mut||[]).map(r=>{const p=r.minwt&&r.wt?(parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%':'';return[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.wid,r.minwt,r.wt,r.nl,p];});
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([muH,...(nriRow('mut','No MUT indications.')||muR)]),'MUT Indications');
+
+      // MUT Hand Scans
+      const mhH=['Joint','Start (X,Y)','End (X,Y)','Min WT (in)','Indications?','Notes'];
+      const mhR=(state.muthand||[]).map(r=>[r.jt,r.startxy,r.endxy,r.minwt,r.indfound,r.notes]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([mhH,...(nriRow('muthand','No hand scan indications.')||mhR)]),'MUT Hand Scans');
+
+      // PAUT BM
+      const pbH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Depth','Height','Wall WT','N/L'];
+      const pbR=(state.pautbm||[]).map(r=>[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.dep,r.ht,r.wt,r.nl]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([pbH,...(nriRow('pautbm','No PAUT BM indications.')||pbR)]),'PAUT BM Indications');
+
+      // PAUT LS
+      const plH=['Joint','Ind ID','Characterization','Ref GW','Dist (in)','Clock','Length','Depth','Height','Wall WT','N/L'];
+      const plR=(state.pautls||[]).map(r=>[r.jt,r.indid,r.char,r.ref,r.dist,fmtClock(r.clock),r.len,r.dep,r.ht,r.wt,r.nl]);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([plH,...(nriRow('pautls','No PAUT LS indications.')||plR)]),'PAUT LS Indications');
+
+      // NDE Testing Dates
+      const ndH=['Station/Route','Station ID','Joint','Feature','VA Date','MT Date','AUT/UTT Date','PAUT BM Date','PAUT LS Date','12pt UTT Date','LSC Date'];
+      const ndR=joints.map(j=>[cfg.project||'',cfg.line||'',j.id,j.type||'Pipe',cfg.date||'',cfg.date||'',cfg.date||'',cfg.date||'',cfg.date||'',cfg.date||'',cfg.date||'']);
+      XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([ndH,...ndR]),'NDE Testing Dates');
+
+      const proj=(cfg.project||'NDE_Report').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
+      const date=cfg.date||new Date().toISOString().slice(0,10);
+      XLSX.writeFile(wb,proj+'_DFPR_'+date+'.xlsx');
+      prog.classList.remove('show');
+    } catch(err){
+      prog.textContent='Error: '+err.message;
+    }
+  },80);
+}
+
+
+/* ===== Per-row photo functions ===== */
+let rowPhotoTarget = null; // {tabId, rowIdx}
+
+function openRowPhoto(tabId, rowIdx){
+  rowPhotoTarget = {tabId, rowIdx};
+  document.getElementById('row-photo-input').click();
+}
+
+function handleRowPhotos(e){
+  if(!rowPhotoTarget) return;
+  const {tabId, rowIdx} = rowPhotoTarget;
+  const files = Array.from(e.target.files);
+  if(!state.rowPhotos) state.rowPhotos = {};
+  if(!state.rowPhotos[tabId]) state.rowPhotos[tabId] = {};
+  if(!state.rowPhotos[tabId][rowIdx]) state.rowPhotos[tabId][rowIdx] = [];
+  files.forEach(f=>{
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      state.rowPhotos[tabId][rowIdx].push({
+        name: f.name,
+        data: ev.target.result,
+        timestamp: new Date().toISOString()
+      });
+      save();
+      renderTab(tabId);
+    };
+    reader.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+
+function removeRowPhoto(tabId, rowIdx, photoIdx){
+  if(!state.rowPhotos?.[tabId]?.[rowIdx]) return;
+  state.rowPhotos[tabId][rowIdx].splice(photoIdx, 1);
+  save();
+  renderTab(tabId);
+}
+
+function getRowPhotos(tabId, rowIdx){
+  return state.rowPhotos?.[tabId]?.[rowIdx] || [];
+}
+
+function rowPhotoCell(tabId, rowIdx){
+  const photos = getRowPhotos(tabId, rowIdx);
+  const hasPhotos = photos.length > 0;
+  const thumbs = photos.map((p,pi)=>`
+    <div class="row-photo-thumb" onclick="openLightbox('${p.data}','${p.name}')">
+      <img src="${p.data}" alt="${p.name}">
+      <button class="rpt-del" onclick="event.stopPropagation();removeRowPhoto('${tabId}',${rowIdx},${pi})" aria-label="Remove">×</button>
+    </div>`).join('');
+  return `<td>
+    <button class="row-cam-btn${hasPhotos?' has-photos':''}" onclick="openRowPhoto('${tabId}',${rowIdx})" aria-label="Add photo">
+      <i class="ti ti-camera"></i>${hasPhotos?` ${photos.length}`:''}
+    </button>
+    ${hasPhotos?`<div class="row-photo-strip">${thumbs}</div>`:''}
+  </td>`;
+}
+
+function openLightbox(src, caption){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox-caption').textContent = caption||'';
+  document.getElementById('photo-lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('photo-lightbox').classList.remove('open');
+}
+
+
+/* ===== Theme management ===== */
+const THEMES = {
+  auto:     {label:'Auto',    icon:'ti-circle-half-2'},
+  light:    {label:'Light',   icon:'ti-sun'},
+  dark:     {label:'Dark',    icon:'ti-moon'},
+  midnight: {label:'Midnight',icon:'ti-star'},
+  tan:      {label:'Field Tan',icon:'ti-sun-wind'},
+};
+
+function setTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('nde_theme', theme);
+  // Update button label
+  const info = THEMES[theme] || THEMES.auto;
+  document.getElementById('theme-label').textContent = info.label;
+  // Update active state
+  document.querySelectorAll('.theme-option').forEach(el=>{
+    el.classList.toggle('active', el.dataset.t === theme);
+  });
+  // Close dropdown
+  document.getElementById('theme-dropdown').classList.remove('open');
+}
+
+function toggleThemeDropdown(){
+  document.getElementById('theme-dropdown').classList.toggle('open');
+}
+
+function loadTheme(){
+  const saved = localStorage.getItem('nde_theme') || 'auto';
+  setTheme(saved);
+}
+
+</script>
+
+<div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
+  <div class="modal-box">
+    <div class="modal-title"><i class="ti ti-file-type-pdf" style="color:#c62828"></i> Generate PDF Report</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px">
+      The PDF generator runs locally via Python and produces a formatted report matching the Acuren UTT report style.
+    </p>
+    <div class="modal-step">
+      <strong>Step 1</strong> — Export your field data<br>
+      <span style="color:var(--color-text-secondary);font-size:12px">Click the button below to download the JSON file</span><br>
+      <button class="btn btn-primary" style="margin-top:8px;font-size:12px" onclick="exportJSONForPDF()"><i class="ti ti-download"></i> Download field_data.json</button>
+    </div>
+    <div class="modal-step">
+      <strong>Step 2</strong> — Install requirements (one time only)<br>
+      <code>pip install reportlab Pillow</code>
+    </div>
+    <div class="modal-step">
+      <strong>Step 3</strong> — Run the PDF generator<br>
+      <span style="color:var(--color-text-secondary);font-size:12px">Place <b>generate_pdf.py</b> in the same folder as the JSON, then run:</span>
+      <code>python generate_pdf.py field_data.json</code>
+    </div>
+    <div class="modal-step">
+      <strong>Step 4</strong> — Open the output PDF<br>
+      <span style="color:var(--color-text-secondary);font-size:12px">The PDF will be saved in the same folder as the JSON file.</span>
+    </div>
+    <button class="btn modal-close" onclick="closePDFModal()">Close</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="dfpr-modal" onclick="if(event.target===this)closeDFPRModal()">
+  <div class="modal-box">
+    <div class="modal-title"><i class="ti ti-table" style="color:#2e7d32"></i> Export DFPR Excel</div>
+    <div class="progress-banner" id="dfpr-progress"><i class="ti ti-loader"></i> Building Excel workbook... please wait</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">
+      Choose how to generate the filled DFPR Excel workbook:
+    </p>
+    <div class="modal-step">
+      <strong>Option A — Browser (instant, no install)</strong><br>
+      <span style="color:var(--color-text-secondary);font-size:12px">Generates a filled .xlsx directly in your browser using SheetJS. Preserves all data tabs. Formatting is basic — open in Excel to apply the full template styling.</span><br>
+      <button class="btn btn-excel" style="margin-top:8px;font-size:12px" onclick="buildXLSX()"><i class="ti ti-table"></i> Download DFPR.xlsx (browser)</button>
+    </div>
+    <div class="modal-step">
+      <strong>Option B — Python injector (full template fidelity)</strong><br>
+      <span style="color:var(--color-text-secondary);font-size:12px">Injects data into your actual DFPR template — preserves all formulas, table refs, colour coding, and cross-sheet links.</span><br>
+      <button class="btn" style="margin-top:8px;font-size:12px" onclick="exportJSONForPDF()"><i class="ti ti-download"></i> Download field_data.json</button>
+      <code>pip install openpyxl</code>
+      <code>python inject_dfpr.py field_data.json DFPR_template.xlsx</code>
+    </div>
+    <button class="btn modal-close" onclick="closeDFPRModal()">Close</button>
+  </div>
+</div>
+
+
+<div class="photo-lightbox" id="photo-lightbox" onclick="closeLightbox()">
+  <button class="photo-lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightbox-img" src="" alt="Photo">
+  <div class="photo-lightbox-caption" id="lightbox-caption"></div>
+</div>
+<input type="file" id="row-photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleRowPhotos(event)">
+
+</body>
+</html>
