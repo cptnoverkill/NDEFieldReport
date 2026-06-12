@@ -6608,6 +6608,93 @@ function closeSigModal(){
   _sigTarget = null; _sigCanvas = null; _sigCtx = null;
 }
 
+
+/* ===== Signature upload ===== */
+let _sigUploadDataUrl = null;
+
+function switchSigTab(tab){
+  const isDraw = tab === 'draw';
+  document.getElementById('sig-draw-panel').style.display   = isDraw ? '' : 'none';
+  document.getElementById('sig-upload-panel').style.display = isDraw ? 'none' : '';
+  const drawBtn   = document.getElementById('sig-tab-draw');
+  const uploadBtn = document.getElementById('sig-tab-upload');
+  drawBtn.style.background   = isDraw ? 'var(--color-info-bg)' : 'var(--color-bg-secondary)';
+  drawBtn.style.color        = isDraw ? 'var(--color-info-text)' : 'var(--color-text-secondary)';
+  drawBtn.style.fontWeight   = isDraw ? '600' : '500';
+  uploadBtn.style.background = isDraw ? 'var(--color-bg-secondary)' : 'var(--color-info-bg)';
+  uploadBtn.style.color      = isDraw ? 'var(--color-text-secondary)' : 'var(--color-info-text)';
+  uploadBtn.style.fontWeight = isDraw ? '500' : '600';
+}
+
+function handleSigUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    _sigUploadDataUrl = ev.target.result;
+    const preview = document.getElementById('sig-upload-preview');
+    const img     = document.getElementById('sig-preview-img');
+    if(preview && img){
+      img.src = _sigUploadDataUrl;
+      preview.style.display = 'block';
+    }
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function clearUploadedSig(){
+  _sigUploadDataUrl = null;
+  const preview = document.getElementById('sig-upload-preview');
+  if(preview) preview.style.display = 'none';
+  const inp = document.getElementById('sig-file-input');
+  if(inp) inp.value = '';
+}
+
+function saveUploadedSig(){
+  if(!_sigUploadDataUrl){ showToast('Please select a signature photo first','error'); return; }
+  _sigHasData = true; // reuse existing save logic by setting the flag
+
+  if(_sigTarget && _sigTarget.type === 'supervisor'){
+    if(!state.supervisorSig) state.supervisorSig={name:'',title:'NDE Operations Manager',sig:''};
+    state.supervisorSig.sig = _sigUploadDataUrl;
+  } else if(_sigTarget){
+    const tech = (state.technicians||[])[_sigTarget.techIdx];
+    if(tech) tech.sig = _sigUploadDataUrl;
+  }
+
+  save();
+  renderTechRoster();
+  renderSupervisorSection();
+  closeSigModal();
+  showToast('Signature saved from photo');
+}
+
+// Wire drag-and-drop on the upload zone
+document.addEventListener('DOMContentLoaded', ()=>{
+  const dz = document.getElementById('sig-drop-zone');
+  if(!dz) return;
+  dz.ondragenter = e=>{ e.preventDefault(); dz.style.borderColor='var(--color-info-text)'; };
+  dz.ondragover  = e=>{ e.preventDefault(); };
+  dz.ondragleave = ()=>{ dz.style.borderColor=''; };
+  dz.ondrop = e=>{
+    e.preventDefault(); dz.style.borderColor='';
+    const file = e.dataTransfer.files[0];
+    if(file && file.type.startsWith('image/')){
+      const inp = document.getElementById('sig-file-input');
+      // Create synthetic change via FileReader
+      const reader = new FileReader();
+      reader.onload = ev=>{
+        _sigUploadDataUrl = ev.target.result;
+        const preview = document.getElementById('sig-upload-preview');
+        const img     = document.getElementById('sig-preview-img');
+        if(preview && img){ img.src = _sigUploadDataUrl; preview.style.display='block'; }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+});
+
 </script>
 
 <div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
@@ -7023,21 +7110,52 @@ function closeSigModal(){
 <div class="modal-overlay" id="sig-modal" onclick="if(event.target===this)closeSigModal()">
   <div class="modal-box" style="max-width:480px">
     <div class="modal-title"><i class="ti ti-signature"></i> <span id="sig-modal-title">Signature</span></div>
-    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">
-      Sign in the box below using your mouse or finger.
-    </p>
-    <div style="position:relative;border:1.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:#fff;margin-bottom:10px">
-      <canvas id="sig-canvas" width="440" height="160"
-        style="display:block;width:100%;height:160px;touch-action:none;border-radius:var(--radius-md);cursor:crosshair"></canvas>
-      <span style="position:absolute;bottom:8px;right:10px;font-size:10px;color:#ccc;pointer-events:none;font-style:italic">Sign here</span>
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:0;margin-bottom:10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
+      <button id="sig-tab-draw" onclick="switchSigTab('draw')"
+        style="flex:1;padding:7px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:var(--color-info-bg);color:var(--color-info-text);font-family:inherit">
+        <i class="ti ti-pencil"></i> Draw
+      </button>
+      <button id="sig-tab-upload" onclick="switchSigTab('upload')"
+        style="flex:1;padding:7px;font-size:12px;font-weight:500;border:none;cursor:pointer;background:var(--color-bg-secondary);color:var(--color-text-secondary);font-family:inherit">
+        <i class="ti ti-upload"></i> Upload photo
+      </button>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-primary" style="flex:1" onclick="saveSig()"><i class="ti ti-check"></i> Save signature</button>
-      <button class="btn" onclick="clearSigPad()"><i class="ti ti-eraser"></i> Clear</button>
-      <button class="btn" onclick="closeSigModal()">Cancel</button>
+
+    <!-- Draw tab -->
+    <div id="sig-draw-panel">
+      <div style="position:relative;border:1.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:#fff;margin-bottom:10px">
+        <canvas id="sig-canvas" width="440" height="160"
+          style="display:block;width:100%;height:160px;touch-action:none;border-radius:var(--radius-md);cursor:crosshair"></canvas>
+        <span style="position:absolute;bottom:8px;right:10px;font-size:10px;color:#ccc;pointer-events:none;font-style:italic">Sign here</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="saveSig()"><i class="ti ti-check"></i> Save signature</button>
+        <button class="btn" onclick="clearSigPad()"><i class="ti ti-eraser"></i> Clear</button>
+        <button class="btn" onclick="closeSigModal()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Upload tab -->
+    <div id="sig-upload-panel" style="display:none">
+      <div class="tp-drop-zone" id="sig-drop-zone" style="padding:1.5rem;margin-bottom:10px"
+           onclick="document.getElementById('sig-file-input').click()">
+        <i class="ti ti-upload" style="font-size:24px;display:block;margin-bottom:6px;color:var(--color-text-tertiary)"></i>
+        <p style="font-size:13px;color:var(--color-text-secondary);margin:0">Click or drag a signature photo here</p>
+        <small style="color:var(--color-text-tertiary);font-size:11px">PNG, JPG — white background works best</small>
+      </div>
+      <div id="sig-upload-preview" style="display:none;margin-bottom:10px;text-align:center">
+        <img id="sig-preview-img" style="max-height:120px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:#fff;padding:4px">
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="saveUploadedSig()"><i class="ti ti-check"></i> Save signature</button>
+        <button class="btn" onclick="clearUploadedSig()"><i class="ti ti-eraser"></i> Clear</button>
+        <button class="btn" onclick="closeSigModal()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
 
+<input type="file" id="sig-file-input" accept="image/*" style="display:none" onchange="handleSigUpload(event)">
 </body>
 </html>
