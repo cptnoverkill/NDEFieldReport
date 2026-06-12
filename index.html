@@ -20,7 +20,7 @@
 /* ── Theme variables ─────────────────────────── */
 /* Light (default) */
 :root,[data-theme="light"]{
-  --color-bg:#ffffff;--color-bg-secondary:#f4f4f4;--color-bg-tertiary:#ebebeb;
+  --color-bg:#ffffff;--color-input-bg:#f0f4ff;--color-bg-secondary:#f4f4f4;--color-bg-tertiary:#ebebeb;
   --color-text:#1a1a1a;--color-text-secondary:#555;--color-text-tertiary:#999;
   --color-border:#d0d0d0;--color-border-secondary:#bbb;
   --color-info-bg:#e6f1fb;--color-info-text:#185fa5;--color-info-border:#b5d4f4;
@@ -31,7 +31,7 @@
 }
 /* Dark */
 [data-theme="dark"]{
-  --color-bg:#1e1e1e;--color-bg-secondary:#2a2a2a;--color-bg-tertiary:#111;
+  --color-bg:#1e1e1e;--color-input-bg:#252d3a;--color-bg-secondary:#2a2a2a;--color-bg-tertiary:#111;
   --color-text:#e8e8e8;--color-text-secondary:#aaa;--color-text-tertiary:#666;
   --color-border:#3a3a3a;--color-border-secondary:#4a4a4a;
   --color-info-bg:#0c3a6b;--color-info-text:#90c4f4;--color-info-border:#1a5a9a;
@@ -41,7 +41,7 @@
 }
 /* Midnight blue */
 [data-theme="midnight"]{
-  --color-bg:#0d1b2a;--color-bg-secondary:#162032;--color-bg-tertiary:#0a1520;
+  --color-bg:#0d1b2a;--color-input-bg:#0f2035;--color-bg-secondary:#162032;--color-bg-tertiary:#0a1520;
   --color-text:#cfe0f0;--color-text-secondary:#7fa8c8;--color-text-tertiary:#4a7090;
   --color-border:#1e3a52;--color-border-secondary:#2a4e6e;
   --color-info-bg:#0a2d4a;--color-info-text:#60b8f0;--color-info-border:#1a5080;
@@ -51,7 +51,7 @@
 }
 /* Field tan (easy on eyes outdoors) */
 [data-theme="tan"]{
-  --color-bg:#fdf6ec;--color-bg-secondary:#f2e8d8;--color-bg-tertiary:#e8d8c0;
+  --color-bg:#fdf6ec;--color-input-bg:#fffaf0;--color-bg-secondary:#f2e8d8;--color-bg-tertiary:#e8d8c0;
   --color-text:#2d1f0a;--color-text-secondary:#6b4e2a;--color-text-tertiary:#9a7a50;
   --color-border:#d4b896;--color-border-secondary:#c4a07a;
   --color-info-bg:#e8f0f8;--color-info-text:#1a5080;--color-info-border:#a0c4e0;
@@ -162,7 +162,7 @@ tr:hover td{background:var(--color-bg-secondary)}
 .utt-table th{background:var(--color-bg-secondary);padding:5px 6px;text-align:center;font-weight:600;font-size:10.5px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.02em}
 .utt-table td{padding:3px 4px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);vertical-align:middle}
 .utt-table tr:hover td{background:var(--color-bg-secondary)}
-.utt-table input[type=number]{width:48px;padding:3px 4px;font-size:11.5px;text-align:center;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.utt-table input[type=number]{width:64px;padding:3px 4px;font-size:11.5px;text-align:center;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
 .utt-table select{padding:3px 4px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:60px;width:auto}
 .utt-table td:nth-child(1) select{min-width:72px}
 .utt-table td:nth-child(2) select{min-width:52px}
@@ -434,17 +434,17 @@ td textarea:placeholder-shown{
 
 /* ── Sidebar navigation ─────────────────────────────────────── */
 .app-body{display:flex;align-items:flex-start;gap:0;min-height:0;flex:1}
-.sidebar{width:200px;flex-shrink:0;background:var(--color-bg-secondary);border-right:0.5px solid var(--color-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
+.sidebar{width:175px;flex-shrink:0;background:var(--color-bg-secondary);border-right:0.5px solid var(--color-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
 .sidebar-category{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--color-text-tertiary);padding:10px 12px 4px;margin-top:4px}
 .sidebar-category:first-child{margin-top:0}
-.sidebar .tab{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;border:none;border-radius:0;background:transparent;color:var(--color-text-secondary);font-size:12px;font-weight:500;cursor:pointer;text-align:left;position:relative;transition:background 0.1s,color 0.1s;white-space:nowrap;font-family:inherit}
+.sidebar .tab{display:flex;align-items:center;gap:6px;width:100%;padding:7px 10px;border:none;border-radius:0;background:transparent;color:var(--color-text-secondary);font-size:11.5px;font-weight:500;cursor:pointer;text-align:left;position:relative;transition:background 0.1s,color 0.1s;white-space:nowrap;font-family:inherit}
 .sidebar .tab:hover{background:var(--color-bg);color:var(--color-text)}
 .sidebar .tab.active{background:var(--color-bg);color:var(--color-info-text);font-weight:600;border-right:2.5px solid var(--color-info-text)}
 .sidebar .tab i{font-size:14px;flex-shrink:0;opacity:0.7}
 .sidebar .tab.active i{opacity:1}
 .sidebar .tab-badge{background:var(--color-info-bg);color:var(--color-info-text);border-radius:10px;padding:0 6px;font-size:10px;margin-left:auto;font-weight:600}
 .sidebar .tab .threat-dot{width:7px;height:7px;border-radius:50%;background:var(--color-danger-text);margin-left:auto;flex-shrink:0}
-.main-content{flex:1;min-width:0;overflow-x:auto;padding:0}
+.main-content{flex:1;min-width:0;overflow-x:auto;padding:0;max-width:calc(100vw - 175px)}
 
 /* Mobile: sidebar collapses to top bar */
 @media(max-width:640px){
@@ -456,6 +456,29 @@ td textarea:placeholder-shown{
   .sidebar .tab i{font-size:16px}
   .sidebar .tab-badge{margin-left:0}
 }
+
+
+/* ── Input / select / textarea — distinct background ─────────── */
+input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]):not([type=range]),
+select,
+textarea {
+  background-color: var(--color-input-bg) !important;
+}
+/* Don't override buttons or icon buttons */
+button input { background-color: transparent !important; }
+/* Keep date-input consistent */
+.date-input { background-color: var(--color-input-bg) !important; }
+/* Scope summary selects and inputs */
+.scope-date, .tech-select { background-color: var(--color-input-bg) !important; }
+/* Grid cell inputs should stay transparent (color-coded) */
+.grid-cell-input { background-color: transparent !important; }
+.grid-cell-input:focus { background-color: var(--color-bg) !important; }
+
+
+.cal-inline-toggle.complete{background:var(--color-success-bg);color:var(--color-success-text);border-color:var(--color-success-text)}
+.cal-inline-toggle.complete .cal-complete-dot{display:inline-block}
+.cal-complete-dot{display:none;width:8px;height:8px;border-radius:50%;background:var(--color-success-text);flex-shrink:0}
+.cal-inline-toggle.incomplete .cal-complete-dot{display:none}
 
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
@@ -537,10 +560,10 @@ td textarea:placeholder-shown{
             <button class="theme-option" onclick="setTheme('tan')" data-t="tan"><span class="theme-swatch" style="background:#fdf6ec;border-color:#c4a07a"></span>Field Tan</button>
           </div>
         </div>
-        <button class="btn" onclick="importJSON()" title="Import JSON to resume inspection"><i class="ti ti-upload"></i><span class="btn-label"> Import</span></button>
         <button class="btn" onclick="openTPModal()" title="Import scope from Testing Plan xlsx" style="border-color:var(--color-success-text);color:var(--color-success-text)"><i class="ti ti-file-spreadsheet"></i><span class="btn-label"> Testing Plan</span></button>
-        <button class="btn" onclick="exportJSON()" title="Export JSON data"><i class="ti ti-download"></i><span class="btn-label"> Export JSON</span></button>
-        <button class="btn btn-excel" onclick="exportDFPR()" title="Export DFPR Excel"><i class="ti ti-table"></i><span class="btn-label"> Export DFPR</span></button>
+        <button class="btn btn-excel" onclick="openDFPRModal()" title="Import or Export into DFPR"><i class="ti ti-table"></i><span class="btn-label"> Utilize DFPR</span></button>
+        <button class="btn" onclick="importJSON()" title="Import JSON to resume inspection"><i class="ti ti-cloud-down"></i><span class="btn-label"> Import to Resume</span></button>
+        <button class="btn" onclick="exportJSON()" title="Export JSON data"><i class="ti ti-cloud-up"></i><span class="btn-label"> Export/Save</span></button>
         <button class="btn btn-pdf" onclick="showPDFModal()" title="Generate PDF report"><i class="ti ti-file-type-pdf"></i><span class="btn-label"> Generate PDF</span></button>
         <button class="btn btn-danger" onclick="clearAll()" title="Clear all data"><i class="ti ti-trash"></i><span class="btn-label"> Clear all</span></button>
       </div>
@@ -562,6 +585,7 @@ td textarea:placeholder-shown{
 
     <div class="section-divider">Technicians on project</div>
     <div class="joints-wrap" id="tech-roster-list"></div>
+    <div id="supervisor-sig-section"></div>
     <div class="add-joint-row">
       <div class="field-group"><label class="field-label">Name</label><input id="new-tech-name" placeholder="e.g. Tyler Laviolette" onkeydown="if(event.key==='Enter')addTechnician()" style="max-width:160px"></div>
       <div class="field-group"><label class="field-label">Level</label>
@@ -647,6 +671,7 @@ let state = {
   technicians:[],
   jointNotes:{},
   projectPhotos:[],
+  supervisorSig:{name:'',title:'NDE Operations Manager',sig:''},
   nri:{},
   scopeStatus:{},
   rowPhotos:{},
@@ -667,6 +692,7 @@ function load(){
   if(s){ try{ state = JSON.parse(s); }catch(e){} }
   loadConfig();
   renderTechRoster();
+  renderSupervisorSection();
   renderProjectPhotos();
   renderJoints();
   renderTabs();
@@ -745,35 +771,16 @@ function addJoint(){
 // Auto-populate a blank row for this joint in each relevant tab
 function autoPopulateJoint(jt){
   const id = jt.id;
-  // 12pt UTT — use configured scan distances, fall back to 3/8/13.5
-  if(!state.utt12) state.utt12=[];
-  const distStr = ''; // default scan positions
-  const dists   = distStr.split(',').map(d=>d.trim()).filter(Boolean);
-  // If testing plan gave a quantity, honour it (pad or trim distances)
-  const qty = parseInt(jt.uttQty)||dists.length;
-  const scanDists = [];
-  for(let i=0; i<qty; i++){
-    scanDists.push(dists[i] || ''); // blank if no default for this position
-  }
-  scanDists.forEach(dist=>{
-    state.utt12.push({jt:id, ref:'U/S', dist, bfg:'BFG',
-      vals:Array(12).fill(''), date:''});
-  });
-  // Joint Lengths
+  // Joint Lengths — always pre-populate with joint dimensions from Testing Plan
   if(!state.jointlen) state.jointlen=[];
-  state.jointlen.push({jt:id, type:jt.type||'Pipe', length:jt.length||'', od1:jt.od||'', nwt1:jt.nwt||'', od2:jt.od2||'', nwt2:jt.nwt2||'', notes:'', date:''});
-  // VA — one blank row per joint
-  if(!state.va) state.va=[];
-  state.va.push({jt:id, indid:'', char:'', ref:'U/S', dist:'', clock:'N/A',
-    len:'', wid:'', dep:'', wt:'', nl:'L', photo:'', notes:'', date:''});
-  // MT — one blank row per joint
-  if(!state.mt) state.mt=[];
-  state.mt.push({jt:id, indid:'', char:'', ref:'U/S', dist:'', clock:'N/A',
-    len:'', wid:'', ht:'', wt:'', nl:'L', blphoto:'', wlphoto:'', pautphoto:'', date:''});
-  // AE/LSC
-  if(!state.aelsc) state.aelsc=[];
-  state.aelsc.push({jt:id, lsctype:'', aemethod:'', clock:'N/A',
-    aedepth:'', comments:'', photo:'', date:''});
+  if(!state.jointlen.find(r=>r.jt===id)){
+    state.jointlen.push({jt:id, type:jt.type||'Pipe', length:jt.length||'',
+      od1:jt.od||'', nwt1:jt.nwt||'', od2:jt.od2||'', nwt2:jt.nwt2||'',
+      notes:'', date:'', tech:''});
+  }
+  // Note: UTT, VA, MT, AE/LSC rows are NOT pre-populated with blanks.
+  // Real data rows come from DFPR import or manual entry only.
+  // This avoids duplicate/blank rows when both Testing Plan and DFPR are imported.
 }
 
 function removeJoint(id){
@@ -998,8 +1005,10 @@ function renderUTT12(){
   const rowHtml = rows.length ? rows.map((r,i)=>{
     const vals = r.vals||Array(12).fill('');
     const filled = vals.filter(v=>v!=='');
-    const avg = filled.length ? (filled.reduce((a,b)=>a+parseFloat(b),0)/filled.length/1000).toFixed(3) : '—';
-    const mn  = filled.length ? (Math.min(...filled.map(v=>parseFloat(v)))/1000).toFixed(3) : '—';
+    // Normalize: if stored as integer (e.g. 511 from DFPR import), divide by 1000
+    const normVal = v=>{ const n=parseFloat(v); return n>1 ? n/1000 : n; };
+    const avg = filled.length ? (filled.reduce((a,b)=>a+normVal(b),0)/filled.length).toFixed(3) : '—';
+    const mn  = filled.length ? Math.min(...filled.map(normVal)).toFixed(3) : '—';
     const jt  = (state.joints||[]).find(j=>j.id===r.jt);
     const nwt = jt ? parseFloat(jt.nwt)||0 : 0;
     const low = mn!=='—' && nwt && parseFloat(mn)<nwt*0.8;
@@ -1008,7 +1017,7 @@ function renderUTT12(){
       <td><select onchange="rowUpdate('utt12',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.5" value="${r.dist||''}" onchange="rowUpdate('utt12',${i},'dist',this.value)"></td>
       <td><select onchange="rowUpdate('utt12',${i},'bfg',this.value)">${BFG_AFG.map(v=>`<option${v===r.bfg?' selected':''}>${v}</option>`).join('')}</select></td>
-      ${vals.map((v,ci)=>`<td><input type="number" step="1" value="${v}" onchange="uttVal(${i},${ci},this.value)"></td>`).join('')}
+      ${vals.map((v,ci)=>`<td><input type="number" step="0.001" value="${(v!==''&&parseFloat(v)>1)?( parseFloat(v)/1000).toFixed(3):v}" onchange="uttVal(${i},${ci},this.value)"></td>`).join('')}
       <td class="stat-col">${avg}</td>
       <td class="stat-col${low?' val-low':''}">${mn}${low?' ⚠':''}</td>
       <td><select class="tech-select" onchange="rowUpdate('utt12',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('utt12',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('utt12',i)}<td><button class="icon-btn" onclick="removeRow('utt12',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
@@ -1444,6 +1453,31 @@ function renderPAUTLS(){
 
 const ACUREN_EQUIPMENT = [{"name": "Bryan Matthews", "phone": "209-305-3437", "email": "Bryan.Matthews@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12332", "mtYokeCal": "2026-09-05", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5 2.0", "blSerial": "5UWF16184", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2141544", "detectorSN": "2141541", "lmCal": "2027-01-07", "utScope": "Olympus 45MG", "utScopeSerial": "201577004", "utScopeCal": "2026-09-05", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1321388", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-197", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Chris Wills", "phone": "661-205-8383", "email": "Christopher.Wills@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11536", "mtYokeCal": "2027-01-09", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "67635", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "303", "detectorSN": "C5DCF895ABC7", "lmCal": "2027-01-06", "utScope": "Olympus 45MG", "utScopeSerial": "171025608", "utScopeCal": "2027-04-01", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295787", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-175", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Christian Jordan", "phone": "661-852-1761", "email": "Christian.Jordan@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13029", "mtYokeCal": "2026-03-14", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "61175", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "304", "detectorSN": "D75DEB562267A", "lmCal": "2027-01-06", "utScope": "Olympus 45MG", "utScopeSerial": "170973605", "utScopeCal": "2027-01-07", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1400402", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-44", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Danny Tabor", "phone": "713-865-0965", "email": "daniel.tabor@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13208", "mtYokeCal": "2026-06-20", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "66588", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "CFF486D9F7C4", "detectorSN": "0491", "lmCal": "2026-09-04", "utScope": "Olympus 45MG", "utScopeSerial": "201578004", "utScopeCal": "2027-03-16", "utProbe": "Olympus", "utProbeModel": "D-798", "utProbeSerial": "1520050", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "C-076", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Hobie Maturin", "phone": "504-433-6100", "email": "hobie.maturin@acuren.com", "mtYokeModel": "B-100", "mtYokeSerial": "16386", "mtYokeCal": "2027-01-29", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1068", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2144035", "detectorSN": "2144039", "lmCal": "2027-01-08", "utScope": "Olympus 45MG", "utScopeSerial": "181178605", "utScopeCal": "2027-01-07", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1548515", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-258", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Ivan Morales", "phone": "956-525-2274", "email": "Ivan.Morales@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "10996", "mtYokeCal": "2026-10-16", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "54218", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "2144033", "detectorSN": "2144037", "lmCal": "2027-01-08", "utScope": "Olympus 45MG", "utScopeSerial": "181255709", "utScopeCal": "2026-10-16", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295779", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-262", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Jalen Sebastien", "phone": "707-315-3321", "email": "jalen.sebastian@acuren.com", "mtYokeModel": "Y-2", "mtYokeSerial": "N8281", "mtYokeCal": "2026-11-02", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "55904", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "454", "detectorSN": "DDC41AC0D0C1", "lmCal": "2027-01-06", "utScope": "Olympus 38DL Plus", "utScopeSerial": "130604003", "utScopeCal": "2027-01-25", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1538555", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "12-5041", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "John Darbonne", "phone": "337-524-2835", "email": "John.Darbonne@acuren.com", "mtYokeModel": "Y-2", "mtYokeSerial": "N9212", "mtYokeCal": "2027-01-08", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5 2.0", "blSerial": "5UF16278", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "451", "detectorSN": "F0E073C907AD", "lmCal": "2027-01-07", "utScope": "Olympus Epoch 650", "utScopeSerial": "180574603", "utScopeCal": "2027-01-08", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B20055", "utFreq": "5", "utDia": "0.375", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-377", "pautUnit": "46081", "pautSerial": "Magnaflux", "pautCal": ""}, {"name": "Kaleb Smith", "phone": "714-743-9379", "email": "Kaleb.Smith@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "", "mtYokeCal": "", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "52534", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "305", "detectorSN": "F6BEDCB7DA25", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "211259104", "utScopeCal": "2027-02-26", "utProbe": "Olympus", "utProbeModel": "D-790", "utProbeSerial": "1059433", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-202", "pautUnit": "46290", "pautSerial": "", "pautCal": ""}, {"name": "Kyle Schofield", "phone": "707-228-0557", "email": "Kyle.Schofield@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13201", "mtYokeCal": "2027-01-25", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "5UWF16227", "lmBrand": "Spectroline", "lmModel": "XRP-3000", "lmSerial": "1999990", "detectorSN": "1999986", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "160204906", "utScopeCal": "2027-01-06", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B22296", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "D-180", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Leonardo Tejada", "phone": "956-203-7303", "email": "Leonardo.Tejada@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11080", "mtYokeCal": "2027-03-09", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "5UWF16226", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "452", "detectorSN": "FBB63FB7B76E", "lmCal": "2027-01-07", "utScope": "Olympus 45MG", "utScopeSerial": "171052410", "utScopeCal": "2026-09-09", "utProbe": "Olympus", "utProbeModel": "D799", "utProbeSerial": "1295778", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-335", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Mike Sizemore", "phone": "832-696-2428", "email": "Michael.Sizemore@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "11740", "mtYokeCal": "2027-02-10", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "57666", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "453", "detectorSN": "C2A9654A9CE", "lmCal": "2027-01-06", "utScope": "Olympus Epoch 650", "utScopeSerial": "160203205", "utScopeCal": "2027-02-13", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1407715", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "J-56", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Paizley Ramsey", "phone": "907-903-1696", "email": "Paizley.Ramsey@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12384", "mtYokeCal": "2026-07-02", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1061", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "302", "detectorSN": "E45637AA4437", "lmCal": "2027-01-08", "utScope": "Olympus Epoch 650", "utScopeSerial": "160239508", "utScopeCal": "2026-10-17", "utProbe": "Britek", "utProbeModel": "BD-35", "utProbeSerial": "B21767", "utFreq": "5", "utDia": "0.375", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "P-455", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Ruben Morales", "phone": "832-629-4384", "email": "Ruben.Morales@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "13209", "mtYokeCal": "2026-12-07", "wfmtMedium": "20B", "wfmtBatch": "20A100", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "C2C-1039", "lmBrand": "Labino", "lmModel": "Apollo 1.1", "lmSerial": "738", "detectorSN": "FE0EB1ED9AD0", "lmCal": "2026-09-04", "utScope": "Olympus 45MG", "utScopeSerial": "160881211", "utScopeCal": "2026-12-06", "utProbe": "Olympus", "utProbeModel": "D-799", "utProbeSerial": "1400405", "utFreq": "5", "utDia": "0.312", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "F-127", "pautUnit": "", "pautSerial": "", "pautCal": ""}, {"name": "Tyler Laviolette", "phone": "989-513-8402", "email": "Tyler.Laviolette@acuren.com", "mtYokeModel": "B-310", "mtYokeSerial": "12270", "mtYokeCal": "2027-03-17", "wfmtMedium": "20B", "wfmtBatch": "20A099", "blBrand": "Labino", "blModel": "UVG5", "blSerial": "67634", "lmBrand": "Labino", "lmModel": "Apollo 1.0", "lmSerial": "0492", "detectorSN": "F5695649CE23", "lmCal": "2027-01-07", "utScope": "Olympus Epoch 650", "utScopeSerial": "231597403", "utScopeCal": "2027-01-08", "utProbe": "Britek", "utProbeModel": "BD-25", "utProbeSerial": "B21771", "utFreq": "5", "utDia": "0.25", "couplant": "Ultragel II", "couplantBatch": "22H028", "stepWedge": "K-135", "pautUnit": "", "pautSerial": "", "pautCal": ""}];
 
+const DEFAULT_PROCEDURES = {
+  utt:    {proc:'BP-4190P-507', rev:'Rev. 1'},
+  mut:    {proc:'BP-4190P-507', rev:'Rev. 1'},
+  aut:    {proc:'BP-4190P-507', rev:'Rev. 1'},
+  mt:     {proc:'BP-4190P-512', rev:'Rev. 1'},
+  aelsc:  {proc:'BP-4190P-505', rev:'Rev. 0'},
+  paut:   {proc:'BP-4190P-518', rev:'Rev. 1'},
+  xrf:    {proc:'', rev:''},
+  hard:   {proc:'', rev:''},
+  filings:{proc:'', rev:''},
+  iit:    {proc:'', rev:''},
+  metallo:{proc:'', rev:''},
+};
+
+function getProcedure(methodId){
+  const custom = (state.procedures||{})[methodId];
+  return custom || DEFAULT_PROCEDURES[methodId] || {proc:'',rev:''};
+}
+function setProcedure(methodId, field, val){
+  if(!state.procedures) state.procedures={};
+  if(!state.procedures[methodId]) state.procedures[methodId]={...DEFAULT_PROCEDURES[methodId]||{}};
+  state.procedures[methodId][field] = val;
+  save();
+}
+
 /* ===== Technician roster ===== */
 const TECH_COLORS = ['#1a6fa8','#c55a11','#2e7d32','#6a1f7a','#b71c1c',
   '#00695c','#4527a0','#ad6800','#1565c0','#558b2f'];
@@ -1514,8 +1548,12 @@ function renderTechRoster(){
           onchange="updateTech(${i},'methods',this.value)"
           oninput="updateTech(${i},'methods',this.value)"></td>
 
-      <td style="width:32px;text-align:center">
-        <button class="icon-btn" onclick="removeTechnician('${escaped}')" aria-label="Remove ${escaped}">
+      <td style="white-space:nowrap;text-align:center">
+        <button class="btn btn-sm" onclick="openSigModal('tech',${i})"
+          style="font-size:11px;${t.sig?'color:var(--color-success-text);border-color:var(--color-success-text)':''}">
+          <i class="ti ti-signature"></i> ${t.sig?'✓':'Sign'}
+        </button>
+        <button class="icon-btn" onclick="removeTechnician('${escaped}')" aria-label="Remove ${escaped}" style="margin-left:2px">
           <i class="ti ti-trash"></i>
         </button>
       </td>
@@ -1528,10 +1566,74 @@ function renderTechRoster(){
       <th>Name</th>
       <th>Level</th>
       <th>Methods</th>
-      <th></th>
+      <th>Signature</th>
     </tr></thead>
     <tbody>${rows}</tbody>
   </table></div>`;
+  renderSupervisorSection();
+}
+
+function renderSupervisorSection(){
+  const el = document.getElementById('supervisor-sig-section');
+  if(!el) return;
+  const sup = state.supervisorSig||{};
+  const div = document.createElement('div');
+  div.style.cssText = 'margin-top:10px;padding:10px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);border:0.5px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-wrap:wrap';
+
+  const icon = document.createElement('i');
+  icon.className = 'ti ti-user-check';
+  icon.style.cssText = 'color:var(--color-info-text);font-size:16px;flex-shrink:0';
+  div.appendChild(icon);
+
+  const info = document.createElement('div');
+  info.style.cssText = 'flex:1;min-width:200px';
+
+  const lbl = document.createElement('div');
+  lbl.style.cssText = 'font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-text-tertiary);margin-bottom:4px';
+  lbl.textContent = 'NDE Supervisor / Reviewer';
+  info.appendChild(lbl);
+
+  const nameInput = document.createElement('input');
+  nameInput.value = sup.name||'';
+  nameInput.placeholder = 'Supervisor name';
+  nameInput.style.cssText = 'width:170px;padding:4px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);margin-right:6px';
+  nameInput.onchange = function(){ updateSupervisor('name', this.value); };
+  info.appendChild(nameInput);
+
+  const titleInput = document.createElement('input');
+  titleInput.value = sup.title||'NDE Operations Manager';
+  titleInput.placeholder = 'Title';
+  titleInput.style.cssText = 'width:200px;padding:4px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)';
+  titleInput.onchange = function(){ updateSupervisor('title', this.value); };
+  info.appendChild(titleInput);
+  div.appendChild(info);
+
+  const actions = document.createElement('div');
+  actions.style.cssText = 'display:flex;align-items:center;gap:8px';
+
+  if(sup.sig){
+    const img = document.createElement('img');
+    img.src = sup.sig;
+    img.style.cssText = 'height:38px;border:0.5px solid var(--color-border);border-radius:4px;background:#fff;padding:2px';
+    actions.appendChild(img);
+  }
+
+  const sigBtn = document.createElement('button');
+  sigBtn.className = 'btn btn-sm';
+  sigBtn.style.cssText = 'font-size:11px;' + (sup.sig ? 'color:var(--color-success-text);border-color:var(--color-success-text)' : '');
+  sigBtn.innerHTML = '<i class="ti ti-signature"></i> ' + (sup.sig ? '&#10003; Signed' : 'Add signature');
+  sigBtn.onclick = function(){ openSigModal('supervisor', null); };
+  actions.appendChild(sigBtn);
+  div.appendChild(actions);
+
+  el.innerHTML = '';
+  el.appendChild(div);
+}
+
+function updateSupervisor(field, val){
+  if(!state.supervisorSig) state.supervisorSig={name:'',title:'NDE Operations Manager',sig:''};
+  state.supervisorSig[field] = val;
+  save();
 }
 
 function updateTech(idx, field, val){
@@ -1543,7 +1645,9 @@ function updateTech(idx, field, val){
 }
 
 function to(selected){
-  const techs = state.technicians||[];
+  const techs = [...(state.technicians||[])].sort((a,b)=>
+    (a.name||'').localeCompare(b.name||'')
+  );
   const blankOpt = `<option value="">— Technician —</option>`;
   return blankOpt + techs.map(t=>
     `<option value="${t.name}" ${t.name===selected?'selected':''}>${t.name} (Lvl ${t.cert||'?'})</option>`
@@ -1668,31 +1772,27 @@ function scopeSummaryTable(tabId, methodLabel){
       </tr>`;
     });
 
-    // Inline cal card for this group (only if method has cal and has date or tech)
+    // Cal badge linking to Daily Cal tab
     if(methodId && (gInfo.date || gInfo.tech)){
       const calKey = `${methodId}__${gInfo.date}__${gInfo.tech}`;
-      const card = getNDECard(calKey, methodId, gInfo.date, gInfo.tech);
-      const isOpen = card._open || false;
-      const calLabel = gInfo.tech
-        ? `${gInfo.tech}${gInfo.date?' · '+gInfo.date:''} — NDE Parameters`
-        : `${gInfo.date} — NDE Parameters`;
-      const hasData = card.utUnit || card.procedure || card.yokeModel || card.utSerial;
-
+      const card = (state.ndeCards||{})[calKey];
+      const comp = card ? cardCompletionLabel(card) : null;
+      const badge = comp
+        ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600;
+            background:${comp.complete?'var(--color-success-bg)':'var(--color-warning-bg)'};
+            color:${comp.complete?'var(--color-success-text)':'var(--color-warning-text)'}"
+            onclick="switchTab('calrec')" title="Open Daily Cal">
+            <i class="ti ti-certificate" style="font-size:10px"></i>
+            ${comp.complete?'✓ Cal':'Cal '+comp.pct+'%'}
+          </span>`
+        : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;
+            background:var(--color-bg-tertiary);color:var(--color-text-tertiary)"
+            onclick="switchTab('calrec')" title="Add cal record in Daily Cal">
+            <i class="ti ti-certificate" style="font-size:10px"></i> Add cal
+          </span>`;
       tableHtml += `<tr class="cal-inline-row">
-        <td colspan="${colSpan}" style="padding:0;border:none">
-          <div class="cal-inline-wrap">
-            <div class="cal-inline-toggle${isOpen?' open':''}"
-                 onclick="toggleNDECardInline('${calKey}','${methodId}','${gInfo.date}','${gInfo.tech}','${tabId}')">
-              <i class="ti ti-certificate" style="font-size:13px"></i>
-              <span>${calLabel}</span>
-              ${hasData?`<span style="font-size:10px;color:var(--color-success-text);margin-left:4px">● filled</span>`:'<span style="font-size:10px;color:var(--color-warning-text);margin-left:4px">○ empty</span>'}
-              ${ACUREN_EQUIPMENT.find(e=>e.name===gInfo.tech)?`<span class="nde-tech-autofill" style="margin-left:auto;margin-right:8px" onclick="event.stopPropagation();autoFillFromEquipment('${calKey}','${gInfo.tech}')"><i class="ti ti-wand"></i> Auto-fill</span>`:''}
-              <i class="ti ti-chevron-right toggle-arrow"></i>
-            </div>
-            <div class="cal-inline-body${isOpen?' open':''}" id="cal-body-${calKey}">
-              ${isOpen ? renderNDECardFields(card) : ''}
-            </div>
-          </div>
+        <td colspan="${colSpan}" style="padding:3px 10px;border-bottom:0.5px solid var(--color-border);text-align:right">
+          ${badge}
         </td>
       </tr>`;
     }
@@ -1725,9 +1825,10 @@ function scopeSummaryTable(tabId, methodLabel){
 function getNDECard(key, methodId, date, tech){
   if(!state.ndeCards) state.ndeCards={};
   if(!state.ndeCards[key]){
+    const _dp = getProcedure(methodId);
     state.ndeCards[key] = {
       id:key, method:methodId, date:date||'', tech:tech||'', certLevel:'',
-      procedure:'', revNo:'', calIn:'', calOut:'', calDue:'',
+      procedure:_dp.proc||'', revNo:_dp.rev||'', calIn:'', calOut:'', calDue:'',
       utUnit:'', utSerial:'', utModel:'',
       transManuf:'', transModel:'', transSerial:'',
       frequency:'', transSize:'', elementQty:'',
@@ -1749,29 +1850,6 @@ function getNDECard(key, methodId, date, tech){
 }
 
 // Ensure a cal card exists when date/tech is set on a scope row
-function ensureNDECard(methodId, date, tech){
-  if(!methodId || (!date && !tech)) return;
-  const key = `${methodId}__${date}__${tech}`;
-  getNDECard(key, methodId, date, tech);
-  save();
-}
-
-function toggleNDECardInline(key, methodId, date, tech, tabId){
-  const card = getNDECard(key, methodId, date, tech);
-  card._open = !card._open;
-  save();
-  // Toggle body without full re-render
-  const toggle = event.currentTarget;
-  const body = document.getElementById('cal-body-'+key);
-  toggle.classList.toggle('open', card._open);
-  if(body){
-    body.classList.toggle('open', card._open);
-    if(card._open && !body.innerHTML.trim()){
-      body.innerHTML = renderNDECardFields(card);
-    }
-  }
-}
-
 // Render just the fields portion of a card (no header, used inline)
 function renderNDECardFields(card){
   const id = card.id;
@@ -2015,7 +2093,7 @@ function exportJSON(){
 
 function clearAll(){
   if(!confirm('Clear ALL field data? This cannot be undone.')) return;
-  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},projectPhotos:[],nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},ecGrids:{},mutGrids:{},autScans:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
+  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},projectPhotos:[],nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},procedures:{},ecGrids:{},mutGrids:{},autScans:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
   localStorage.removeItem('nde_field_report');
   loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
 }
@@ -2035,16 +2113,6 @@ function showPDFModal(){ document.getElementById('pdf-modal').classList.add('ope
 function closePDFModal(){ document.getElementById('pdf-modal').classList.remove('open'); }
 function showDFPRModal(){ document.getElementById('dfpr-modal').classList.add('open'); }
 function closeDFPRModal(){ document.getElementById('dfpr-modal').classList.remove('open'); }
-function exportDFPR(){ showDFPRModal(); }
-
-function exportJSONForPDF(){
-  const blob = new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  const proj = (state.config?.project||'nde_report').replace(/\s+/g,'_').replace(/[^a-zA-Z0-9_-]/g,'');
-  a.download = proj+'_field_data.json';
-  a.click();
-}
 
 function buildXLSX(){
   const prog = document.getElementById('dfpr-progress');
@@ -2654,6 +2722,12 @@ async function openKnackPicker(){
       page++;
     } while(records.length < total && page <= 20);
 
+    // Sort alphabetically by name field before rendering
+    records.sort((a,b)=>{
+      const na = String(a[KNACK_CONFIG.nameField]||'').toLowerCase();
+      const nb = String(b[KNACK_CONFIG.nameField]||'').toLowerCase();
+      return na.localeCompare(nb);
+    });
     _knackAllRecords = records;
     renderKnackList(records);
 
@@ -2764,6 +2838,8 @@ function confirmKnackSelection(){
       added++;
     }
   });
+  state.technicians.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  state.technicians.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
   save();
   renderTechRoster();
   renderTab(activeTab);
@@ -3330,6 +3406,46 @@ function removeLSCGroupPhoto(gi, pi){
 }
 
 
+function isCardComplete(card){
+  if(!card) return false;
+  const m = card.method;
+  // Must have at minimum: date, tech, utUnit, utSerial, procedure
+  const base = card.date && card.tech && card.procedure;
+  if(!base) return false;
+  // UT-based methods need scope data
+  if(['utt','aut','mut','paut'].includes(m)){
+    return !!(card.utUnit && card.utSerial && card.transModel && card.screenRange && card.velocity);
+  }
+  if(m === 'mt'){
+    return !!(card.yokeModel && card.blModel && card.technique);
+  }
+  if(m === 'aelsc'){
+    return !!(card.etchantType && card.yokeModel);
+  }
+  return true; // other methods just need base
+}
+
+function cardCompletionLabel(card){
+  if(!card) return {pct:0, missing:[]};
+  const checks = [
+    ['Date',       !!card.date],
+    ['Technician', !!card.tech],
+    ['Procedure',  !!card.procedure],
+    ['UT Unit',    !!card.utUnit || ['mt','xrf','hard','filings','iit','metallo'].includes(card.method)],
+    ['Cal Due',    !!card.calDue || ['mt','xrf','hard','filings','iit','metallo'].includes(card.method)],
+    ['Cal In',     !!card.calIn],
+    ['Cal Out',    !!card.calOut],
+    ['Transducer', !!card.transModel || ['mt','xrf','hard','filings','iit','metallo'].includes(card.method)],
+    ['Velocity',   !!card.velocity || ['mt','xrf','hard','filings','iit','metallo','aelsc'].includes(card.method)],
+  ];
+  if(card.method==='mt'||card.method==='aelsc'){
+    checks.push(['Yoke Model', !!card.yokeModel], ['Blacklight', !!card.blModel]);
+  }
+  const done = checks.filter(([,v])=>v).length;
+  const missing = checks.filter(([,v])=>!v).map(([k])=>k);
+  return {pct:Math.round(done/checks.length*100), missing, complete: missing.length===0};
+}
+
 /* ===== Auto-generate Indication IDs (per PG&E convention) ===== */
 // Convention: JT-01 MT-01, JT-01 MT-02, JT-02 MT-01 etc.
 // method prefix map
@@ -3399,6 +3515,67 @@ function updatePAUTSpacing(tabId, jtId, val){
 
 
 
+
+function renderProcedureSettings(){
+  const methods = [
+    {id:'utt',   label:'UTT / MUT / AUT'},
+    {id:'mt',    label:'MT/VT'},
+    {id:'aelsc', label:'AE/LSC'},
+    {id:'paut',  label:'PAUT'},
+    {id:'xrf',   label:'XRF/LIBS'},
+    {id:'hard',  label:'Hardness'},
+    {id:'filings',label:'Metal Filings'},
+    {id:'iit',   label:'IIT'},
+    {id:'metallo',label:'Field Metallo.'},
+  ];
+  const rows = methods.map(m=>{
+    const p = getProcedure(m.id);
+    return `<tr>
+      <td style="font-weight:600;font-size:12px;padding:5px 8px;white-space:nowrap">${m.label}</td>
+      <td><input value="${p.proc||''}" placeholder="e.g. BP-4190P-507"
+        style="width:100%;padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+        onchange="setProcedure('${m.id}','proc',this.value)"></td>
+      <td><input value="${p.rev||''}" placeholder="e.g. Rev. 1"
+        style="width:100%;padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+        onchange="setProcedure('${m.id}','rev',this.value)"></td>
+      <td><button class="btn btn-sm" onclick="resetProcedure('${m.id}')" title="Reset to default" style="font-size:11px">↺ Default</button></td>
+    </tr>`;
+  }).join('');
+
+  return `<div style="margin-bottom:16px">
+    <div class="section-divider" style="cursor:pointer;user-select:none" onclick="toggleProcSettings()" id="proc-settings-hdr">
+      <i class="ti ti-settings" style="font-size:12px"></i> Procedure Defaults
+      <i class="ti ti-chevron-right" id="proc-settings-arrow" style="font-size:11px;margin-left:auto;transition:transform 0.2s"></i>
+    </div>
+    <div id="proc-settings-body" style="display:none;background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:0 0 var(--radius-md) var(--radius-md);padding:10px">
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Set default procedure numbers used when creating new NDE parameter records.</p>
+      <div class="table-wrap"><table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Method</th>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Procedure Number</th>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Revision</th>
+          <th style="border-bottom:0.5px solid var(--color-border)"></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>
+    </div>
+  </div>`;
+}
+
+function toggleProcSettings(){
+  const body  = document.getElementById('proc-settings-body');
+  const arrow = document.getElementById('proc-settings-arrow');
+  const open  = body.style.display !== 'none';
+  body.style.display  = open ? 'none' : 'block';
+  arrow.style.transform = open ? '' : 'rotate(90deg)';
+}
+
+function resetProcedure(methodId){
+  if(!state.procedures) state.procedures={};
+  delete state.procedures[methodId];
+  save();
+  renderTab('calrec');
+}
 
 /* ===== NDE Report Cards ===== */
 
@@ -3510,9 +3687,10 @@ function updateNDECard(cardId, field, val){
 function addNDECard(methodId){
   if(!state.ndeCards) state.ndeCards={};
   const id = 'nde_'+Date.now();
+  const _defProc = getProcedure(methodId);
   state.ndeCards[id] = {
     id, method:methodId, date:'', tech:'', certLevel:'',
-    procedure:'', revNo:'', calIn:'', calOut:'', calDue:'',
+    procedure:_defProc.proc, revNo:_defProc.rev, calIn:'', calOut:'', calDue:'',
     utUnit:'', utSerial:'', utModel:'',
     transManuf:'', transModel:'', transSerial:'',
     frequency:'', transSize:'', elementQty:'',
@@ -3774,40 +3952,185 @@ function renderNDECardBody(card){
 /* ===== Rewritten renderCalRec ===== */
 function renderCalRec(){
   if(!state.ndeCards) state.ndeCards={};
+  const cfg = state.config||{};
 
-  const allCards = Object.values(state.ndeCards||{});
-  const methodCards = allCards.filter(c=>c.method===activeNDEMethod);
-  const methodInfo = NDE_METHODS.find(m=>m.id===activeNDEMethod);
+  // Group cards by date then method
+  const cards = Object.values(state.ndeCards).sort((a,b)=>{
+    if(a.date < b.date) return -1;
+    if(a.date > b.date) return 1;
+    return (a.method||'').localeCompare(b.method||'');
+  });
 
-  const methodTabsHtml = NDE_METHODS.map(m=>{
-    const count = Object.values(state.ndeCards||{}).filter(c=>c.method===m.id).length;
-    return `<button class="nde-method-tab${activeNDEMethod===m.id?' active':''}"
-              onclick="activeNDEMethod='${m.id}';renderTab('calrec')">
-      <i class="ti ${m.icon}" style="font-size:12px;vertical-align:-1px"></i> ${m.label}
-      ${count>0?`<span style="background:var(--color-info-bg);color:var(--color-info-text);border-radius:10px;padding:0 5px;font-size:10px;margin-left:3px">${count}</span>`:''}
-    </button>`;
-  }).join('');
+  // Cards by date
+  const byDate = {};
+  cards.forEach(c=>{
+    const d = c.date||'No date';
+    if(!byDate[d]) byDate[d]=[];
+    byDate[d].push(c);
+  });
 
-  const cardsHtml = methodCards.length
-    ? methodCards.map(c=>`<div class="nde-card">${renderNDECardBody(c)}</div>`).join('')
-    : `<div class="empty-state"><i class="ti ${methodInfo?.icon||'ti-clipboard'}"></i>
-         No ${methodInfo?.label||''} parameter records yet</div>`;
+  const calCards = cards.length ? Object.entries(byDate).map(([date, dayCards])=>`
+    <div style="margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+           color:var(--color-text-tertiary);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+        ${date}
+      </div>
+      ${dayCards.map(card=>{
+        const comp = cardCompletionLabel(card);
+        const mInfo = NDE_METHODS.find(m=>m.id===card.method)||{label:card.method,icon:'ti-certificate'};
+        const isOpen = card._open||false;
+        return `<div style="margin-bottom:6px;border:0.5px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
+                     border-radius:var(--radius-md);overflow:hidden;
+                     border-left:3px solid ${comp.complete?'var(--color-success-text)':'var(--color-info-border)'}">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+               background:${comp.complete?'var(--color-success-bg)':'var(--color-bg-secondary)'};
+               cursor:pointer;user-select:none"
+               onclick="toggleCalCard('${card.id}')">
+            <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
+                 background:var(--color-info-bg);color:var(--color-info-text);flex-shrink:0">
+              <i class="ti ${mInfo.icon}" style="font-size:10px"></i> ${mInfo.label}
+            </span>
+            <span style="font-size:13px;font-weight:600">${card.tech||'<span style="color:var(--color-text-tertiary)">No tech</span>'}</span>
+            <span style="font-size:11px;color:${comp.complete?'var(--color-success-text)':'var(--color-warning-text)'}">
+              ${comp.complete?'✓ Complete':`${comp.pct}% — ${comp.missing.slice(0,3).join(', ')}`}
+            </span>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+              <button class="btn btn-sm" onclick="event.stopPropagation();pullEquipmentFromKnack('${card.id}','${card.tech||''}')"
+                title="Pull equipment from Knack" style="font-size:11px">
+                <i class="ti ti-cloud-download"></i> Pull equipment
+              </button>
+              <button class="icon-btn" onclick="event.stopPropagation();deleteNDECard('${card.id}')"
+                title="Delete this cal record"><i class="ti ti-trash"></i></button>
+              <i class="ti ti-chevron-${isOpen?'down':'right'}" style="font-size:13px;color:var(--color-text-tertiary)"></i>
+            </div>
+          </div>
+          ${isOpen?`<div style="padding:12px 14px;border-top:0.5px solid var(--color-border)">
+            ${renderNDECardFields(card)}
+          </div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('') : `<div class="empty-state"><i class="ti ti-certificate"></i>
+      No cal records yet — click "+ Add cal record" to get started
+    </div>`;
 
   return `<div class="panel">
-    <div class="panel-header">
-      <span class="panel-title"><i class="ti ti-certificate"></i> NDE Inspection Parameter Records</span>
+    <div class="panel-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+      <span class="panel-title"><i class="ti ti-certificate"></i> Daily Cal Records</span>
+      <button class="btn btn-primary" onclick="openAddCalModal()">
+        <i class="ti ti-plus"></i> Add cal record
+      </button>
     </div>
-    <div class="alert alert-info"><i class="ti ti-info-circle"></i>
-      Per PG&E Vendor Expectations §5 &amp; §9.1: document all equipment serial numbers, calibration dates, software versions, and daily cal-in/cal-out times. Select a method below then add a record card for each tech/day combination.
+    ${renderProcedureSettings()}
+    <div style="padding:0 12px 12px">
+      ${calCards}
     </div>
-    <div class="nde-method-tabs">${methodTabsHtml}</div>
-    <button class="nde-add-card-btn" onclick="addNDECard('${activeNDEMethod}')">
-      <i class="ti ti-plus"></i> Add ${methodInfo?.label||''} parameter record
-    </button>
-    ${cardsHtml}
   </div>`;
 }
 
+function toggleCalCard(cardId){
+  const card = state.ndeCards[cardId];
+  if(!card) return;
+  card._open = !card._open;
+  save();
+  renderTab('calrec');
+}
+
+function deleteNDECard(cardId){
+  if(!confirm('Delete this cal record?')) return;
+  delete state.ndeCards[cardId];
+  save(); renderTab('calrec');
+}
+
+// ── Add cal record modal ───────────────────────────────────────────────────────
+function openAddCalModal(){
+  // Populate method and tech options
+  const methodOpts = NDE_METHODS.map(m=>
+    `<option value="${m.id}">${m.label}</option>`
+  ).join('');
+  const techOpts = (state.technicians||[]).map(t=>
+    `<option value="${t.name}">${t.name}</option>`
+  ).join('');
+
+  const today = new Date().toISOString().slice(0,10);
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay open';
+  modal.id = 'add-cal-modal';
+  modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `
+    <div class="modal-box" style="max-width:400px">
+      <div class="modal-title"><i class="ti ti-certificate"></i> Add Cal Record</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
+        <div>
+          <label class="field-label">NDE Method</label>
+          <select id="acm-method" style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
+            ${methodOpts}
+          </select>
+        </div>
+        <div>
+          <label class="field-label">Date</label>
+          <input type="date" id="acm-date" value="${today}"
+            style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
+        </div>
+        <div>
+          <label class="field-label">Technician</label>
+          <select id="acm-tech" style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
+            <option value="">— Select technician —</option>
+            ${techOpts}
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="confirmAddCal()">
+          <i class="ti ti-plus"></i> Create
+        </button>
+        <button class="btn" onclick="document.getElementById('add-cal-modal').remove()">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function confirmAddCal(){
+  const method = document.getElementById('acm-method')?.value;
+  const date   = document.getElementById('acm-date')?.value;
+  const tech   = document.getElementById('acm-tech')?.value;
+  if(!method || !date){ showToast('Method and date are required','error'); return; }
+
+  const key = `${method}__${date}__${tech}`;
+  if(!state.ndeCards) state.ndeCards={};
+  if(state.ndeCards[key]){
+    showToast('A cal record for this method/date/tech already exists','error');
+    return;
+  }
+
+  const p = getProcedure(method);
+  state.ndeCards[key] = {
+    id:key, method, date, tech, certLevel:'',
+    procedure:p.proc||'', revNo:p.rev||'',
+    calIn:'', calOut:'', calDue:'',
+    utUnit:'', utSerial:'', utModel:'',
+    transManuf:'', transModel:'', transSerial:'',
+    frequency:'', transSize:'', elementQty:'',
+    screenRange:'', refScanDb:'', velocity:'',
+    calBlock:'', calBlockMaterial:'', calBlockSerial:'',
+    calBlockTemp:'', pipeTemp:'', couplant:'', couplantBatch:'',
+    etchantType:'', etchantExp:'',
+    yokeModel:'', yokeSerial:'', yokeCal:'',
+    technique:'', wfmtMedium:'', wfmtBatch:'',
+    blBrand:'', blModel:'', blSerial:'',
+    lmBrand:'', lmModel:'', lmSerial:'', detectorSN:'', lmCal:'',
+    visLight:'', uvLight:'',
+    scanSpeed:'', echoToEcho:'',
+    elementActivityCheck:false,
+    notes:'', _open:true,
+  };
+
+  save();
+  document.getElementById('add-cal-modal')?.remove();
+  renderTab('calrec');
+  showToast(`Cal record created for ${tech||'unassigned'} · ${method.toUpperCase()} · ${date}`);
+}
 
 /* ===== Grid Engine ===== */
 
@@ -4554,24 +4877,44 @@ async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
   const reviewer = {name:'Ken Criss', title:'NDE Operations Manager'};
   const boxW = TW/2 - 4;
 
+  const sup = state.supervisorSig||{};
+  const sigH = 18;
+  const hdrH = 7;
+
+  // Left header
   doc.setFontSize(8); doc.setFont('helvetica','bold');
-  doc.setFillColor(...R_DKBLUE);
-  doc.rect(ML, y, boxW, 6, 'F');
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, boxW, hdrH, 'F');
   doc.setTextColor(...R_WHITE);
-  doc.text('Report Prepared by:', ML+boxW/2, y+4, {align:'center'});
+  doc.text('Report Prepared by:', ML+boxW/2, y+5, {align:'center'});
+  // Right header
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML+boxW+8, y, boxW, hdrH, 'F');
+  doc.text('Reviewed and Approved by:', ML+boxW+8+boxW/2, y+5, {align:'center'});
+  y += hdrH + 2;
 
-  doc.setFillColor(...R_DKBLUE);
-  doc.rect(ML+boxW+8, y, boxW, 6, 'F');
-  doc.text('Reviewed and Approved by:', ML+boxW+8+boxW/2, y+4, {align:'center'});
-  y += 8;
+  // Signature images (or blank lines)
+  const prepSig = prepTech.sig || techs.find(t=>t.sig)?.sig;
+  if(prepSig){
+    try{ doc.addImage(prepSig,'PNG',ML+4,y,boxW-8,sigH,undefined,'FAST'); }catch(e){}
+  } else {
+    doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.4);
+    doc.line(ML+8, y+sigH-2, ML+boxW-8, y+sigH-2);
+  }
+  if(sup.sig){
+    try{ doc.addImage(sup.sig,'PNG',ML+boxW+12,y,boxW-8,sigH,undefined,'FAST'); }catch(e){}
+  } else {
+    doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.4);
+    doc.line(ML+boxW+12, y+sigH-2, ML+boxW*2, y+sigH-2);
+  }
+  y += sigH + 4;
 
-  doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-  doc.text(prepTech.name||'', ML+boxW/2, y+5, {align:'center'});
-  doc.text(reviewer.name, ML+boxW+8+boxW/2, y+5, {align:'center'});
-  y += 6;
-  doc.setFontSize(8);
-  doc.text(prepTech.title||'Sr. Pipeline Integrity Technician', ML+boxW/2, y+4, {align:'center'});
-  doc.text(reviewer.title, ML+boxW+8+boxW/2, y+4, {align:'center'});
+  // Names and titles
+  doc.setTextColor(...R_BLACK); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text(prepTech.name||'', ML+boxW/2, y, {align:'center'});
+  doc.text(sup.name||'NDE Supervisor', ML+boxW+8+boxW/2, y, {align:'center'});
+  y += 5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text(prepTech.title||'Sr. Pipeline Integrity Technician', ML+boxW/2, y, {align:'center'});
+  doc.text(sup.title||'NDE Operations Manager', ML+boxW+8+boxW/2, y, {align:'center'});
 }
 
 // ── Cal / parameter data sheet ────────────────────────────────────────────────
@@ -4588,42 +4931,69 @@ function buildCalSheet(doc, methodId, methodLabel){
     doc.text(`${methodLabel} Data Sheet Technician #${ci+1}`, PW/2, y+6, {align:'center'});
     y += 10;
 
-    // Parameter block
-    const paramRows = [
-      ['Procedure Used:', card.procedure||'', 'Revision No:', card.revNo||''],
-      ['(UT) Unit Brand:', card.utUnit||'', 'Model:', card.utModel||'', 'Serial Number:', card.utSerial||''],
-      ['Cal Due Date:', card.calDue||'', 'Cal In Time:', card.calIn||'', 'Cal Out Time:', card.calOut||''],
-      ['Transducer Manufacture:', card.transManuf||'', 'Model:', card.transModel||'', 'Serial Number:', card.transSerial||''],
-      ['Size/Dia. (Inches):', card.transSize||'', 'Element:', card.elementQty||'', 'Frequency (MHz):', card.frequency||''],
-      ['Screen Range (In.):', card.screenRange||'', 'Ref+Scan (dB):', card.refScanDb||'', 'Velocity (In./µsec.):', card.velocity||''],
-      ['Cal Block Used (In):', card.calBlock||'', 'Material:', card.calBlockMaterial||'', 'Serial Number:', card.calBlockSerial||''],
-      ['Couplant Type:', card.couplant||'', 'Batch No:', card.couplantBatch||'', 'Cal Block Temp. +/- 25°F:', card.calBlockTemp||'Yes'],
-      ['Technician:', card.tech||'', 'Certification Level:', card.certLevel||'', 'Inspection Date:', card.date||'Daily'],
+    // Parameter block — pairs rendered as label|value rows (2 per row = 4 cols)
+    const paramPairs = [
+      ['Procedure Used:',        card.procedure||'—',       'Revision No:',           card.revNo||'—'],
+      ['(UT) Unit Brand/Model:', card.utUnit||'—',           'Serial Number:',         card.utSerial||'—'],
+      ['Cal Due Date:',          card.calDue||'—',           'Cal In Time:',           card.calIn||'—'],
+      ['Cal Out Time:',          card.calOut||'—',           'Certification Level:',   card.certLevel||'—'],
+      ['Transducer Mfr:',        card.transManuf||'—',       'Model:',                 card.transModel||'—'],
+      ['Transducer Serial:',     card.transSerial||'—',      'Size/Dia. (in.):',       card.transSize||'—'],
+      ['Element/Qty:',           card.elementQty||'—',       'Frequency (MHz):',       card.frequency||'—'],
+      ['Screen Range (in.):',    card.screenRange||'—',      'Ref+Scan (dB):',         card.refScanDb||'—'],
+      ['Velocity (in./µsec.):',  card.velocity||'—',         'Cal Block Used:',        card.calBlock||'—'],
+      ['Cal Block Material:',    card.calBlockMaterial||'—', 'Cal Block Serial:',      card.calBlockSerial||'—'],
+      ['Couplant Type:',         card.couplant||'—',         'Couplant Batch No:',     card.couplantBatch||'—'],
+      ['Cal Block Temp ±25°F:',  card.calBlockTemp||'Yes',   'Inspection Date:',       card.date||'Daily'],
+      ['Technician:',            card.tech||'—',             '',                       ''],
     ];
+    // MT-specific extras
+    if(card.method==='mt'||card.method==='aelsc'){
+      paramPairs.push(
+        ['Yoke Model:',  card.yokeModel||'—',  'Yoke Serial:',  card.yokeSerial||'—'],
+        ['Technique:',   card.technique||'—',  'WFMT Medium:',  card.wfmtMedium||'—'],
+        ['Blacklight:',  card.blModel||'—',    'BL Serial:',    card.blSerial||'—'],
+        ['Light Meter:', card.lmModel||'—',    'LM Serial:',    card.lmSerial||'—'],
+        ['UV Intensity:',card.uvLight||'—',    'Vis. Light:',   card.visLight||'—'],
+      );
+    }
 
     // Blue header row for parameter section
     doc.setFillColor(...R_DKBLUE);
-    doc.rect(ML, y, TW, 6, 'F');
-    doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
-    doc.text(`${methodLabel} Testing Parameters:`, ML+2, y+4);
+    doc.rect(ML, y, TW, 7, 'F');
+    doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+    doc.text(`${methodLabel} Testing Parameters:`, ML+2, y+5);
     doc.setTextColor(...R_BLACK);
-    y += 6;
+    y += 7;
 
-    const rowH = 6;
-    paramRows.forEach(row=>{
-      const cellW = TW / (row.length);
-      let x = ML;
-      row.forEach((cell, ci2)=>{
-        const isBold = ci2%2===0; // labels are bold
-        doc.setFont('helvetica', isBold?'bold':'normal');
-        doc.setFontSize(7.5);
-        doc.setFillColor(...(isBold ? R_LGRAY : R_WHITE));
-        doc.rect(x, y, cellW, rowH, 'F');
-        doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.15);
-        doc.rect(x, y, cellW, rowH, 'S');
-        doc.text(String(cell), x+1, y+4, {maxWidth: cellW-2});
-        x += cellW;
-      });
+    const rowH = 7;
+    const labelW = TW * 0.22; // label col width
+    const valW   = TW * 0.28; // value col width
+
+    paramPairs.forEach(([l1,v1,l2,v2])=>{
+      // Col 1: label
+      doc.setFillColor(...R_LGRAY); doc.rect(ML,          y, labelW, rowH, 'F');
+      doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2); doc.rect(ML, y, labelW, rowH, 'S');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.setTextColor(...R_BLACK);
+      doc.text(l1, ML+1.5, y+rowH*0.65, {maxWidth:labelW-3});
+      // Col 2: value
+      doc.setFillColor(...R_WHITE); doc.rect(ML+labelW,    y, valW, rowH, 'F');
+      doc.rect(ML+labelW, y, valW, rowH, 'S');
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+      doc.text(String(v1||''), ML+labelW+1.5, y+rowH*0.65, {maxWidth:valW-3});
+      if(l2){
+        // Col 3: label
+        doc.setFillColor(...R_LGRAY); doc.rect(ML+labelW+valW,    y, labelW, rowH, 'F');
+        doc.rect(ML+labelW+valW, y, labelW, rowH, 'S');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8);
+        doc.text(l2, ML+labelW+valW+1.5, y+rowH*0.65, {maxWidth:labelW-3});
+        // Col 4: value
+        doc.setFillColor(...R_WHITE); doc.rect(ML+labelW*2+valW, y, valW, rowH, 'F');
+        doc.rect(ML+labelW*2+valW, y, valW, rowH, 'S');
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        doc.text(String(v2||''), ML+labelW*2+valW+1.5, y+rowH*0.65, {maxWidth:valW-3});
+      }
       y += rowH;
     });
     y += 4;
@@ -4815,38 +5185,66 @@ function buildLSCTable(doc, y){
 }
 
 // ── Joint photos section ───────────────────────────────────────────────────────
-async function buildPhotosSection(doc, tabId, title){
-  // Collect overview photos for each joint
-  const joints=state.joints||[];
-  let added=false;
+async function buildPhotosSection(doc, tabId, title, inclProjPhotos=true){
+  // ── Project overview photos (always included) ──────────────────────────
+  const projPhotos = (state.projectPhotos||[]);
+  for(const p of projPhotos){
+    try{
+      doc.addPage();
+      let y = pageHeader(doc);
+      const img = new Image();
+      await new Promise(res=>{ img.onload=res; img.src=p.data; });
+      // Full-page photo like example report
+      const maxH = PH - y - 22; // leave room for header + caption bar
+      const maxW = TW;
+      const aspect = img.width / img.height;
+      let iw = maxW, ih = maxW / aspect;
+      if(ih > maxH){ ih = maxH; iw = maxH * aspect; }
+      const imgX = ML + (TW - iw) / 2;
+      doc.addImage(p.data,'JPEG', imgX, y, iw, ih, undefined, 'FAST');
+      // Blue caption bar at bottom like example
+      const capY = y + ih + 3;
+      doc.setFillColor(...R_DKBLUE); doc.rect(ML, capY, TW, 8, 'F');
+      doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+      doc.text('Project Overview', PW/2, capY+5.5, {align:'center'});
+      doc.setTextColor(...R_BLACK);
+    }catch(e){ console.warn('Project photo failed:',e); }
+  }
+
+  // ── Per-joint overview photos (one full page each, matching example) ───
+  const joints = state.joints||[];
   for(const j of joints){
-    const ovwPhotos=((state.jointNotes||{})[j.id]||[]).filter(p=>p.isOverview);
-    const rowPhotos=Object.values((state.rowPhotos||{})[tabId]||{}).flat();
-    const allPics=[...ovwPhotos,...rowPhotos].slice(0,4);
+    // Collect this joint's overview photos
+    const ovwPhotos = ((state.jointNotes||{})[j.id]||[]).filter(p=>p.isOverview);
+    // Also collect any row-level photos for this tab
+    const rowPhotoMap = (state.rowPhotos||{})[tabId]||{};
+    const rowPhotos   = Object.values(rowPhotoMap).flat();
+    // Filter row photos to this joint
+    const jointRowPhotos = rowPhotos.filter(p=> p.jointId===j.id || !p.jointId);
+    const allPics = [...ovwPhotos, ...jointRowPhotos];
     if(!allPics.length) continue;
 
-    doc.addPage(); let y=pageHeader(doc);
-    doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
-    doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
-    doc.text(`${title} Overview Photo(s)`, PW/2, y+5,{align:'center'});
-    y+=9; added=true;
-
-    for(let pi=0;pi<allPics.length;pi+=1){
-      const p=allPics[pi];
+    for(const p of allPics){
       try{
-        const img=new Image();
-        await new Promise(res=>{img.onload=res;img.src=p.data;});
-        const maxH=110,maxW=TW;
-        const aspect=img.width/img.height;
-        let iw=maxW,ih=maxW/aspect;
-        if(ih>maxH){ih=maxH;iw=maxH*aspect;}
-        if(y+ih>PH-20){doc.addPage();y=pageHeader(doc);}
-        doc.addImage(p.data,'JPEG',ML+(TW-iw)/2,y,iw,ih,undefined,'FAST');
-        y+=ih+3;
-        doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...R_BLACK);
-        doc.text(`${j.id} ${pi===0&&p.isOverview?'Overview':'Overview'} Photo`,PW/2,y+4,{align:'center'});
-        y+=8;
-      }catch(e){}
+        doc.addPage();
+        let y = pageHeader(doc);
+        const img = new Image();
+        await new Promise(res=>{ img.onload=res; img.src=p.data; });
+        const maxH = PH - y - 22;
+        const maxW = TW;
+        const aspect = img.width / img.height;
+        let iw = maxW, ih = maxW / aspect;
+        if(ih > maxH){ ih = maxH; iw = maxH * aspect; }
+        const imgX = ML + (TW - iw) / 2;
+        doc.addImage(p.data,'JPEG', imgX, y, iw, ih, undefined, 'FAST');
+        // Blue caption bar — e.g. "JT-01 AE Overview"
+        const capY = y + ih + 3;
+        const caption = `${j.id} ${title} Overview`;
+        doc.setFillColor(...R_DKBLUE); doc.rect(ML, capY, TW, 8, 'F');
+        doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+        doc.text(caption, PW/2, capY+5.5, {align:'center'});
+        doc.setTextColor(...R_BLACK);
+      }catch(e){ console.warn('Joint photo failed:', j.id, e); }
     }
   }
 }
@@ -4874,7 +5272,7 @@ async function generatePDF(){
           let y=buildScopeTable(doc,'utt12','12-PT UTT',[],0);
           if(state.uttloc?.length){ doc.addPage(); y=pageHeader(doc); y=buildUTTLocTable(doc,y); }
           doc.addPage(); y=pageHeader(doc); buildUTT12Table(doc,y);
-          if(inclPic) await buildPhotosSection(doc,'utt12','UTT');
+          await buildPhotosSection(doc,'utt12','UTT');
         }},
       {id:'uttloc', label:'UTT of Test Locations', calId:'utt',
         build: async(doc)=>{ let y=pageHeader(doc); buildUTTLocTable(doc,y); }},
@@ -4895,13 +5293,13 @@ async function generatePDF(){
             columnStyles:{0:{fontStyle:'bold'}},alternateRowStyles:{fillColor:R_LGRAY},
             styles:{lineColor:R_MGRAY,lineWidth:0.15}});
         }},
-      {id:'va',    label:'Visual Assessment (VA)',     calId:'mt',  build:async(doc)=>{ let y=buildScopeTable(doc,'va','Visual Assessment (VA)',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'va','VT Indications',y);y=await buildGridsSection(doc,'va',y); if(inclPic) await buildPhotosSection(doc,'va','VA'); }},
-      {id:'mt',    label:'Magnetic Particle Testing (MT)', calId:'mt', build:async(doc)=>{ let y=buildScopeTable(doc,'mt','MT',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'mt','MT Indications',y); if(inclPic) await buildPhotosSection(doc,'mt','MT'); }},
-      {id:'aut',   label:'Automated UT (AUT)',         calId:'aut', build:async(doc)=>{ let y=buildScopeTable(doc,'aut','AUT',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'aut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'aut',y); if(inclPic) await buildPhotosSection(doc,'aut','AUT'); }},
-      {id:'mut',   label:'Manual UT (MUT)',            calId:'mut', build:async(doc)=>{ let y=buildScopeTable(doc,'mut','MUT',[],0); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'mut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'mut',y); if(inclPic) await buildPhotosSection(doc,'mut','MUT'); }},
+      {id:'va',    label:'Visual Assessment (VA)',     calId:'mt',  build:async(doc)=>{ buildScopeTable(doc,'va','Visual Assessment (VA)',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'va','VT Indications',y);y=await buildGridsSection(doc,'va',y); await buildPhotosSection(doc,'va','VA'); }},
+      {id:'mt',    label:'Magnetic Particle Testing (MT)', calId:'mt', build:async(doc)=>{ buildScopeTable(doc,'mt','MT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'mt','MT Indications',y);y=await buildGridsSection(doc,'mt',y); await buildPhotosSection(doc,'mt','MT'); }},
+      {id:'aut',   label:'Automated UT (AUT)',         calId:'aut', build:async(doc)=>{ buildScopeTable(doc,'aut','AUT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'aut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'aut',y); await buildPhotosSection(doc,'aut','AUT'); }},
+      {id:'mut',   label:'Manual UT (MUT)',            calId:'mut', build:async(doc)=>{ buildScopeTable(doc,'mut','MUT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'mut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'mut',y); await buildPhotosSection(doc,'mut','MUT'); }},
       {id:'muthand',label:'MUT Hand Scans',            calId:'mut', build:async(doc)=>{ let y=pageHeader(doc); buildFlawTable(doc,'muthand','MUT Hand Scan Results',y); }},
-      {id:'pautbm',label:'PAUT Base Metal',            calId:'paut',build:async(doc)=>{ let y=buildScopeTable(doc,'pautbm','PAUT BM',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'pautbm','PAUT Base Metal Indications (All Measurements are from the USGW)',y); if(inclPic) await buildPhotosSection(doc,'pautbm','PAUT'); }},
-      {id:'pautls',label:'PAUT Long Seam',             calId:'paut',build:async(doc)=>{ let y=buildScopeTable(doc,'pautls','PAUT LS',[],0); doc.addPage();y=pageHeader(doc);buildFlawTable(doc,'pautls','PAUT Long Seam Indications',y); if(inclPic) await buildPhotosSection(doc,'pautls','PAUT LS'); }},
+      {id:'pautbm',label:'PAUT Base Metal',            calId:'paut',build:async(doc)=>{ buildScopeTable(doc,'pautbm','PAUT BM',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'pautbm','PAUT Base Metal Indications (All Measurements are from the USGW)',y);y=await buildGridsSection(doc,'pautbm',y); await buildPhotosSection(doc,'pautbm','PAUT'); }},
+      {id:'pautls',label:'PAUT Long Seam',             calId:'paut',build:async(doc)=>{ buildScopeTable(doc,'pautls','PAUT LS',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'pautls','PAUT Long Seam Indications',y);y=await buildGridsSection(doc,'pautls',y); await buildPhotosSection(doc,'pautls','PAUT LS'); }},
     ];
 
     const methods=scope==='full'?METHOD_MAP:METHOD_MAP.filter(m=>m.id===method);
@@ -5221,9 +5619,993 @@ async function buildGridsSection(doc, tabId, startY){
   return y;
 }
 
-// Build all grids section for a given method context
-async function buildGridsSection(doc, tabId, y){
-  return startY;
+
+
+/* ===== DFPR Fill-in-place ===== */
+let _dfprWorkbook = null;
+let _dfprFileName = '';
+
+function openDFPRModal(){
+  _dfprWorkbook = null;
+  _dfprFileName = '';
+  document.getElementById('dfpr-file-name').textContent = 'No file selected';
+  document.getElementById('dfpr-fill-btn').disabled = true;
+  document.getElementById('dfpr-progress').style.display = 'none';
+  document.getElementById('dfpr-modal').classList.add('open');
+
+  const dz = document.getElementById('dfpr-drop-zone');
+  dz.ondragenter = e=>{ e.preventDefault(); dz.classList.add('drag-over'); };
+  dz.ondragover  = e=>{ e.preventDefault(); dz.classList.add('drag-over'); };
+  dz.ondragleave = e=>{ if(!dz.contains(e.relatedTarget)) dz.classList.remove('drag-over'); };
+  dz.ondrop = e=>{
+    e.preventDefault(); dz.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if(file) parseDFPRFile(file);
+  };
+}
+function closeDFPRModal(){ document.getElementById('dfpr-modal').classList.remove('open'); }
+
+function handleDFPRFile(e){
+  const file = e.target.files[0];
+  if(file) parseDFPRFile(file);
+  e.target.value = '';
+}
+
+function parseDFPRFile(file){
+  _dfprFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    try{
+      _dfprWorkbook = XLSX.read(ev.target.result, {type:'array', cellStyles:true, cellDates:true, bookVBA:true});
+      document.getElementById('dfpr-file-name').textContent = '✓ ' + file.name;
+      document.getElementById('dfpr-fill-btn').disabled = false;
+      showToast('DFPR loaded — ready to fill');
+    }catch(err){
+      showToast('Could not read file: '+err.message, 'error');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// Helper: find the first data row (after header) in a sheet
+function dfprDataStart(ws, headerRowIdx){
+  return headerRowIdx + 1; // 0-based
+}
+
+// Write a value only if the cell is empty or we're in update mode
+function dfprSetCell(ws, r, c, value, overwrite=true){
+  const addr = XLSX.utils.encode_cell({r, c});
+  if(!overwrite && ws[addr] && ws[addr].v !== '' && ws[addr].v !== null) return;
+  if(value === '' || value === null || value === undefined) return;
+  ws[addr] = { v: value, t: typeof value === 'number' ? 'n' : 's' };
+}
+
+async function fillDFPR(){
+  if(!_dfprWorkbook){ showToast('No DFPR file loaded','error'); return; }
+  document.getElementById('dfpr-progress').style.display = 'block';
+  await new Promise(r=>setTimeout(r,30));
+
+  try{
+    const wb  = _dfprWorkbook;
+    const fillDates  = document.getElementById('dfpr-fill-dates').checked;
+    const fillUTT    = document.getElementById('dfpr-fill-utt').checked;
+    const fillUTTLoc = document.getElementById('dfpr-fill-uttloc').checked;
+    const fillJLen   = document.getElementById('dfpr-fill-jlen').checked;
+    const fillLSC    = document.getElementById('dfpr-fill-lsc').checked;
+    const fillFlaw   = document.getElementById('dfpr-fill-flaw').checked;
+
+    // ── NDE Testing Dates ──────────────────────────────────────────────────
+    // Sheet: 'NDE Testing Dates'
+    // Row 7 (0-based=6) = headers, rows 8+ = data
+    // Cols: C=Joint(2), F=Photos(5), G=12PT-UT(6), H=LSC(7),
+    //       I=MetalFilings(8), J=LIBS(9), K=Hardness(10), L=IIT(11),
+    //       M=Microstructure(12), N=VA(13), O=MT(14), P=AUT(15),
+    //       Q=PAUTBody(16), R=PAUTLongSeam(17)
+    if(fillDates && wb.Sheets['NDE Testing Dates']){
+      const ws  = wb.Sheets['NDE Testing Dates'];
+      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      // Find header row (contains 'Joint')
+      const hdrIdx = aoa.findIndex(r=>String(r[2]||'').includes('Joint'));
+      if(hdrIdx !== -1){
+        const joints = state.joints||[];
+        // Build lookup: jointId → row index in sheet
+        const jtRowMap = {};
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const jid = String(aoa[ri][2]||'').trim();
+          if(jid) jtRowMap[jid] = ri;
+        }
+        // Column map (0-based)
+        const COL = {utt12:6, lsc:7, filings:8, xrf:9, hard:10, iit:11, metallo:12,
+                     va:13, mt:14, aut:15, pautbm:16, pautls:17};
+        joints.forEach(jt=>{
+          const ri = jtRowMap[jt.id];
+          if(ri === undefined) return;
+          Object.entries(COL).forEach(([tabId, ci])=>{
+            const date = computeJointTabMaxDate(tabId, jt.id) ||
+                         getScopeStatus(tabId, jt.id).date || '';
+            if(date){
+              const addr = XLSX.utils.encode_cell({r:ri, c:ci});
+              ws[addr] = {v: new Date(date), t:'d', z:'m/d/yy'};
+            }
+          });
+        });
+      }
+    }
+
+    // ── 12pt UTT ──────────────────────────────────────────────────────────
+    // Sheet: '12pt UTT' — header row 1 (0-based), data from row 2
+    // Cols: A=Joint(0), B=RefGW(1), C=Dist(2), D=BFG/AFG(3),
+    //       E-P = 12 clocks (4-15), Q=Avg(16), R=Min(17)
+    if(fillUTT && wb.Sheets['12pt UTT']){
+      const ws  = wb.Sheets['12pt UTT'];
+      const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+      const hdrIdx = aoa.findIndex(r=>r[0]&&String(r[0]).includes('Joint'));
+      if(hdrIdx !== -1){
+        // Build existing row map: "jt|ref|dist" → row index
+        const existMap = {};
+        for(let ri=hdrIdx+1;ri<aoa.length;ri++){
+          const key=`${aoa[ri][0]}|${aoa[ri][1]}|${aoa[ri][2]}`;
+          if(aoa[ri][0]) existMap[key]=ri;
+        }
+        let nextRow = aoa.length;
+        (state.utt12||[]).forEach(r=>{
+          const key=`${r.jt}|${r.ref||'U/S'}|${r.dist}`;
+          let ri = existMap[key];
+          if(ri===undefined){ ri=nextRow++; }
+          const vals=Array.isArray(r.vals)?r.vals:Array(12).fill('');
+          const nums=vals.map(v=>parseFloat(v)).filter(v=>!isNaN(v));
+          const avg=nums.length?(nums.reduce((a,b)=>a+b,0)/nums.length):null;
+          const mn=nums.length?Math.min(...nums):null;
+          const rowData=[r.jt, r.ref||'U/S', r.dist||'', r.bfg||'BFG',
+            ...vals.map(v=>parseFloat(v)||''), avg, mn];
+          rowData.forEach((v,ci)=>{
+            if(v===''||v===null) return;
+            const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+            ws[addr]={v:typeof v==='number'?parseFloat(v.toFixed(3)):v,
+                      t:typeof v==='number'?'n':'s'};
+          });
+          // Update sheet range
+          const ref=XLSX.utils.decode_range(ws['!ref']||'A1');
+          ref.e.r=Math.max(ref.e.r,ri); ref.e.c=Math.max(ref.e.c,17);
+          ws['!ref']=XLSX.utils.encode_range(ref);
+        });
+      }
+    }
+
+    // ── UTT of Test Locations ──────────────────────────────────────────────
+    // Cols: A=Joint(0),B=TestLoc(1),C=Ref(2),D=Dist(3),E=Clock(4),
+    //       F=AreaLen(5),G=AreaWid(6),H=BFGMin(7),I=BFGMax(8),
+    //       J=AFGMin(9),K=AFGMax(10),L=%Removed(11),M=Result(12)
+    if(fillUTTLoc && wb.Sheets['UTT of Test Locations']){
+      const ws=wb.Sheets['UTT of Test Locations'];
+      const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const hdrIdx=aoa.findIndex(r=>r[0]&&String(r[0]).includes('Joint'));
+      if(hdrIdx!==-1){
+        let ri=hdrIdx+1;
+        (state.uttloc||[]).forEach(r=>{
+          const bm=parseFloat(r.bfgmin||0),am=parseFloat(r.afgmin||0);
+          const pct=bm?((bm-am)/bm*100):null;
+          const row=[r.jt,r.ndtid||'',r.ref||'U/S',r.dist||'',r.clock||'',
+                     r.alen||'',r.awid||'',r.bfgmin||'',r.bfgmax||'',
+                     r.afgmin||'',r.afgmax||'',pct,r.result||''];
+          row.forEach((v,ci)=>{
+            if(v===''||v===null) return;
+            const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+            ws[addr]={v:typeof v==='number'?v:String(v),t:typeof v==='number'?'n':'s'};
+          });
+          const ref=XLSX.utils.decode_range(ws['!ref']||'A1');
+          ref.e.r=Math.max(ref.e.r,ri);ref.e.c=12;
+          ws['!ref']=XLSX.utils.encode_range(ref);
+          ri++;
+        });
+      }
+    }
+
+    // ── Joint Lengths ──────────────────────────────────────────────────────
+    // Cols: A=Joint(0),B=Feature(1),C=Length(2),D=OD1(3),E=OD2(4)
+    if(fillJLen && wb.Sheets['Joint Lengths']){
+      const ws=wb.Sheets['Joint Lengths'];
+      const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const hdrIdx=aoa.findIndex(r=>r[0]&&String(r[0]).includes('Joint'));
+      if(hdrIdx!==-1){
+        const existMap={};
+        for(let ri2=hdrIdx+1;ri2<aoa.length;ri2++){
+          if(aoa[ri2][0]) existMap[String(aoa[ri2][0]).trim()]=ri2;
+        }
+        let nextRow=aoa.length;
+        (state.jointlen||[]).forEach(r=>{
+          let ri=existMap[r.jt];
+          if(ri===undefined){ri=nextRow++;}
+          const row=[r.jt,r.type||'Pipe',parseFloat(r.length)||'',
+                     parseFloat(r.od1)||'',parseFloat(r.od2)||'N/A'];
+          row.forEach((v,ci)=>{
+            if(v===''||v===null) return;
+            const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+            ws[addr]={v,t:typeof v==='number'?'n':'s'};
+          });
+          const ref=XLSX.utils.decode_range(ws['!ref']||'A1');
+          ref.e.r=Math.max(ref.e.r,ri);ref.e.c=4;
+          ws['!ref']=XLSX.utils.encode_range(ref);
+        });
+      }
+    }
+
+    // ── LSC Results ───────────────────────────────────────────────────────
+    // Cols: A=Joint(0),B=LongSeam(1),C=Clock(2),D=Comments(3)
+    if(fillLSC && wb.Sheets['LSC Results']){
+      const ws=wb.Sheets['LSC Results'];
+      const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const hdrIdx=aoa.findIndex(r=>r[0]&&String(r[0]).includes('Joint'));
+      if(hdrIdx!==-1){
+        let ri=hdrIdx+1;
+        // From lscGroups
+        (state.lscGroups||[]).forEach(g=>{
+          g.joints.forEach(jid=>{
+            const row=[jid,g.seam||'',g.clock||'',g.notes||''];
+            row.forEach((v,ci)=>{
+              if(!v) return;
+              const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+              ws[addr]={v,t:'s'};
+            });
+            const ref=XLSX.utils.decode_range(ws['!ref']||'A1');
+            ref.e.r=Math.max(ref.e.r,ri);ref.e.c=3;
+            ws['!ref']=XLSX.utils.encode_range(ref);
+            ri++;
+          });
+        });
+        // Also aelsc rows if no groups
+        if(!(state.lscGroups||[]).length){
+          (state.aelsc||[]).forEach(r=>{
+            const row=[r.jt,r.lsctype||'',r.clock||'',r.notes||''];
+            row.forEach((v,ci)=>{
+              if(!v) return;
+              const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+              ws[addr]={v,t:'s'};
+            });
+            ri++;
+          });
+        }
+      }
+    }
+
+    // ── Flaw Detection sheets ─────────────────────────────────────────────
+    if(fillFlaw){
+      // Map: [sheetName, stateKey, columnOrder]
+      const flawSheets = [
+        {sheet:'MT Indications',       key:'mt',      cols:['jt','indid','char','ref','dist','clock','len','wid','ht','wt','nl']},
+        {sheet:'VA Indications',       key:'va',      cols:['jt','indid','char','ref','dist','clock','len','wid','dep','wt','nl']},
+        {sheet:'AUT Indications',      key:'aut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
+        {sheet:'MUT Indications',      key:'mut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
+        {sheet:'MUT Hand Scans',       key:'muthand', cols:['jt','start','end','minwt','indfound']},
+        {sheet:'PAUT BM Indications',  key:'pautbm',  cols:['jt','indid','char','ref','dist','clock','len','dep','ht','wt','nl']},
+        {sheet:'PAUT LS Indications',  key:'pautls',  cols:['jt','indid','char','ref','dist','clock','len','dep','ht','wt','nl']},
+      ];
+
+      flawSheets.forEach(({sheet,key,cols})=>{
+        if(!wb.Sheets[sheet]) return;
+        const ws=wb.Sheets[sheet];
+        const aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        const hdrIdx=aoa.findIndex(r=>r[0]&&String(r[0]).includes('Joint'));
+        if(hdrIdx===-1) return;
+
+        // Build existing indication map to avoid duplicates
+        const existSet=new Set();
+        for(let ri2=hdrIdx+1;ri2<aoa.length;ri2++){
+          const jt=String(aoa[ri2][0]||'').trim();
+          const id=String(aoa[ri2][1]||'').trim();
+          if(jt&&id) existSet.add(`${jt}|${id}`);
+        }
+        let ri=aoa.length;
+
+        (state[key]||[]).forEach(r=>{
+          const dupKey=`${r.jt}|${r.indid||''}`;
+          if(existSet.has(dupKey)) return; // skip existing
+          const row=cols.map(c=>r[c]||'');
+          row.forEach((v,ci)=>{
+            if(v==='') return;
+            const addr=XLSX.utils.encode_cell({r:ri,c:ci});
+            const num=parseFloat(v);
+            ws[addr]={v:!isNaN(num)&&v!==''?num:String(v), t:!isNaN(num)&&v!==''?'n':'s'};
+          });
+          const ref=XLSX.utils.decode_range(ws['!ref']||'A1');
+          ref.e.r=Math.max(ref.e.r,ri);ref.e.c=Math.max(ref.e.c,cols.length-1);
+          ws['!ref']=XLSX.utils.encode_range(ref);
+          ri++;
+        });
+      });
+    }
+
+    // ── Download filled DFPR ──────────────────────────────────────────────
+    const outName = _dfprFileName.replace(/\.xlsx$/i,'_filled.xlsx');
+    XLSX.writeFile(wb, outName);
+    document.getElementById('dfpr-progress').style.display='none';
+    closeDFPRModal();
+    showToast(`DFPR saved as ${outName}`);
+
+  }catch(err){
+    document.getElementById('dfpr-progress').style.display='none';
+    console.error('DFPR fill error:',err);
+    showToast('DFPR fill failed: '+err.message,'error');
+  }
+}
+
+
+/* ===== DFPR direction router + import ===== */
+
+function dfprAction(){
+  const dir = document.querySelector('input[name="dfpr-dir"]:checked')?.value || 'fill';
+  if(dir === 'import') importFromDFPR();
+  else fillDFPR();
+}
+
+// Update button label when direction changes
+document.addEventListener('change', e=>{
+  if(e.target.name === 'dfpr-dir'){
+    const isImport = e.target.value === 'import';
+    const btn   = document.getElementById('dfpr-fill-btn');
+    const label = document.getElementById('dfpr-btn-label');
+    const icon  = document.getElementById('dfpr-btn-icon');
+    if(label) label.innerHTML = isImport ? 'Import to App' : 'Fill &amp; Download';
+    if(icon)  icon.className  = isImport ? 'ti ti-download' : 'ti ti-table';
+    if(btn)   btn.className   = btn.className.replace(isImport?'btn-excel':'btn-primary',
+                                                       isImport?'btn-primary':'btn-excel');
+  }
+});
+
+async function importFromDFPR(){
+  if(!_dfprWorkbook){ showToast('No DFPR file loaded','error'); return; }
+  document.getElementById('dfpr-progress').style.display = 'block';
+  await new Promise(r=>setTimeout(r,30));
+
+  try{
+    const wb = _dfprWorkbook;
+    let imported = { joints:0, utt12:0, uttloc:0, jointlen:0, lsc:0, flaws:0, dates:0 };
+
+    const fillDates  = document.getElementById('dfpr-fill-dates').checked;
+    const fillUTT    = document.getElementById('dfpr-fill-utt').checked;
+    const fillUTTLoc = document.getElementById('dfpr-fill-uttloc').checked;
+    const fillJLen   = document.getElementById('dfpr-fill-jlen').checked;
+    const fillLSC    = document.getElementById('dfpr-fill-lsc').checked;
+    const fillFlaw   = document.getElementById('dfpr-fill-flaw').checked;
+
+    // Helper: read sheet as 2D array
+    function sheetAOA(name){
+      return wb.Sheets[name]
+        ? XLSX.utils.sheet_to_json(wb.Sheets[name], {header:1, defval:'', raw:false})
+        : [];
+    }
+    function findHdr(aoa, keyword){
+      return aoa.findIndex(r=>r.some(v=>String(v||'').toLowerCase().includes(keyword.toLowerCase())));
+    }
+    function strDate(v){
+      if(!v) return '';
+      // XLSX may return date strings or Date objects
+      if(v instanceof Date) return v.toISOString().slice(0,10);
+      const s = String(v).trim();
+      // Try common formats
+      const m = s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+      if(m){
+        const y = m[3].length===2 ? '20'+m[3] : m[3];
+        return `${y}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+      }
+      return s.slice(0,10);
+    }
+
+    // ── Import joints from Testing Plan sheet ──────────────────────────────
+    if(wb.Sheets['Testing Plan']){
+      const aoa = sheetAOA('Testing Plan');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        const existIds = new Set((state.joints||[]).map(j=>j.id));
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const r = aoa[ri];
+          const jid = String(r[2]||'').trim();
+          if(!jid || existIds.has(jid)) continue;
+          if(!state.joints) state.joints=[];
+          state.joints.push({
+            id:jid, type:r[4]||'Pipe',
+            od:String(r[10]||'').trim(), nwt:String(r[11]||'').trim(),
+            od2:String(r[12]||'').trim(), nwt2:String(r[13]||'').trim(),
+            seam:String(r[7]||'').trim(), grade:String(r[8]||'').trim(),
+            pfl:String(r[3]||'').trim(), length:String(r[5]||'').trim(),
+            installDate:strDate(r[9]), aboveGround:String(r[6]||'').trim(),
+          });
+          existIds.add(jid);
+          imported.joints++;
+        }
+      }
+    }
+
+    // ── NDE Testing Dates → scope status ──────────────────────────────────
+    if(fillDates && wb.Sheets['NDE Testing Dates']){
+      const aoa = sheetAOA('NDE Testing Dates');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        // Col map same as fill direction
+        const COL_TAB = {6:'utt12', 7:'aelsc', 8:'filings', 9:'xrf',
+                         10:'hard', 11:'iit', 12:'metallo', 13:'va', 14:'mt',
+                         15:'aut', 16:'pautbm', 17:'pautls'};
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const jid = String(aoa[ri][2]||'').trim();
+          if(!jid) continue;
+          Object.entries(COL_TAB).forEach(([ci, tabId])=>{
+            const dateVal = strDate(aoa[ri][parseInt(ci)]);
+            if(!dateVal) return;
+            const st = getScopeStatus(tabId, jid);
+            if(!st.date){ st.date=dateVal; st.dateManual=true; imported.dates++; }
+          });
+        }
+      }
+    }
+
+    // ── 12pt UTT ──────────────────────────────────────────────────────────
+    if(fillUTT && wb.Sheets['12pt UTT']){
+      const aoa = sheetAOA('12pt UTT');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        // Build existing set: jt|ref|dist
+        const existSet = new Set((state.utt12||[]).map(r=>`${r.jt}|${r.ref}|${r.dist}`));
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const r = aoa[ri];
+          const jt = String(r[0]||'').trim();
+          if(!jt) continue;
+          const ref=String(r[1]||'U/S').trim(), dist=String(r[2]||'').trim();
+          const key=`${jt}|${ref}|${dist}`;
+          if(existSet.has(key)) continue;
+          if(!state.utt12) state.utt12=[];
+          const vals = r.slice(4,16).map(v=>String(v||'').trim());
+          state.utt12.push({jt, ref, dist, bfg:String(r[3]||'BFG').trim(),
+            vals, date:'', tech:''});
+          existSet.add(key);
+          imported.utt12++;
+        }
+      }
+    }
+
+    // ── UTT Test Locations ─────────────────────────────────────────────────
+    if(fillUTTLoc && wb.Sheets['UTT of Test Locations']){
+      const aoa = sheetAOA('UTT of Test Locations');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        const existSet=new Set((state.uttloc||[]).map(r=>`${r.jt}|${r.ndtid}`));
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const r=aoa[ri];
+          const jt=String(r[0]||'').trim();
+          if(!jt) continue;
+          const ndtid=String(r[1]||'').trim();
+          if(existSet.has(`${jt}|${ndtid}`)) continue;
+          if(!state.uttloc) state.uttloc=[];
+          state.uttloc.push({jt, ndtid, ref:String(r[2]||'U/S'),
+            dist:String(r[3]||''), clock:String(r[4]||''),
+            alen:String(r[5]||''), awid:String(r[6]||''),
+            bfgmin:String(r[7]||''), bfgmax:String(r[8]||''),
+            afgmin:String(r[9]||''), afgmax:String(r[10]||''),
+            result:String(r[12]||''), date:'', tech:''});
+          existSet.add(`${jt}|${ndtid}`);
+          imported.uttloc++;
+        }
+      }
+    }
+
+    // ── Joint Lengths ──────────────────────────────────────────────────────
+    if(fillJLen && wb.Sheets['Joint Lengths']){
+      const aoa = sheetAOA('Joint Lengths');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        const existSet=new Set((state.jointlen||[]).map(r=>r.jt));
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const r=aoa[ri];
+          const jt=String(r[0]||'').trim();
+          if(!jt||existSet.has(jt)) continue;
+          if(!state.jointlen) state.jointlen=[];
+          state.jointlen.push({jt, type:String(r[1]||'Pipe'),
+            length:String(r[2]||''), od1:String(r[3]||''), od2:String(r[4]||''),
+            notes:'', date:'', tech:''});
+          existSet.add(jt);
+          imported.jointlen++;
+        }
+      }
+    }
+
+    // ── LSC Results ───────────────────────────────────────────────────────
+    if(fillLSC && wb.Sheets['LSC Results']){
+      const aoa = sheetAOA('LSC Results');
+      const hdrIdx = findHdr(aoa, 'Joint');
+      if(hdrIdx !== -1){
+        for(let ri=hdrIdx+1; ri<aoa.length; ri++){
+          const r=aoa[ri];
+          const jt=String(r[0]||'').trim();
+          if(!jt) continue;
+          const seam=String(r[1]||'').trim();
+          const clock=String(r[2]||'').trim();
+          const notes=String(r[3]||'').trim();
+          // Find or create an LSC group for this joint
+          if(!state.lscGroups) state.lscGroups=[];
+          // Check if joint already in a group
+          const existGroup=state.lscGroups.find(g=>g.joints.includes(jt)&&g.seam===seam);
+          if(!existGroup){
+            state.lscGroups.push({
+              id:'lscg_dfpr_'+jt+'_'+Date.now(),
+              joints:[jt], seam, clock, aemethod:'', result:'',
+              notes, date:'', tech:'',
+              checklist:LSC_CHECKLIST_ITEMS.map(item=>({text:item,done:false})),
+              photos:[],
+            });
+            imported.lsc++;
+          }
+        }
+      }
+    }
+
+    // ── Flaw Detection sheets ─────────────────────────────────────────────
+    if(fillFlaw){
+      const flawMap=[
+        {sheet:'MT Indications',      key:'mt',      cols:['jt','indid','char','ref','dist','clock','len','wid','ht','wt','nl']},
+        {sheet:'VA Indications',      key:'va',      cols:['jt','indid','char','ref','dist','clock','len','wid','dep','wt','nl']},
+        {sheet:'AUT Indications',     key:'aut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
+        {sheet:'MUT Indications',     key:'mut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
+        {sheet:'MUT Hand Scans',      key:'muthand', cols:['jt','start','end','minwt','indfound']},
+        {sheet:'PAUT BM Indications', key:'pautbm',  cols:['jt','indid','char','ref','dist','clock','len','dep','ht','wt','nl']},
+        {sheet:'PAUT LS Indications', key:'pautls',  cols:['jt','indid','char','ref','dist','clock','len','dep','ht','wt','nl']},
+      ];
+      flawMap.forEach(({sheet,key,cols})=>{
+        if(!wb.Sheets[sheet]) return;
+        const aoa=sheetAOA(sheet);
+        const hdrIdx=findHdr(aoa,'Joint');
+        if(hdrIdx===-1) return;
+        const existSet=new Set((state[key]||[]).map(r=>`${r.jt}|${r.indid||''}`));
+        for(let ri=hdrIdx+1;ri<aoa.length;ri++){
+          const r=aoa[ri];
+          const jt=String(r[0]||'').trim();
+          if(!jt) continue;
+          const indid=String(r[1]||'').trim();
+          if(existSet.has(`${jt}|${indid}`)) continue;
+          if(!state[key]) state[key]=[];
+          const row={date:'',tech:''};
+          cols.forEach((c,ci)=>{ row[c]=String(r[ci]||'').trim(); });
+          state[key].push(row);
+          existSet.add(`${jt}|${indid}`);
+          imported.flaws++;
+        }
+      });
+    }
+
+    save();
+    renderJoints();
+    renderTabs();
+    renderTab(activeTab);
+    computeDateRange();
+    updateSubtitle();
+
+    document.getElementById('dfpr-progress').style.display='none';
+    closeDFPRModal();
+
+    const summary=[
+      imported.joints  ? `${imported.joints} joint(s)` : '',
+      imported.utt12   ? `${imported.utt12} UTT row(s)` : '',
+      imported.uttloc  ? `${imported.uttloc} test loc(s)` : '',
+      imported.jointlen? `${imported.jointlen} joint length(s)` : '',
+      imported.lsc     ? `${imported.lsc} LSC result(s)` : '',
+      imported.flaws   ? `${imported.flaws} indication(s)` : '',
+      imported.dates   ? `${imported.dates} date(s)` : '',
+    ].filter(Boolean).join(', ') || 'nothing new (all data already present)';
+
+    showToast(`Imported: ${summary}`);
+
+  }catch(err){
+    document.getElementById('dfpr-progress').style.display='none';
+    console.error('DFPR import error:',err);
+    showToast('Import failed: '+err.message,'error');
+  }
+}
+
+
+/* ===== Knack Equipment Pull by Technician ===== */
+
+// Classify equipment record by searching Equipment Name (field_21) for keywords
+function classifyEquipment(name){
+  const n = (name||'').toLowerCase();
+
+  // ── PAUT units (check BEFORE generic UT scope) ─────────────────────────
+  // OmniScan, Focus LT, M2M, Gekko, Mantis — phased array instruments
+  if(n.includes('omniscan') || n.includes('focus lt') || n.includes('focuslt') ||
+     n.includes('m2m') || n.includes('gekko') || n.includes('mantis') ||
+     n.includes('paut') || n.includes('phased array'))
+    return 'pautUnit';
+
+  // ── Conventional UT scopes (pulse-echo / shear wave / thickness) ───────
+  // Epoch, USM, DIO, Pocketmike, 38DL, CML, Mark — NOT phased array
+  if(n.includes('epoch') || n.includes('usm') || n.includes('dio ') ||
+     n.includes('pocketmike') || n.includes('38dl') || n.includes('cml') ||
+     n.includes('mark ') || n.includes('flaw detector') || n.includes('ut scope') ||
+     n.includes('shear wave') || n.includes('shearwave') || n.includes('thickness gauge'))
+    return 'utScope';
+
+  // ── PAUT probes / transducer arrays ────────────────────────────────────
+  if(n.includes('5l32') || n.includes('5l64') || n.includes('10l32') ||
+     n.includes('phased array probe') || n.includes('pa probe') ||
+     (n.includes('array') && n.includes('probe')))
+    return 'pautProbe';
+
+  // ── Conventional transducers / probes ──────────────────────────────────
+  if(n.includes('transducer') || n.includes('probe') || n.includes('contact') ||
+     n.includes('dual') || n.includes('bd-') || n.includes('ms-') ||
+     n.includes('videoscan') || n.includes('angle beam') || n.includes('straight beam'))
+    return 'transducer';
+
+  // ── Cal blocks ──────────────────────────────────────────────────────────
+  if(n.includes('cal block') || n.includes('step wedge') || n.includes('iiwg') ||
+     n.includes('calibration block') || n.includes('curved') || n.includes('rompas'))
+    return 'calBlock';
+
+  // ── Couplant ────────────────────────────────────────────────────────────
+  if(n.includes('couplant') || n.includes('ultragel') || n.includes('gel') ||
+     n.includes('soundsafe') || n.includes('propylene'))
+    return 'couplant';
+
+  // ── MT Yokes ────────────────────────────────────────────────────────────
+  if(n.includes('yoke') || n.includes('parker') || n.includes('pm-') ||
+     n.includes('ac/dc') || n.includes('electromagnetic'))
+    return 'yoke';
+
+  // ── Blacklights / UV lamps ──────────────────────────────────────────────
+  if(n.includes('blacklight') || n.includes('black light') || n.includes('uv lamp') ||
+     n.includes('labino') || n.includes('spectroline') || n.includes('aculamp') ||
+     n.includes('uv light') || n.includes('ultraviolet'))
+    return 'blacklight';
+
+  // ── Light meters / radiometers ──────────────────────────────────────────
+  if(n.includes('light meter') || n.includes('photometer') || n.includes('uv meter') ||
+     n.includes('radiometer') || n.includes('lux meter') || n.includes('uvab'))
+    return 'lightMeter';
+
+  // ── WFMT media / MT bath ────────────────────────────────────────────────
+  if(n.includes('wfmt') || n.includes('magnaflux') || n.includes('fluorescent') ||
+     n.includes('14am') || n.includes('7hf') || n.includes('mt bath') ||
+     n.includes('particle') || n.includes('wet method'))
+    return 'wfmtMedium';
+
+  // ── Hardness testers ────────────────────────────────────────────────────
+  if(n.includes('sonodur') || n.includes('ernst') || n.includes('equotip') ||
+     n.includes('hardness') || n.includes('uci') || n.includes('dynatest') ||
+     n.includes('proceq') || n.includes('leeb'))
+    return 'hardness';
+
+  return 'other';
+}
+
+async function pullEquipmentFromKnack(cardId, techName){
+  if(!techName){ showToast('No technician assigned to this card yet','error'); return; }
+  const {appId, apiKey} = KNACK_CONFIG;
+  if(!appId||!apiKey){ showToast('Knack not configured','error'); return; }
+
+  showToast(`Pulling equipment for ${techName}...`);
+
+  try{
+    if(!state.ndeCards) state.ndeCards={};
+    const card = state.ndeCards[cardId];
+    if(!card){ showToast('Card not found','error'); return; }
+
+    // field_73 is a Connection field that concatenates as "C2C-123 / Tyler Laviolette"
+    // The Knack API 'contains' filter on a connection field matches against the
+    // display identifier (field_21 of the connected object). So we fetch ALL records
+    // and filter client-side by checking field_73_raw or field_73 string for the tech name.
+    // This is more reliable than server-side filtering on connection fields.
+
+    let page=1, records=[], total=null;
+    do{
+      const res = await fetch(
+        `https://api.knack.com/v1/objects/object_5/records?rows_per_page=100&page=${page}`,
+        {headers:{
+          'X-Knack-Application-Id': appId,
+          'X-Knack-REST-API-Key':   apiKey,
+          'Content-Type':           'application/json'
+        }}
+      );
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      records = records.concat(data.records||[]);
+      total = data.total_records || records.length;
+      page++;
+    } while(records.length < total && page <= 20);
+
+    // Filter client-side: field_73 connection value contains tech name
+    // Also try last name only in case full name doesn't match exactly
+    const lastName = techName.split(' ').pop();
+    const records_filtered = records.filter(r=>{
+      const loc = String(r.field_73 || r.field_73_raw?.identifier || '');
+      const nameToCheck = techName.toLowerCase();
+      const lastNameCheck = lastName.toLowerCase();
+      return loc.toLowerCase().includes(nameToCheck) ||
+             loc.toLowerCase().includes(lastNameCheck);
+    });
+
+    if(!records_filtered.length){
+      // Log what we got to help debug
+      console.log('All field_73 values:', records.slice(0,5).map(r=>r.field_73));
+      showToast(`No equipment found for ${techName} — found ${records.length} total records. Check console for field_73 values.`,'error');
+      return;
+    }
+    records.length = 0;
+    records.push(...records_filtered);
+
+    if(!records.length){
+      showToast(`No equipment found for ${techName} in Knack`,'error');
+      return;
+    }
+
+    // Classify and extract each equipment record
+    // Collect ALL records per type (don't just take first)
+    const equipAll = {};
+
+    records.forEach(r=>{
+      const name    = String(r.field_21 || r.field_21_raw || '');
+      const mfr     = String(r.field_22 || '');
+      const model   = String(r.field_23 || '');
+      const serial  = String(r.field_26 || '');
+      const calDueRaw = r.field_24 || r.field_24_raw || '';
+      const calDue  = typeof calDueRaw==='object' && calDueRaw?.date
+        ? calDueRaw.date : String(calDueRaw).slice(0,10);
+      const type    = classifyEquipment(name);
+      if(type === 'other') return;
+      if(!equipAll[type]) equipAll[type] = [];
+      equipAll[type].push({name, mfr, model, serial, calDue});
+    });
+
+    // For types with only one option, auto-select; for multiple, prompt user
+    const equip = {};
+    const needPicker = {};
+    Object.entries(equipAll).forEach(([type, items])=>{
+      if(items.length === 1){
+        equip[type] = items[0];
+      } else if(items.length > 1){
+        needPicker[type] = items;
+        equip[type] = items[0]; // default to first while user decides
+      }
+    });
+
+    // If any type has multiple options, show the picker modal
+    if(Object.keys(needPicker).length > 0){
+      showEquipPicker(needPicker, equip, cardId, card);
+      return; // picker will call applyEquipToCard when confirmed
+    }
+
+    // Apply to card
+
+
+    // Apply all auto-selected (single-option) equipment directly
+    applyEquipToCard(card, equip);
+    const filled = Object.values(equip).filter(Boolean).length;
+    save();
+    renderTab(activeTab);
+    const pickerCount = Object.keys(needPicker||{}).length;
+    showToast(`✓ Pulled ${filled} item${filled!==1?'s':''} for ${techName}${pickerCount?` — ${pickerCount} need confirmation`:''}`);
+
+  }catch(err){
+    console.error('Knack equipment pull error:', err);
+    showToast('Equipment pull failed: '+err.message,'error');
+  }
+}
+
+
+/* ===== Equipment picker modal ===== */
+let _equipPickerData  = null; // {type: [{name,mfr,model,serial,calDue}]}
+let _equipChoices     = null; // {type: selectedItem}
+let _equipCardId      = null;
+let _equipCard        = null;
+
+const EQUIP_TYPE_LABELS = {
+  utScope:    'UT Scope (Conventional)',
+  pautUnit:   'PAUT Unit',
+  transducer: 'Transducer / Probe',
+  pautProbe:  'PAUT Probe / Array',
+  calBlock:   'Cal Block',
+  couplant:   'Couplant',
+  yoke:       'MT Yoke',
+  blacklight: 'Blacklight / UV',
+  lightMeter: 'Light Meter',
+  wfmtMedium: 'WFMT Medium',
+  hardness:   'Hardness Tester',
+};
+
+function showEquipPicker(needPicker, currentChoices, cardId, card){
+  _equipPickerData = needPicker;
+  _equipChoices    = currentChoices;
+  _equipCardId     = cardId;
+  _equipCard       = card;
+
+  const body = document.getElementById('equip-picker-body');
+  const total = Object.keys(needPicker).length;
+  document.getElementById('equip-picker-count').textContent =
+    `${total} equipment type${total!==1?'s':''} with multiple options`;
+
+  body.innerHTML = Object.entries(needPicker).map(([type, items])=>{
+    const label = EQUIP_TYPE_LABELS[type] || type;
+    const options = items.map((item, idx)=>
+      `<option value="${idx}">${item.name}${item.model&&item.name!==item.model?' — '+item.model:''} · S/N: ${item.serial||'?'} · Cal: ${item.calDue||'?'}</option>`
+    ).join('');
+    return `<div>
+      <div style="font-size:12px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${label}</div>
+      <select onchange="equipPickerSelect('${type}',parseInt(this.value))"
+        style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
+        ${options}
+      </select>
+    </div>`;
+  }).join('');
+
+  document.getElementById('equip-picker-modal').classList.add('open');
+}
+
+function equipPickerSelect(type, idx){
+  if(_equipPickerData && _equipChoices){
+    _equipChoices[type] = _equipPickerData[type][idx];
+  }
+}
+
+function closeEquipPicker(){
+  document.getElementById('equip-picker-modal').classList.remove('open');
+  _equipPickerData = _equipChoices = _equipCardId = _equipCard = null;
+}
+
+function applyEquipmentChoices(){
+  if(!_equipCard || !_equipChoices) return;
+  applyEquipToCard(_equipCard, _equipChoices);
+  save();
+  renderTab(activeTab);
+  const count = Object.keys(_equipChoices).length;
+  showToast(`✓ Applied ${count} equipment item${count!==1?'s':''}`);
+  closeEquipPicker();
+}
+
+function applyEquipToCard(card, equip){
+  const isPAUT = card.method === 'paut';
+
+  if(isPAUT && equip.pautUnit){
+    card.utUnit   = `${equip.pautUnit.mfr} ${equip.pautUnit.model}`.trim() || equip.pautUnit.name;
+    card.utSerial = equip.pautUnit.serial;
+    card.calDue   = equip.pautUnit.calDue;
+  } else if(!isPAUT && equip.utScope){
+    card.utUnit   = `${equip.utScope.mfr} ${equip.utScope.model}`.trim() || equip.utScope.name;
+    card.utSerial = equip.utScope.serial;
+    card.calDue   = equip.utScope.calDue;
+  } else if(equip.utScope || equip.pautUnit){
+    const u = equip.utScope || equip.pautUnit;
+    card.utUnit   = `${u.mfr} ${u.model}`.trim() || u.name;
+    card.utSerial = u.serial;
+    card.calDue   = u.calDue;
+  }
+
+  const probe = isPAUT ? (equip.pautProbe || equip.transducer) : equip.transducer;
+  if(probe){
+    card.transManuf  = probe.mfr;
+    card.transModel  = probe.model;
+    card.transSerial = probe.serial;
+  }
+  if(equip.couplant)    card.couplant    = equip.couplant.name || equip.couplant.model;
+  if(equip.yoke){
+    card.yokeModel  = `${equip.yoke.mfr} ${equip.yoke.model}`.trim() || equip.yoke.name;
+    card.yokeSerial = equip.yoke.serial;
+    card.yokeCal    = equip.yoke.calDue;
+  }
+  if(equip.blacklight){
+    card.blBrand  = equip.blacklight.mfr;
+    card.blModel  = equip.blacklight.model;
+    card.blSerial = equip.blacklight.serial;
+  }
+  if(equip.lightMeter){
+    card.lmBrand  = equip.lightMeter.mfr;
+    card.lmModel  = equip.lightMeter.model;
+    card.lmSerial = equip.lightMeter.serial;
+    card.lmCal    = equip.lightMeter.calDue;
+  }
+}
+
+
+/* ===== Signature pad ===== */
+let _sigTarget  = null;  // {type:'tech'|'supervisor', techIdx:number}
+let _sigDrawing = false;
+let _sigCtx     = null;
+let _sigCanvas  = null;
+let _sigHasData = false;
+
+function openSigModal(type, techIdx){
+  _sigTarget = {type, techIdx};
+
+  const title = type === 'supervisor'
+    ? `Supervisor — ${state.supervisorSig?.name||'NDE Supervisor'}`
+    : `${(state.technicians||[])[techIdx]?.name||'Technician'}`;
+  document.getElementById('sig-modal-title').textContent = title + ' Signature';
+
+  _sigCanvas = document.getElementById('sig-canvas');
+  _sigCtx    = _sigCanvas.getContext('2d');
+
+  // Load existing sig if any
+  const existing = type==='supervisor'
+    ? state.supervisorSig?.sig
+    : (state.technicians||[])[techIdx]?.sig;
+
+  _sigCtx.fillStyle = '#fff';
+  _sigCtx.fillRect(0, 0, _sigCanvas.width, _sigCanvas.height);
+  _sigHasData = false;
+
+  if(existing){
+    const img = new Image();
+    img.onload = ()=>{ _sigCtx.drawImage(img, 0, 0); _sigHasData = true; };
+    img.src = existing;
+  }
+
+  _sigCtx.strokeStyle = '#1a1a1a';
+  _sigCtx.lineWidth   = 2.5;
+  _sigCtx.lineCap     = 'round';
+  _sigCtx.lineJoin    = 'round';
+
+  // Attach events
+  _sigCanvas.onmousedown  = sigStart;
+  _sigCanvas.onmousemove  = sigDraw;
+  _sigCanvas.onmouseup    = sigEnd;
+  _sigCanvas.onmouseleave = sigEnd;
+  _sigCanvas.ontouchstart = e=>{ e.preventDefault(); sigStart(e.touches[0]); };
+  _sigCanvas.ontouchmove  = e=>{ e.preventDefault(); sigDraw(e.touches[0]); };
+  _sigCanvas.ontouchend   = sigEnd;
+
+  document.getElementById('sig-modal').classList.add('open');
+}
+
+function sigPoint(e){
+  const r = _sigCanvas.getBoundingClientRect();
+  const scaleX = _sigCanvas.width  / r.width;
+  const scaleY = _sigCanvas.height / r.height;
+  return { x:(e.clientX - r.left)*scaleX, y:(e.clientY - r.top)*scaleY };
+}
+
+function sigStart(e){
+  _sigDrawing = true;
+  const p = sigPoint(e);
+  _sigCtx.beginPath();
+  _sigCtx.moveTo(p.x, p.y);
+}
+function sigDraw(e){
+  if(!_sigDrawing) return;
+  const p = sigPoint(e);
+  _sigCtx.lineTo(p.x, p.y);
+  _sigCtx.stroke();
+  _sigHasData = true;
+}
+function sigEnd(){ _sigDrawing = false; }
+
+function clearSigPad(){
+  _sigCtx.fillStyle = '#fff';
+  _sigCtx.fillRect(0, 0, _sigCanvas.width, _sigCanvas.height);
+  _sigHasData = false;
+}
+
+function saveSig(){
+  if(!_sigHasData){ showToast('Please draw your signature first','error'); return; }
+  const dataUrl = _sigCanvas.toDataURL('image/png');
+
+  if(_sigTarget.type === 'supervisor'){
+    if(!state.supervisorSig) state.supervisorSig={name:'',title:'NDE Operations Manager',sig:''};
+    state.supervisorSig.sig = dataUrl;
+  } else {
+    const tech = (state.technicians||[])[_sigTarget.techIdx];
+    if(tech) tech.sig = dataUrl;
+  }
+
+  save();
+  renderTechRoster();
+  renderSupervisorSection();
+  closeSigModal();
+  showToast('Signature saved');
+}
+
+function closeSigModal(){
+  document.getElementById('sig-modal').classList.remove('open');
+  if(_sigCanvas){
+    _sigCanvas.onmousedown = _sigCanvas.onmousemove = _sigCanvas.onmouseup =
+    _sigCanvas.onmouseleave = _sigCanvas.ontouchstart =
+    _sigCanvas.ontouchmove  = _sigCanvas.ontouchend  = null;
+  }
+  _sigTarget = null; _sigCanvas = null; _sigCtx = null;
 }
 
 </script>
@@ -5237,15 +6619,15 @@ async function buildGridsSection(doc, tabId, y){
     <div class="modal-step">
       <strong>Report scope</strong>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
-          <input type="radio" name="pdf-scope" value="full" checked style="accent-color:#1F3864">
-          <span><strong>Full report</strong> — all methods in one PDF</span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;white-space:nowrap">
+          <input type="radio" name="pdf-scope" value="full" checked style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
+          <strong>Full report</strong>&nbsp;— all methods in one PDF
         </label>
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
-          <input type="radio" name="pdf-scope" value="method" style="accent-color:#1F3864">
-          <span><strong>Single method</strong> — select below</span>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;white-space:nowrap">
+          <input type="radio" name="pdf-scope" value="method" style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
+          <strong>Single method</strong>&nbsp;— select below
         </label>
-        <select id="pdf-method-select" style="margin-left:24px;padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);width:calc(100% - 24px)">
+        <select id="pdf-method-select" style="margin-left:25px;padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);width:calc(100% - 25px)">
           <option value="utt12">12-Point UTT</option>
           <option value="uttloc">UTT of Test Locations</option>
           <option value="aelsc">AE / Long Seam Characterization</option>
@@ -5262,13 +6644,13 @@ async function buildGridsSection(doc, tabId, y){
     </div>
     <div class="modal-step">
       <strong>Options</strong>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
-        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px">
-          <input type="checkbox" id="pdf-include-photos" style="accent-color:#1F3864">
-          Include overview photos (increases file size)
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="pdf-include-photos" style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
+          Include extra row-level photos (increases file size)
         </label>
-        <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px">
-          <input type="checkbox" id="pdf-include-cal" checked style="accent-color:#1F3864">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="pdf-include-cal" checked style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
           Include NDE parameter / cal records
         </label>
       </div>
@@ -5286,49 +6668,64 @@ async function buildGridsSection(doc, tabId, y){
 </div>
 
 <div class="modal-overlay" id="dfpr-modal" onclick="if(event.target===this)closeDFPRModal()">
-  <div class="modal-box">
-    <div class="modal-title"><i class="ti ti-table" style="color:#2e7d32"></i> Export DFPR Excel</div>
-    <div class="progress-banner" id="dfpr-progress"><i class="ti ti-loader"></i> Building Excel workbook... please wait</div>
-    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px">
-      Choose how to generate the filled DFPR Excel workbook:
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-title"><i class="ti ti-table" style="color:#1a6b2a"></i> Fill DFPR Spreadsheet</div>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:14px">
+      Upload your existing DFPR xlsx — the app adds/updates only the NDE data cells. Your existing data, formatting, and formulas are preserved.
     </p>
-    <div class="modal-step">
-      <strong>Option A — Browser (instant, no install)</strong><br>
-      <span style="color:var(--color-text-secondary);font-size:12px">Generates a filled .xlsx directly in your browser using SheetJS. Preserves all data tabs. Formatting is basic — open in Excel to apply the full template styling.</span><br>
-      <button class="btn btn-excel" style="margin-top:8px;font-size:12px" onclick="buildXLSX()"><i class="ti ti-table"></i> Download DFPR.xlsx (browser)</button>
+    <div class="modal-step" style="margin-bottom:12px">
+      <strong>Step 1</strong> — Upload your DFPR file
+      <div style="margin-top:8px">
+        <div class="tp-drop-zone" id="dfpr-drop-zone" style="padding:1.2rem"
+             onclick="document.getElementById('dfpr-file-input').click()">
+          <i class="ti ti-upload" style="font-size:24px;display:block;margin-bottom:6px;color:var(--color-text-tertiary)"></i>
+          <p style="font-size:13px;color:var(--color-text-secondary);margin:0">Click or drag your DFPR .xlsx here</p>
+          <small id="dfpr-file-name" style="color:var(--color-text-tertiary);margin-top:4px;display:block">No file selected</small>
+        </div>
+      </div>
     </div>
-    <div class="modal-step">
-      <strong>Option B — Python injector (full template fidelity)</strong><br>
-      <span style="color:var(--color-text-secondary);font-size:12px">Injects data into your actual DFPR template — preserves all formulas, table refs, colour coding, and cross-sheet links.</span><br>
-      <button class="btn" style="margin-top:8px;font-size:12px" onclick="exportJSONForPDF()"><i class="ti ti-download"></i> Download field_data.json</button>
-      <code>pip install openpyxl</code>
-      <code>python inject_dfpr.py field_data.json DFPR_template.xlsx</code>
+    <div class="modal-step" style="margin-bottom:12px">
+      <strong>Direction</strong>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
+          <input type="radio" name="dfpr-dir" value="fill" checked style="accent-color:#1F3864">
+          <span><strong>Fill DFPR</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">App data → xlsx</span></span>
+        </label>
+        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
+          <input type="radio" name="dfpr-dir" value="import" style="accent-color:#1F3864">
+          <span><strong>Import from DFPR</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">xlsx → App data</span></span>
+        </label>
+      </div>
     </div>
-    <button class="btn modal-close" onclick="closeDFPRModal()">Close</button>
+    <div class="modal-step" style="margin-bottom:12px">
+      <strong>Step 2</strong> — Choose what to fill
+      <div style="display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px 10px;margin-top:8px">
+        <input type="checkbox" id="dfpr-fill-dates" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-dates" style="cursor:pointer;font-size:13px">NDE Testing Dates</label>
+        <input type="checkbox" id="dfpr-fill-utt" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-utt" style="cursor:pointer;font-size:13px">12-pt UTT wall thickness</label>
+        <input type="checkbox" id="dfpr-fill-uttloc" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-uttloc" style="cursor:pointer;font-size:13px">UTT of Test Locations</label>
+        <input type="checkbox" id="dfpr-fill-jlen" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-jlen" style="cursor:pointer;font-size:13px">Joint Lengths</label>
+        <input type="checkbox" id="dfpr-fill-lsc" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-lsc" style="cursor:pointer;font-size:13px">LSC Results</label>
+        <input type="checkbox" id="dfpr-fill-flaw" checked style="accent-color:#1F3864;width:15px;height:15px;cursor:pointer">
+        <label for="dfpr-fill-flaw" style="cursor:pointer;font-size:13px">Flaw Detection (MT, VA, AUT, MUT, PAUT BM/LS)</label>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-excel" style="flex:1;font-size:13px" id="dfpr-fill-btn" onclick="dfprAction()" disabled>
+        <i class="ti ti-table" id="dfpr-btn-icon"></i> <span id="dfpr-btn-label">Fill &amp; Download</span>
+      </button>
+      <button class="btn" onclick="closeDFPRModal()">Cancel</button>
+    </div>
+    <div id="dfpr-progress" style="display:none;margin-top:8px;font-size:12px;color:var(--color-text-secondary);text-align:center">
+      <i class="ti ti-loader"></i> Processing DFPR...
+    </div>
   </div>
 </div>
-
-
-<div class="photo-lightbox" id="photo-lightbox" onclick="closeLightbox()">
-  <button class="photo-lightbox-close" onclick="closeLightbox()">×</button>
-  <img id="lightbox-img" src="" alt="Photo">
-  <div class="photo-lightbox-caption" id="lightbox-caption"></div>
-</div>
-<input type="file" id="joint-notes-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleJointNotes(event)">
-<input type="file" id="row-photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handleRowPhotos(event)">
-
-
-<div class="install-banner" id="install-banner">
-  <div class="install-banner-icon"><i class="ti ti-clipboard-check"></i></div>
-  <div class="install-banner-text">
-    <strong>Add to Home Screen</strong>
-    <span>Install for offline access — works like a native app</span>
-  </div>
-  <div class="install-banner-btns">
-    <button class="btn btn-primary" onclick="installPWA()" id="install-btn" style="font-size:12px"><i class="ti ti-download"></i> Install</button>
-    <button class="btn" onclick="dismissInstall()" style="font-size:12px">Later</button>
-  </div>
-</div>
+<input type="file" id="dfpr-file-input" accept=".xlsx" style="display:none" onchange="handleDFPRFile(event)">
 
 
 <div class="knack-modal-overlay" id="knack-modal" onclick="if(event.target===this)closeKnackModal()">
@@ -5605,5 +7002,42 @@ async function buildGridsSection(doc, tabId, y){
   <option>10:00</option><option>10:30</option>
   <option>11:00</option><option>11:30</option>
 </datalist>
+
+<div class="knack-modal-overlay" id="equip-picker-modal" onclick="if(event.target===this)closeEquipPicker()">
+  <div class="knack-modal" style="max-width:540px">
+    <div class="knack-modal-title"><i class="ti ti-tool" style="color:var(--color-info-text)"></i> Confirm Equipment Selection</div>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Multiple items found for some equipment types. Select the correct one for each:</p>
+    <div id="equip-picker-body" style="display:flex;flex-direction:column;gap:12px;max-height:60vh;overflow-y:auto;padding-right:4px"></div>
+    <div class="knack-modal-footer" style="margin-top:12px">
+      <span style="font-size:12px;color:var(--color-text-secondary)" id="equip-picker-count"></span>
+      <div style="display:flex;gap:6px">
+        <button class="btn" onclick="closeEquipPicker()">Cancel</button>
+        <button class="btn btn-primary" onclick="applyEquipmentChoices()"><i class="ti ti-check"></i> Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Signature pad modal -->
+<div class="modal-overlay" id="sig-modal" onclick="if(event.target===this)closeSigModal()">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-title"><i class="ti ti-signature"></i> <span id="sig-modal-title">Signature</span></div>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">
+      Sign in the box below using your mouse or finger.
+    </p>
+    <div style="position:relative;border:1.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:#fff;margin-bottom:10px">
+      <canvas id="sig-canvas" width="440" height="160"
+        style="display:block;width:100%;height:160px;touch-action:none;border-radius:var(--radius-md);cursor:crosshair"></canvas>
+      <span style="position:absolute;bottom:8px;right:10px;font-size:10px;color:#ccc;pointer-events:none;font-style:italic">Sign here</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveSig()"><i class="ti ti-check"></i> Save signature</button>
+      <button class="btn" onclick="clearSigPad()"><i class="ti ti-eraser"></i> Clear</button>
+      <button class="btn" onclick="closeSigModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
