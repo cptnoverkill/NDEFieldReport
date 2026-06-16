@@ -5288,6 +5288,27 @@ function addFooters(doc){
 }
 
 // ── Cover page ───────────────────────────────────────────────────────────────
+// Center-crop an image dataURL to a target aspect ratio (cover fit) so photos
+// can be rendered at identical dimensions. Returns a new JPEG dataURL.
+async function cropCover(dataUrl, targetAspect){
+  try{
+    const img = new Image();
+    await new Promise((res)=>{ img.onload=res; img.onerror=res; img.src=dataUrl; });
+    const iw=img.width, ih=img.height;
+    if(!iw || !ih) return dataUrl;
+    const srcAspect = iw/ih;
+    let sx, sy, sw, sh;
+    if(srcAspect > targetAspect){ sh=ih; sw=ih*targetAspect; sx=(iw-sw)/2; sy=0; }
+    else { sw=iw; sh=iw/targetAspect; sx=0; sy=(ih-sh)/2; }
+    const outW = Math.min(1400, Math.round(sw));
+    const outH = Math.round(outW/targetAspect);
+    const canvas = document.createElement('canvas');
+    canvas.width=outW; canvas.height=outH;
+    canvas.getContext('2d').drawImage(img, sx,sy,sw,sh, 0,0,outW,outH);
+    return canvas.toDataURL('image/jpeg', 0.9);
+  }catch(e){ return dataUrl; }
+}
+
 async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
   let y = pageHeader(doc);
 
@@ -5386,40 +5407,32 @@ async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
         doc.addImage(ph.data,'JPEG',ML+(TW-iw)/2,y,iw,ih,undefined,'FAST');
         y += ih + 4;
       } else if(n === 2){
-        // Two photos side by side
+        // Two photos side by side — identical dimensions (center-cropped to fill)
         const gap = 4;
         const halfW = (TW - gap) / 2;
-        let maxH = 0;
+        const slotH = Math.min(maxAreaH, halfW * 0.75); // uniform 4:3 slots
+        const aspect = halfW / slotH;
         for(let pi=0;pi<2;pi++){
-          const ph = allPhotos[pi];
-          const img = new Image();
-          await new Promise(res=>{ img.onload=res; img.src=ph.data; });
-          const aspect = img.width/img.height;
-          let iw=halfW, ih=halfW/aspect;
-          if(ih>maxAreaH){ ih=maxAreaH; iw=maxAreaH*aspect; }
-          const x = ML + pi*(halfW+gap) + (halfW-iw)/2;
-          doc.addImage(ph.data,'JPEG',x,y,iw,ih,undefined,'FAST');
-          maxH = Math.max(maxH, ih);
+          const cropped = await cropCover(allPhotos[pi].data, aspect);
+          const x = ML + pi*(halfW+gap);
+          doc.addImage(cropped,'JPEG',x,y,halfW,slotH,undefined,'FAST');
         }
-        y += maxH + 4;
+        y += slotH + 4;
       } else {
-        // 3+ photos: 2 per row grid
+        // 3+ photos: 2-per-row grid, every tile identical dimensions
         const gap = 3;
         const halfW = (TW - gap) / 2;
-        const rowH = maxAreaH / Math.ceil(n/2);
+        const rows = Math.ceil(Math.min(n,6)/2);
+        const slotH = (maxAreaH - (rows-1)*gap) / rows;
+        const aspect = halfW / slotH;
         for(let pi=0;pi<Math.min(n,6);pi++){
-          const ph = allPhotos[pi];
           const col = pi % 2, row = Math.floor(pi/2);
-          const img = new Image();
-          await new Promise(res=>{ img.onload=res; img.src=ph.data; });
-          const aspect = img.width/img.height;
-          let iw=halfW, ih=halfW/aspect;
-          if(ih>rowH-2){ ih=rowH-2; iw=(rowH-2)*aspect; }
-          const x = ML + col*(halfW+gap) + (halfW-iw)/2;
-          const yPos = y + row*(rowH+2);
-          doc.addImage(ph.data,'JPEG',x,yPos,iw,ih,undefined,'FAST');
+          const cropped = await cropCover(allPhotos[pi].data, aspect);
+          const x = ML + col*(halfW+gap);
+          const yPos = y + row*(slotH+gap);
+          doc.addImage(cropped,'JPEG',x,yPos,halfW,slotH,undefined,'FAST');
         }
-        y += Math.ceil(Math.min(n,6)/2)*(rowH+2) + 4;
+        y += rows*(slotH+gap) + 4;
       }
     }catch(e){ y += 4; }
   }
@@ -5540,6 +5553,12 @@ function buildCalSheet(doc, methodId, methodLabel){
   cards.forEach((card,ci)=>{
     doc.addPage();
     let y = pageHeader(doc);
+
+    // Method-specific reference-format data sheets (one per technician)
+    if(methodId === 'utt' || methodId === 'mut'){ buildUTTDataSheet(doc, y, card, ci+1); return; }
+    if(methodId === 'aut'){ buildAUTDataSheet(doc, y, card, ci+1); return; }
+    if(methodId === 'paut'){ buildPAUTDataSheet(doc, y, card, ci+1); return; }
+    if(methodId === 'aelsc' || methodId === 'mt'){ buildAELSCDataSheet(doc, y, card, ci+1); return; }
 
     // Title
     doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(...R_BLACK);
@@ -5740,91 +5759,336 @@ function buildScopeTable(doc, tabId, methodLabel, extraCols, y){
 }
 
 // ── UTT12 data table ───────────────────────────────────────────────────────────
-function buildUTTDataSheet(doc, y, cardId){
-  try {
-    let card = (state.ndeCards||{})[cardId];
-    if(!card){
-      card = {
-        procedure: 'BP-4190P-507', revNo: '1',
-        utUnit: 'Olympus', utModel: 'Epoch 650', utSerial: '231597403',
-        calDue: '1/8/2027', calIn: '8:00 AM', calOut: '4:00 PM',
-        transManuf: 'Britek', transModel: 'BD-25', transSerial: 'B21771',
-        transSize: '0.25', frequency: '5', elementQty: 'Dual',
-        screenRange: '1', refScanDb: '58', velocity: '0.2342',
-        calBlock: '0.1 min. to 0.5 max.', calBlockMaterial: '1018 Carbon Steel', calBlockSerial: 'K-135',
-        couplant: 'Ultragel II', couplantBatch: '22H028',
-        tech: 'Tyler Laviolette', certLevel: 'II', date: 'Daily'
-      };
-    }
-
-    doc.setFont('helvetica','bold');
-    doc.setFontSize(11);
-    doc.text('Ultrasonic Thickness Testing Data Sheet Technician # 1', ML, y);
-    y += 6;
-
-    // Header
-    doc.setFillColor(44, 62, 80);
-    doc.rect(ML, y, TW, 5, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(8);
-    doc.text('Ultrasonic Thickness Testing (UTT) Testing Parameters:', ML+2, y+3);
-    y += 5;
-
-    // Variable rows - different column counts per row
-    const rows = [
-      {cols: 4, data: ['Procedure Used:', card.procedure||'BP-4190P-507', 'Revision No:', card.revNo||'1']},
-      {cols: 6, data: ['(UT) Unit Brand:', card.utUnit||'Olympus', 'Model:', card.utModel||'Epoch 650', 'Serial Number:', card.utSerial||'231597403']},
-      {cols: 6, data: ['Cal Due Date:', card.calDue||'1/8/2027', 'Cal In Time:', card.calIn||'8:00 AM', 'Cal Out Time:', card.calOut||'4:00 PM']},
-      {cols: 6, data: ['Transducer Mfr:', card.transManuf||'Britek', 'Model:', card.transModel||'BD-25', 'Serial Number:', card.transSerial||'B21771']},
-      {cols: 6, data: ['Size/Dia. (in.):', card.transSize||'0.25', 'Element:', card.elementQty||'Dual', 'Frequency (MHz):', card.frequency||'5']},
-      {cols: 6, data: ['Screen Range (in.):', card.screenRange||'1', 'Ref+Scan (dB):', card.refScanDb||'58', 'Velocity (in./µsec.):', card.velocity||'0.2342']},
-      {cols: 6, data: ['Cal Block Used:', card.calBlock||'0.1-0.5', 'Material:', card.calBlockMaterial||'1018 Carbon Steel', 'Serial Number:', card.calBlockSerial||'K-135']},
-      {cols: 6, data: ['Couplant Type:', card.couplant||'Ultragel II', 'Batch No:', card.couplantBatch||'22H028', 'Cal Block Temp ±25°F:', 'Yes']},
-      {cols: 6, data: ['Technician:', card.tech||'Tyler Laviolette', 'Certification Level:', card.certLevel||'II', 'Inspection Date:', card.date||'Daily']}
-    ];
-
-    console.log('buildUTTDataSheet called with', rows.length, 'rows');
-
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.setLineWidth(0.5);
-    doc.setDrawColor(100, 100, 100);
-
-    rows.forEach((row, rowIdx) => {
-      const colW = TW / row.cols;
-      console.log('Row', rowIdx, 'has', row.cols, 'columns, colW =', colW);
-      
-      for(let c = 0; c < row.cols; c++){
-        const x = ML + (c * colW);
-        const isLabel = (c % 2 === 0);
-        
-        // Fill
-        if(isLabel){
-          doc.setFillColor(200, 200, 200);
-        } else {
-          doc.setFillColor(255, 255, 255);
-        }
-        doc.rect(x, y, colW, 4, 'FD');
-        
-        // Text
-        doc.setTextColor(0, 0, 0);
-        if(isLabel) doc.setFont('helvetica', 'bold');
-        else doc.setFont('helvetica', 'normal');
-        
-        const text = String(row.data[c] || '');
-        doc.text(text, x + 0.5, y + 2.5, {maxWidth: colW - 1, align: isLabel ? 'center' : 'left'});
-      }
-      y += 4;
-    });
-
-    console.log('buildUTTDataSheet completed, final y =', y);
-    return y;
-  } catch(err) {
-    console.error('Error in buildUTTDataSheet:', err);
-    return y;
-  }
+// ── NDE parameter data-sheet engine ──────────────────────────────────────────
+// 24-column grid (A=1 … X=24), matching the source workbook layouts.
+const NDE_RH = 4.8;
+function ndeColX(n){ return ML + (n/24)*TW; }            // n = 0..24 boundary index
+function ndeChecked(v){ const s=String(v==null?'':v).trim().toLowerCase(); return !(s===''||s==='no'||s==='false'||s==='0'||s==='n/a'); }
+function ndeSplit(v, defBrand, defModel){
+  const s=String(v||'').trim(); const i=s.indexOf(' ');
+  return [ (i>0?s.slice(0,i):s)||defBrand, (i>0?s.slice(i+1):'')||defModel ];
 }
+function ndeMinMaxVals(card){
+  const n=String(card.calBlock||'').match(/\d+(?:\.\d+)?/g)||[];
+  return [ card.calBlockMin||n[0]||'0.1', card.calBlockMax||n[1]||'0.5' ];
+}
+function ndeTitle(doc, y, text){
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...R_BLACK);
+  doc.text(text, PW/2, y+2, {align:'center'});
+  return y+6;
+}
+function ndeBar(doc, y, text, h){
+  h=h||6;
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, h, 'F');
+  doc.setTextColor(...R_WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+  doc.text(text, ML+2, y+h*0.7); doc.setTextColor(...R_BLACK);
+  return y+h;
+}
+// Generic bordered cell. a,b = 1-based start/end columns. lbl = gray label.
+function ndeCell(doc, y, a, b, txt, lbl, al, h){
+  h=h||NDE_RH;
+  const x0=ndeColX(a-1), x1=ndeColX(b), w=x1-x0;
+  doc.setFillColor(...(lbl?R_LGRAY:R_WHITE)); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(x0, y, w, h, 'FD');
+  const s=String(txt==null?'':txt).trim(); if(!s) return;
+  doc.setTextColor(...R_BLACK); doc.setFont('helvetica', lbl?'bold':'normal');
+  let fs=lbl?7.3:8.1; doc.setFontSize(fs);
+  const avail=w-2.6;
+  while(fs>5 && doc.getTextWidth(s)>avail){ fs-=0.25; doc.setFontSize(fs); }
+  const a2=al||(lbl?'right':'center');
+  const tx=a2==='right'?x1-1.3:(a2==='center'?(x0+x1)/2:x0+1.3);
+  doc.text(s, tx, y+h*0.68, {align:a2, maxWidth:avail});
+}
+// White value cell with a label + checkbox at the right edge.
+function ndeCheckCell(doc, y, a, b, label, checked, h){
+  h=h||NDE_RH;
+  const x0=ndeColX(a-1), x1=ndeColX(b);
+  doc.setFillColor(...R_WHITE); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(x0, y, x1-x0, h, 'FD');
+  const bs=2.8, bx=x1-bs-1.2, by=y+(h-bs)/2;
+  doc.setFillColor(...(checked?R_DKBLUE:R_WHITE)); doc.setDrawColor(...R_BLACK); doc.setLineWidth(0.3);
+  doc.rect(bx, by, bs, bs, 'FD');
+  if(checked){ doc.setDrawColor(...R_WHITE); doc.setLineWidth(0.5);
+    doc.line(bx+0.55,by+1.45,bx+1.15,by+2.25); doc.line(bx+1.15,by+2.25,bx+2.35,by+0.6); }
+  doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal'); doc.setFontSize(8.1);
+  doc.text(String(label||'Yes'), (x0+bx)/2, y+h*0.68, {align:'center'});
+}
+// White value cell with a single centered checkbox.
+function ndeBoxCell(doc, y, a, b, checked, h){
+  h=h||NDE_RH;
+  const x0=ndeColX(a-1), x1=ndeColX(b);
+  doc.setFillColor(...R_WHITE); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(x0, y, x1-x0, h, 'FD');
+  const bs=2.8, bx=(x0+x1)/2-bs/2, by=y+(h-bs)/2;
+  doc.setFillColor(...(checked?R_DKBLUE:R_WHITE)); doc.setDrawColor(...R_BLACK); doc.setLineWidth(0.3);
+  doc.rect(bx, by, bs, bs, 'FD');
+  if(checked){ doc.setDrawColor(...R_WHITE); doc.setLineWidth(0.5);
+    doc.line(bx+0.55,by+1.45,bx+1.15,by+2.25); doc.line(bx+1.15,by+2.25,bx+2.35,by+0.6); }
+}
+// "Yes [ ]  No [x]" cell (value = 'Yes'|'No').
+function ndeYesNoCell(doc, y, a, b, value, h){
+  h=h||NDE_RH;
+  const x0=ndeColX(a-1), x1=ndeColX(b);
+  doc.setFillColor(...R_WHITE); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(x0, y, x1-x0, h, 'FD');
+  const yes=String(value||'').toLowerCase()==='yes';
+  const opt=(cx,label,on)=>{
+    doc.setTextColor(...R_BLACK); doc.setFont('helvetica','normal'); doc.setFontSize(8.1);
+    doc.text(label, cx, y+h*0.68, {align:'left'});
+    const lw=doc.getTextWidth(label), bs=2.6, bx=cx+lw+1.4, by=y+(h-bs)/2;
+    doc.setFillColor(...(on?R_DKBLUE:R_WHITE)); doc.setDrawColor(...R_BLACK); doc.setLineWidth(0.3);
+    doc.rect(bx,by,bs,bs,'FD');
+    if(on){ doc.setDrawColor(...R_WHITE); doc.setLineWidth(0.45);
+      doc.line(bx+0.5,by+1.3,bx+1.0,by+2.05); doc.line(bx+1.0,by+2.05,bx+2.15,by+0.55); }
+  };
+  opt(x0+4,'Yes',yes); opt((x0+x1)/2+2,'No',!yes);
+}
+// Cal-block "min. to max." sub-cells across F..J (cols 6..10).
+function ndeMinMax(doc, y, mn, mx, h){
+  ndeCell(doc, y, 6, 6, mn, false, 'center', h);
+  ndeCell(doc, y, 7, 8, 'min. to', false, 'center', h);
+  ndeCell(doc, y, 9, 9, mx, false, 'center', h);
+  ndeCell(doc, y, 10, 10, 'max.', false, 'center', h);
+}
+function ndeAcronyms(doc, y){
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 6, 'F');
+  doc.setTextColor(...R_WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('Acronyms and Abbreviations Used', PW/2, y+4, {align:'center'}); y+=6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...R_BLACK);
+  const ls=doc.splitTextToSize(ACRONYMS, TW-4), hh=ls.length*3+4;
+  doc.setFillColor(...R_LGRAY); doc.rect(ML, y, TW, hh, 'F');
+  doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2); doc.rect(ML, y, TW, hh, 'S');
+  doc.text(ls, ML+2, y+4, {lineHeightFactor:1.15});
+  return y+hh+4;
+}
+
+// ── UTT / MUT data sheet ──────────────────────────────────────────────────────
+function buildUTTDataSheet(doc, y, card, techNo){
+  try {
+    if(typeof card==='string'){ card=(state.ndeCards||{})[card]; }
+    if(!card){
+      card={ procedure:'BP-4190P-507', revNo:'1', utUnit:'Olympus Epoch 650', utSerial:'231597403',
+        calDue:'1/8/2027', calIn:'8:00 AM', calOut:'4:00 PM', transManuf:'Britek', transModel:'BD-25',
+        transSerial:'B21771', transSize:'0.25', frequency:'5', elementQty:'Dual', screenRange:'1',
+        refScanDb:'58', velocity:'0.2342', calBlock:'0.1"-0.5"', calBlockMaterial:'1018 Carbon Steel',
+        calBlockSerial:'K-135', couplant:'Ultragel II', couplantBatch:'22H028', tech:'Tyler Laviolette',
+        certLevel:'II', date:'Daily' };
+    }
+    const [brand,model]=ndeSplit(card.utUnit,'Olympus','Epoch 650');
+    const [mn,mx]=ndeMinMaxVals(card);
+    const tNo=techNo||card.techNo||1;
+
+    y=ndeTitle(doc, y, `Ultrasonic Thickness Testing Data Sheet Technician # ${tNo}`);
+    y=ndeBar(doc, y, 'Ultrasonic Thickness Testing Parameters:');
+
+    ndeCell(doc,y,1,5,'Procedure Used:',true); ndeCell(doc,y,6,17,card.procedure||'BP-4190P-507',false);
+    ndeCell(doc,y,18,21,'Revision No:',true);  ndeCell(doc,y,22,24,card.revNo||'1',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'(UT) Unit Brand:',true); ndeCell(doc,y,6,10,brand,false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,model,false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.utSerial||'231597403',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Due Date:',true); ndeCell(doc,y,6,10,card.calDue||'1/8/2027',false);
+    ndeCell(doc,y,11,13,'Cal In Time:',true); ndeCell(doc,y,14,17,card.calIn||'8:00 AM',false);
+    ndeCell(doc,y,18,21,'Cal Out Time:',true); ndeCell(doc,y,22,24,card.calOut||'4:00 PM',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Transducer Manufacture:',true); ndeCell(doc,y,6,10,card.transManuf||'Britek',false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,card.transModel||'BD-25',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.transSerial||'B21771',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Size/Dia. (Inches):',true); ndeCell(doc,y,6,10,card.transSize||'0.25',false);
+    ndeCell(doc,y,11,13,'Element:',true); ndeCell(doc,y,14,17,card.elementQty||'Dual',false);
+    ndeCell(doc,y,18,21,'Frequency (MHz):',true); ndeCell(doc,y,22,24,card.frequency||'5',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Screen Range (In.):',true); ndeCell(doc,y,6,10,card.screenRange||'1',false);
+    ndeCell(doc,y,11,13,'Ref+Scan (dB):',true); ndeCell(doc,y,14,17,card.refScanDb||'58',false);
+    ndeCell(doc,y,18,21,'Velocity (In. /usec.):',true); ndeCell(doc,y,22,24,card.velocity||'0.2342',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Block Used (In):',true); ndeMinMax(doc,y,mn,mx);
+    ndeCell(doc,y,11,13,'Material:',true); ndeCell(doc,y,14,17,card.calBlockMaterial||'1018 Carbon Steel',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.calBlockSerial||'K-135',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Couplant Type:',true); ndeCell(doc,y,6,10,card.couplant||'Ultragel II',false);
+    ndeCell(doc,y,11,13,'Batch No:',true); ndeCell(doc,y,14,17,card.couplantBatch||'22H028',false);
+    ndeCell(doc,y,18,22,'Cal Block Temp. +/- 25\u00B0F:',true); ndeCheckCell(doc,y,23,24,'Yes',ndeChecked(card.calBlockTemp||'Yes')); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Technician:',true); ndeCell(doc,y,6,10,card.tech||'Tyler Laviolette',false);
+    ndeCell(doc,y,11,14,'Certification Level:',true); ndeCell(doc,y,15,16,card.certLevel||'II',false);
+    ndeCell(doc,y,17,20,'Inspection Date:',true); ndeCell(doc,y,21,24,card.date||'Daily',false); y+=NDE_RH;
+
+    return ndeAcronyms(doc, y+4);
+  } catch(err){ console.error('Error in buildUTTDataSheet:', err); return y; }
+}
+
+// ── AUT data sheet ────────────────────────────────────────────────────────────
+function buildAUTDataSheet(doc, y, card, techNo){
+  try {
+    if(typeof card==='string'){ card=(state.ndeCards||{})[card]; }
+    card=card||{};
+    const [brand,model]=ndeSplit(card.utUnit,'AUT Solutions','Accutrax');
+    const [mn,mx]=ndeMinMaxVals(card);
+    const rs=String(card.refScanDb||'').split(/[+/]/);
+    const refDb=card.refDb||rs[0]||'', scanDb=card.scanDb||rs[1]||'';
+
+    y=ndeTitle(doc, y, 'Automated Ultrasonic Thickness (AUT) Data Sheet');
+    y=ndeBar(doc, y, 'AUT Equipment Testing Parameters:');
+
+    ndeCell(doc,y,1,5,'Procedure Used:',true); ndeCell(doc,y,6,17,card.procedure||'WP 347-18',false);
+    ndeCell(doc,y,18,21,'Revision No:',true); ndeCell(doc,y,22,24,card.revNo||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'(UT) Unit Brand:',true); ndeCell(doc,y,6,10,brand,false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,model,false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.utSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Screen Range (In.):',true); ndeCell(doc,y,6,10,card.screenRange||'',false);
+    ndeCell(doc,y,11,13,'Cal In Time:',true); ndeCell(doc,y,14,17,card.calIn||'',false);
+    ndeCell(doc,y,18,21,'Cal Out Time:',true); ndeCell(doc,y,22,24,card.calOut||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Transducer Manufacture:',true); ndeCell(doc,y,6,10,card.transManuf||'',false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,card.transModel||'',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.transSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Size/Dia. (Inches):',true); ndeCell(doc,y,6,10,card.transSize||'',false);
+    ndeCell(doc,y,11,13,'Element Qty:',true); ndeCell(doc,y,14,17,card.elementQty||'Dual',false);
+    ndeCell(doc,y,18,21,'Frequency (MHz):',true); ndeCell(doc,y,22,24,card.frequency||'5',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Reference (dB):',true); ndeCell(doc,y,6,10,refDb,false);
+    ndeCell(doc,y,11,13,'Scan (dB):',true); ndeCell(doc,y,14,17,scanDb,false);
+    ndeCell(doc,y,18,21,'Velocity (In. /usec.):',true); ndeCell(doc,y,22,24,card.velocity||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Block Used (In):',true); ndeMinMax(doc,y,mn,mx);
+    ndeCell(doc,y,11,13,'Material:',true); ndeCell(doc,y,14,17,card.calBlockMaterial||'1018 Carbon Steel',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.calBlockSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Couplant Type:',true); ndeCell(doc,y,6,10,card.couplant||'Water',false);
+    ndeCell(doc,y,11,13,'Scan Speed:',true); ndeCell(doc,y,14,17,card.scanSpeed||'<2in/sec',false);
+    ndeCell(doc,y,18,21,'Resolution:',true); ndeCell(doc,y,22,24,card.resolution||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Block Temp:',true); ndeCell(doc,y,6,10,card.calBlockTemp||'',false);
+    ndeCell(doc,y,11,13,'Pipe Temp:',true); ndeCell(doc,y,14,17,card.pipeTemp||'',false);
+    ndeCell(doc,y,18,21,'Temp within +/- 25\u00B0F:',true); ndeCheckCell(doc,y,22,24,'Yes',ndeChecked(card.tempWithin||'Yes')); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Echo to Echo Used:',true); ndeYesNoCell(doc,y,6,24,card.echoToEcho||'No'); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'AUT Technician:',true); ndeCell(doc,y,6,10,card.tech||'',false);
+    ndeCell(doc,y,11,14,'Certification Level:',true); ndeCell(doc,y,15,16,card.certLevel||'II',false);
+    ndeCell(doc,y,17,20,'Inspection Date:',true); ndeCell(doc,y,21,24,card.date||'Daily',false); y+=NDE_RH;
+
+    return ndeAcronyms(doc, y+4);
+  } catch(err){ console.error('Error in buildAUTDataSheet:', err); return y; }
+}
+
+// ── PAUT data sheet (parameters only) ─────────────────────────────────────────
+function buildPAUTDataSheet(doc, y, card, techNo){
+  try {
+    if(typeof card==='string'){ card=(state.ndeCards||{})[card]; }
+    card=card||{};
+    const [brand,model]=ndeSplit(card.utUnit,'Olympus','X3');
+
+    y=ndeTitle(doc, y, 'PAUT General Inspection Data Sheet');
+    y=ndeBar(doc, y, 'Volumetric Ultrasonic Testing Parameters:');
+
+    ndeCell(doc,y,1,5,'Procedure:',true); ndeCell(doc,y,6,10,card.procedure||'BP-4190P-518',false);
+    ndeCell(doc,y,11,14,'Revision No:',true); ndeCell(doc,y,15,17,card.revNo||'Rev.1',false);
+    ndeCell(doc,y,18,23,'Element Activity Check:',true); ndeBoxCell(doc,y,24,24,ndeChecked(card.elementActivityCheck)); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'UT Unit Manufacture:',true); ndeCell(doc,y,6,10,brand,false);
+    ndeCell(doc,y,11,14,'Model:',true); ndeCell(doc,y,15,17,model,false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.utSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Due Date:',true); ndeCell(doc,y,6,10,card.calDue||'',false);
+    ndeCell(doc,y,11,14,'Cal In Time:',true); ndeCell(doc,y,15,17,card.calIn||'',false);
+    ndeCell(doc,y,18,21,'Cal Out Time:',true); ndeCell(doc,y,22,24,card.calOut||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Transducer Manufacture:',true); ndeCell(doc,y,6,10,card.transManuf||'',false);
+    ndeCell(doc,y,11,14,'Model:',true); ndeCell(doc,y,15,17,card.transModel||'',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.transSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Transducer Size:',true); ndeCell(doc,y,6,10,card.transSize||'',false);
+    ndeCell(doc,y,11,14,'Element Qty:',true); ndeCell(doc,y,15,17,card.elementQty||'',false);
+    ndeCell(doc,y,18,21,'Frequency (MHz):',true); ndeCell(doc,y,22,24,card.frequency||'5',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Screen Range:',true); ndeCell(doc,y,6,10,card.screenRange||'',false);
+    ndeCell(doc,y,11,14,'Ref+Scan Gain (dB):',true); ndeCell(doc,y,15,17,card.refScanDb||'',false);
+    ndeCell(doc,y,18,21,'Velocity (In./ usec.):',true); ndeCell(doc,y,22,24,card.velocity||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Block Used:',true); ndeCell(doc,y,6,10,card.calBlock||'',false);
+    ndeCell(doc,y,11,14,'Material:',true); ndeCell(doc,y,15,17,card.calBlockMaterial||'Carbon Steel',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.calBlockSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Couplant Type:',true); ndeCell(doc,y,6,10,card.couplant||'Ultragel II',false);
+    ndeCell(doc,y,11,14,'Batch Number:',true); ndeCell(doc,y,15,17,card.couplantBatch||'22H028',false);
+    ndeCell(doc,y,18,22,'Cal Block Temp. within 25\u00B0F:',true); ndeCheckCell(doc,y,23,24,'Yes',ndeChecked(card.calBlockTemp||'Yes')); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Examiner:',true); ndeCell(doc,y,6,12,card.tech||'',false);
+    ndeCell(doc,y,13,14,'Level:',true); ndeCell(doc,y,15,17,card.certLevel||'II',false);
+    ndeCell(doc,y,18,19,'Date:',true); ndeCell(doc,y,20,24,card.date||'',false); y+=NDE_RH;
+
+    return ndeAcronyms(doc, y+4);
+  } catch(err){ console.error('Error in buildPAUTDataSheet:', err); return y; }
+}
+
+// ── AE / LSC data sheet (Acid Etch + Magnetic Particle + UTT sections) ────────
+function buildAELSCDataSheet(doc, y, card, techNo){
+  try {
+    if(typeof card==='string'){ card=(state.ndeCards||{})[card]; }
+    card=card||{};
+    const tNo=techNo||card.techNo||1;
+    y=ndeTitle(doc, y, 'Acid Etch (AE) & Long Seam Characterization (LSC) Data Sheet');
+
+    // Acid Etching
+    y=ndeBar(doc, y, 'Acid Etching Parameters:');
+    ndeCell(doc,y,1,5,'Procedure Used:',true); ndeCell(doc,y,6,15,card.aeProcedure||'BP-4190P-505',false);
+    ndeCell(doc,y,16,18,'Revision No:',true); ndeCell(doc,y,19,24,card.aeRev||'0',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Etchant Type:',true); ndeCell(doc,y,6,15,card.etchantType||'Nital 10%',false);
+    ndeCell(doc,y,16,19,'Expiration Date:',true); ndeCell(doc,y,20,24,card.etchantExp||'',false); y+=NDE_RH;
+
+    // Magnetic Particle Testing
+    y=ndeBar(doc, y, 'Magnetic Particle Testing Parameters:');
+    ndeCell(doc,y,1,5,'Procedure Used:',true); ndeCell(doc,y,6,15,card.mtProcedure||'BP-4190P-512',false);
+    ndeCell(doc,y,16,18,'Revision No:',true); ndeCell(doc,y,19,24,card.mtRev||'1',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Yoke Manufacture:',true); ndeCell(doc,y,6,10,card.yokeManuf||'Parker',false);
+    ndeCell(doc,y,11,12,'Model:',true); ndeCell(doc,y,13,15,card.yokeModel||'B-310',false);
+    ndeCell(doc,y,16,18,'Serial Number:',true); ndeCell(doc,y,19,24,card.yokeSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Due Date:',true); ndeCell(doc,y,6,10,card.yokeCal||'',false);
+    ndeCell(doc,y,11,15,'Lift Test Verified:',true); ndeCell(doc,y,16,17,card.liftTest||'Yes',false);
+    ndeCell(doc,y,18,22,'Field Strength Verified:',true); ndeCell(doc,y,23,24,card.fieldStrength||'Yes',false); y+=NDE_RH;
+    // Technique (2-row tall label)
+    ndeCell(doc,y,1,5,'Technique:',true,'right',NDE_RH*2);
+    ndeCell(doc,y,6,8,'Wet/Dry',true); ndeCell(doc,y,9,13,'Visible / Fluorescent',true);
+    ndeCell(doc,y,14,19,'Oil Based / Water Based',true); ndeCell(doc,y,20,24,'Current Applied (AC/DC):',true); y+=NDE_RH;
+    ndeCell(doc,y,6,8,card.techWetDry||'Wet',false); ndeCell(doc,y,9,13,card.techVisFluor||'Fluorescent',false);
+    ndeCell(doc,y,14,19,card.techBase||'Water Based',false); ndeCell(doc,y,20,24,card.techCurrent||'AC',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Particle Manufacture:',true); ndeCell(doc,y,6,8,card.particleManuf||'Magnaflux',false);
+    ndeCell(doc,y,9,10,'Medium:',true); ndeCell(doc,y,11,12,card.wfmtMedium||'20B',false);
+    ndeCell(doc,y,13,15,'Concentration:',true); ndeCell(doc,y,16,17,card.concentration||'0.1',false);
+    ndeCell(doc,y,18,21,'Batch Number:',true); ndeCell(doc,y,22,24,card.wfmtBatch||'20A099',false); y+=NDE_RH;
+    // Light Meter (2-row tall label)
+    ndeCell(doc,y,1,5,'Light Meter Used:',true,'right',NDE_RH*2);
+    ndeCell(doc,y,6,8,'Manufacture:',true); ndeCell(doc,y,9,11,'Model:',true); ndeCell(doc,y,12,15,'Serial Number:',true);
+    ndeCell(doc,y,16,20,'Detector S/N:',true); ndeCell(doc,y,21,24,'Cal. Due Date:',true); y+=NDE_RH;
+    ndeCell(doc,y,6,8,card.lmBrand||'Labino',false); ndeCell(doc,y,9,11,card.lmModel||'Apollo 1.0',false);
+    ndeCell(doc,y,12,15,card.lmSerial||'',false); ndeCell(doc,y,16,20,card.detectorSN||'',false);
+    ndeCell(doc,y,21,24,card.lmCal||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'White Light Source:',true); ndeCell(doc,y,6,8,'Manufacture:',true); ndeCell(doc,y,9,12,card.wlBrand||'N/A',false);
+    ndeCell(doc,y,13,14,'Model:',true); ndeCell(doc,y,15,17,card.wlModel||'N/A',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.wlSerial||'N/A',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Black Light Source:',true); ndeCell(doc,y,6,8,'Manufacture:',true); ndeCell(doc,y,9,12,card.blBrand||'Labino',false);
+    ndeCell(doc,y,13,14,'Model:',true); ndeCell(doc,y,15,17,card.blModel||'UVG5',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.blSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Vis. Light Intensity (fc):',true); ndeCell(doc,y,6,10,card.visLight||'<2',false);
+    ndeCell(doc,y,11,17,'UV Light Intensity:',true); ndeCell(doc,y,18,21,card.uvLight||'>1000',false);
+    ndeCell(doc,y,22,24,'Microwatt/cm2',true); y+=NDE_RH;
+
+    // Ultrasonic Thickness Testing
+    const [brand,model]=ndeSplit(card.utUnit,'Olympus','Epoch 650');
+    const [mn,mx]=ndeMinMaxVals(card);
+    y=ndeBar(doc, y, 'Ultrasonic Thickness Testing Parameters:');
+    ndeCell(doc,y,1,5,'Procedure Used:',true); ndeCell(doc,y,6,17,card.procedure||'BP-4190P-507',false);
+    ndeCell(doc,y,18,21,'Revision No:',true); ndeCell(doc,y,22,24,card.revNo||'1',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'(UT) Unit Brand:',true); ndeCell(doc,y,6,10,brand,false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,model,false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.utSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Due Date:',true); ndeCell(doc,y,6,10,card.calDue||'',false);
+    ndeCell(doc,y,11,13,'Cal In Time:',true); ndeCell(doc,y,14,17,card.calIn||'',false);
+    ndeCell(doc,y,18,21,'Cal Out Time:',true); ndeCell(doc,y,22,24,card.calOut||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Transducer Manufacture:',true); ndeCell(doc,y,6,10,card.transManuf||'',false);
+    ndeCell(doc,y,11,13,'Model:',true); ndeCell(doc,y,14,17,card.transModel||'',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.transSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Size/Dia. (Inches):',true); ndeCell(doc,y,6,10,card.transSize||'',false);
+    ndeCell(doc,y,11,13,'Element:',true); ndeCell(doc,y,14,17,card.elementQty||'Dual',false);
+    ndeCell(doc,y,18,21,'Frequency (MHz):',true); ndeCell(doc,y,22,24,card.frequency||'5',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Screen Range (In.):',true); ndeCell(doc,y,6,10,card.screenRange||'',false);
+    ndeCell(doc,y,11,13,'Ref+Scan (dB):',true); ndeCell(doc,y,14,17,card.refScanDb||'',false);
+    ndeCell(doc,y,18,21,'Velocity (In. /usec.):',true); ndeCell(doc,y,22,24,card.velocity||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Cal Block Used (In):',true); ndeMinMax(doc,y,mn,mx);
+    ndeCell(doc,y,11,13,'Material:',true); ndeCell(doc,y,14,17,card.calBlockMaterial||'1018 Carbon Steel',false);
+    ndeCell(doc,y,18,21,'Serial Number:',true); ndeCell(doc,y,22,24,card.calBlockSerial||'',false); y+=NDE_RH;
+    ndeCell(doc,y,1,5,'Couplant Type:',true); ndeCell(doc,y,6,10,card.couplant||'Ultragel II',false);
+    ndeCell(doc,y,11,13,'Batch No:',true); ndeCell(doc,y,14,17,card.couplantBatch||'22H028',false);
+    ndeCell(doc,y,18,22,'Cal Block Temp. +/- 25\u00B0F:',true); ndeCheckCell(doc,y,23,24,'Yes',ndeChecked(card.calBlockTemp||'Yes')); y+=NDE_RH;
+    ndeCell(doc,y,1,5,`Technician # ${tNo}:`,true); ndeCell(doc,y,6,10,card.tech||'',false);
+    ndeCell(doc,y,11,14,'Certification Level:',true); ndeCell(doc,y,15,16,card.certLevel||'II',false);
+    ndeCell(doc,y,17,20,'Inspection Date:',true); ndeCell(doc,y,21,24,card.date||'',false); y+=NDE_RH;
+
+    return ndeAcronyms(doc, y+4);
+  } catch(err){ console.error('Error in buildAELSCDataSheet:', err); return y; }
+}
+
 
 function buildUTT12Table(doc, y){
   const rows = state.utt12||[];
@@ -6044,10 +6308,8 @@ async function generatePDF(){
         build: async(doc,startY)=>{
           let y=buildScopeTable(doc,'utt12','12-PT UTT',[],startY);
           if(state.uttloc?.length){ doc.addPage(); y=pageHeader(doc); y=buildUTTLocTable(doc,y); }
+          // Parameters data sheet(s) are rendered per technician via the cal-sheet path.
           doc.addPage(); y=pageHeader(doc);
-          // Find the UTT calibration card for parameters
-          const uttCard = Object.entries(state.ndeCards||{}).find(([id,card])=>card.method==='utt12');
-          y=buildUTTDataSheet(doc, y, uttCard?.[0]);  // Always call, uses sample data if no card exists
           y=buildUTT12Table(doc,y);
           await buildPhotosSection(doc,'utt12','UTT');
         }},
