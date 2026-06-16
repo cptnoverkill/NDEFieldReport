@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 /* ── Theme variables ─────────────────────────── */
@@ -93,6 +94,18 @@ textarea{resize:vertical;min-height:52px}
 .btn-primary:hover{opacity:0.85}
 .btn-danger{background:var(--color-danger-bg);border-color:var(--color-danger-border);color:var(--color-danger-text)}
 .btn-sm{padding:4px 9px;font-size:12px}
+
+.collapsible-section{margin-bottom:8px}
+.collapsible-header{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+  font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;
+  letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border)}
+.collapsible-header:hover{color:var(--color-text)}
+.collapsible-header .chev{transition:transform 0.2s;font-size:12px;margin-left:auto}
+.collapsible-header.collapsed .chev{transform:rotate(-90deg)}
+.collapsible-body{display:block}
+.collapsible-body.collapsed{display:none}
+.collapsible-summary{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:none;letter-spacing:normal;margin-left:4px}
+
 .section-divider{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border)}
 .joints-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .joint-chip{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;font-size:12px}
@@ -569,6 +582,12 @@ button input { background-color: transparent !important; }
       </div>
     </div>
 
+    <div class="collapsible-header" id="config-header" onclick="toggleSection('config')">
+      <i class="ti ti-settings" style="font-size:12px"></i> Project Configuration
+      <span class="collapsible-summary" id="config-summary"></span>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="collapsible-body" id="config-body">
     <div class="config-grid">
       <div class="field-group"><label class="field-label">Project name</label><input id="cfg-project" placeholder="A-934 SFL 077 Kern River..." oninput="updateConfig()"></div>
       <div class="field-group"><label class="field-label">SAP order #</label><input id="cfg-sap" placeholder="84025084" oninput="updateConfig()"></div>
@@ -583,7 +602,14 @@ button input { background-color: transparent !important; }
       <div class="field-group"><label class="field-label">Longitude</label><input id="cfg-lon" placeholder="-119.16183" oninput="updateConfig()"></div>
     </div>
 
-    <div class="section-divider">Technicians on project</div>
+    </div><!-- /config-body -->
+
+    <div class="collapsible-header" id="tech-header" onclick="toggleSection('tech')">
+      <i class="ti ti-users" style="font-size:12px"></i> Technicians &amp; Signatures
+      <span class="collapsible-summary" id="tech-summary"></span>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="collapsible-body" id="tech-body">
     <div class="joints-wrap" id="tech-roster-list"></div>
     <div id="supervisor-sig-section"></div>
     <div class="add-joint-row">
@@ -600,14 +626,28 @@ button input { background-color: transparent !important; }
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
         <button class="btn" onclick="openKnackPicker()" title="Select technicians from Knack" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Import from Knack</button>
       </div>
+      <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
+        <button class="btn" onclick="document.getElementById('hform-file-input').click()" title="Import technician equipment from H-Form template" style="border-style:dashed"><i class="ti ti-upload"></i> Load H-Form Equipment</button>
+        <input type="file" id="hform-file-input" accept=".xlsx,.xlsm" onchange="importHFormEquipment()" style="display:none">
+      </div>
     </div>
+
+    </div><!-- /tech-body -->
 
     <div class="section-divider">Project overview photos</div>
     <div id="project-photo-strip" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
     <div class="photo-zone" onclick="openProjectPhoto()" style="margin-bottom:12px">
       <i class="ti ti-camera-plus"></i> Add project overview photo
     </div>
-    <div class="section-divider">Joints in scope</div>
+    <div class="section-divider" style="display:flex;align-items:center;justify-content:space-between">
+      <span>Joints in scope</span>
+      <span style="display:flex;gap:6px;text-transform:none;letter-spacing:normal">
+        <button class="btn btn-sm" onclick="setAllJointCards(false)" style="font-size:10px;padding:3px 8px">
+          <i class="ti ti-chevrons-down"></i> Expand all</button>
+        <button class="btn btn-sm" onclick="setAllJointCards(true)" style="font-size:10px;padding:3px 8px">
+          <i class="ti ti-chevrons-up"></i> Collapse all</button>
+      </span>
+    </div>
     <div class="joints-wrap" id="joints-list"></div>
     <div class="add-joint-row">
       <div class="field-group"><label class="field-label">Joint ID</label><input id="new-joint" placeholder="JT-01" onkeydown="if(event.key==='Enter')addJoint()" style="max-width:100px"></div>
@@ -644,6 +684,13 @@ button input { background-color: transparent !important; }
 <input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handlePhotos(event)">
 
 <script>
+// Map tab id -> NDE_METHODS id (used for cal record linkage)
+const TAB_TO_METHOD = {
+  utt12:'utt', uttloc:'utt', lsc:'aelsc', aelsc:'aelsc', jointlen:null,
+  va:'mt', mt:'mt', aut:'aut', mut:'mut', muthand:'mut',
+  pautbm:'paut', pautls:'paut',
+};
+
 const TABS = [
   {id:'utt12',label:'12pt UTT',icon:'ti-ruler-2'},
   {id:'uttloc',label:'UTT Locations',icon:'ti-microscope'},
@@ -651,13 +698,33 @@ const TABS = [
   {id:'va',label:'VA',icon:'ti-eye'},
   {id:'mt',label:'MT',icon:'ti-magnet'},
   {id:'aut',label:'AUT',icon:'ti-scan'},
+  {id:'gw',label:'Guided Wave',icon:'ti-wave-sine-alt'},
   {id:'mut',label:'MUT',icon:'ti-wave-sine'},
   {id:'muthand',label:'MUT Hand Scans',icon:'ti-hand-grab'},
   {id:'pautbm',label:'PAUT BM',icon:'ti-layers-subtract'},
   {id:'pautls',label:'PAUT LS',icon:'ti-timeline'},
   {id:'aelsc',label:'AE/LSC',icon:'ti-flask'},
-  {id:'calrec',label:'Daily Cal',icon:'ti-certificate'},
+  {id:'calrec',label:'Cal Overview',icon:'ti-certificate'},
 ];
+
+// NDE method definitions — declared early since renderTab()/methodCalPanel()
+// reference NDE_METHODS during the initial load() call below.
+const NDE_METHODS = [
+  {id:'utt',    label:'UTT',           icon:'ti-ruler-2',      tabs:['utt12','uttloc']},
+  {id:'aelsc',  label:'AE/LSC',        icon:'ti-flask',        tabs:['aelsc','lsc']},
+  {id:'mt',     label:'MT/VT',         icon:'ti-magnet',       tabs:['mt','va']},
+  {id:'aut',    label:'AUT',           icon:'ti-scan',         tabs:['aut']},
+  {id:'gw',     label:'Guided Wave',   icon:'ti-wave-sine-alt', tabs:['gw']},
+  {id:'mut',    label:'MUT',           icon:'ti-wave-sine',    tabs:['mut','muthand']},
+  {id:'paut',   label:'PAUT',          icon:'ti-layers-subtract', tabs:['pautbm','pautls']},
+  {id:'xrf',    label:'XRF/LIBS',      icon:'ti-atom',         tabs:[]},
+  {id:'hard',   label:'Hardness',      icon:'ti-hammer',       tabs:[]},
+  {id:'filings',label:'Metal Filings', icon:'ti-needle',       tabs:[]},
+  {id:'iit',    label:'IIT',           icon:'ti-activity',     tabs:[]},
+  {id:'metallo',label:'Field Metallo.', icon:'ti-microscope',  tabs:[]},
+];
+
+let activeNDEMethod = 'utt';
 
 const CLOCK = ['N/A','12:00','12:30','1:00','1:30','2:00','2:30','3:00','3:30','4:00','4:30','5:00','5:30','6:00','6:30','7:00','7:30','8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30'];
 const REF_GW = ['U/S','D/S','Branch'];
@@ -677,10 +744,12 @@ let state = {
   rowPhotos:{},
   pautSpacing:{},
   utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],
-  va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],
+  va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],gw:[],
   calrec:[],
+  fieldNotes:{},
   ecGrids:{},mutGrids:{},autScans:{},
-  ndeCards:{}
+  ndeCards:{},
+  calPanelOpen:{}
 };
 let activeTab = 'utt12';
 let photoTarget = null;
@@ -690,11 +759,15 @@ function load(){
   renderTechRoster();
   const s = localStorage.getItem('nde_field_report');
   if(s){ try{ state = JSON.parse(s); }catch(e){} }
+  // Load cached technician equipment from H-Form import
+  const cached = localStorage.getItem('technicianEquipment');
+  if(cached){ try{ state.technicianEquipment = JSON.parse(cached); }catch(e){} }
   loadConfig();
   renderTechRoster();
   renderSupervisorSection();
   renderProjectPhotos();
   renderJoints();
+  initCollapsibleSections();
   renderTabs();
   renderTab(activeTab);
   updateSubtitle();
@@ -727,7 +800,9 @@ function loadConfig(){
 }
 
 function updateConfig(){
+  updateSectionSummaries();
   if(!state.config) state.config={};
+  const before = JSON.stringify(state.config);
   ['project','sap','job','line','mp','address','vendor','lat','lon'].forEach(k=>{
     const el = document.getElementById('cfg-'+k);
     if(el) state.config[k] = el.value;
@@ -738,6 +813,9 @@ function updateConfig(){
   if(de) state.config['date_end'] = de.value;
   updateSubtitle();
   save();
+  if(JSON.stringify(state.config) !== before){
+    showToast('✓ Project details updated', 'success');
+  }
 }
 
 function updateSubtitle(){
@@ -854,6 +932,12 @@ function renderJoints(){
                    oninput="this.classList.remove('was-unknown')">
           </div>
           <div class="jt-edit-field">
+            <span class="jt-edit-label">Seam Location (hh:mm)</span>
+            <input list="clock-options" value="${j.seamClock||''}" placeholder="e.g. 11:00"
+              style="background:var(--color-input-bg)"
+              onchange="updateJointField('${j.id}','seamClock',this.value)">
+          </div>
+          <div class="jt-edit-field">
             <span class="jt-edit-label">Grade</span>
             <input value="${j.grade||''}" placeholder="e.g. API 5LX-X65"
                    onchange="updateJointField('${j.id}','grade',this.value)">
@@ -917,6 +1001,13 @@ function toggleJointCard(id){
   if(body) body.classList.toggle('open');
 }
 
+function setAllJointCards(collapse){
+  (state.joints||[]).forEach(j=>{
+    const body = document.getElementById('jt-body-'+j.id);
+    if(body) body.classList.toggle('open', !collapse);
+  });
+}
+
 function updateJointField(id, field, val){
   const jt = (state.joints||[]).find(j=>j.id===id);
   if(!jt) return;
@@ -931,6 +1022,9 @@ function updateJointField(id, field, val){
       `${jt.type||'?'} · OD ${jt.od||'?'}" · NWT ${jt.nwt||'?'}"${jt.od2?` / OD2 ${jt.od2}"`:''}${jt.nwt2?` NWT2 ${jt.nwt2}"`:''}  · ${jt.seam||'?'} · ${jt.grade||'no grade'}`;
     const isUnknown = !jt.seam || jt.seam.toLowerCase()==='unknown';
     if(badge) badge.style.display = isUnknown ? '' : 'none';
+    // Auto-close card after edit for cleaner UI
+    const body = document.getElementById('jt-body-'+id);
+    if(body && !['seam','type','od','nwt'].includes(field)) body.classList.remove('open');
   }
   // If seam changed, refresh active tab so scope tables reflect it
   if(field==='seam'||field==='type'||field==='od'||field==='nwt'){
@@ -940,7 +1034,7 @@ function updateJointField(id, field, val){
 
 const TAB_CATEGORIES = {
   'MPV': ['utt12','uttloc','aelsc','jointlen'],
-  'Flaw Detection': ['va','mt','aut','mut','muthand','pautbm','pautls'],
+  'Flaw Detection': ['va','mt','aut','gw','mut','muthand','pautbm','pautls'],
   'Equipment': ['calrec'],
 };
 
@@ -953,7 +1047,7 @@ function renderTabs(){
       const t = TABS.find(x=>x.id===tid);
       if(!t) return;
       const count = tid==='lsc' ? (state.lscGroups||[]).length : (state[tid]||[]).length;
-      const hasThreats = ['mt','va','aut','mut','pautbm','pautls'].includes(tid) &&
+      const hasThreats = ['mt','va','aut','gw','mut','pautbm','pautls'].includes(tid) &&
         (state[tid]||[]).some(r=>r.threat);
       html += `<button class="tab${activeTab===tid?' active':''}" onclick="switchTab('${tid}')">
         <i class="ti ${t.icon}"></i>
@@ -981,6 +1075,7 @@ function renderTab(id){
   else if(id==='va') el.innerHTML = renderVA();
   else if(id==='mt') el.innerHTML = renderMT();
   else if(id==='aut') el.innerHTML = renderAUT();
+  else if(id==='gw') el.innerHTML = renderGW();
   else if(id==='mut') el.innerHTML = renderMUT();
   else if(id==='muthand') el.innerHTML = renderMUTHand();
   else if(id==='pautbm') el.innerHTML = renderPAUTBM();
@@ -990,6 +1085,22 @@ function renderTab(id){
 }
 
 function jo(sel){ return (state.joints||[]).map(j=>`<option${j.id===sel?' selected':''}>${j.id}</option>`).join(''); }
+function joJointLen(sel){ 
+  // For Joint Lengths: show all existing jointlen entries + base joints not yet used
+  const existingIds = new Set((state.jointlen||[]).map(r=>r.jt));
+  const baseJoints = (state.joints||[]).map(j=>j.id);
+  const all = new Set();
+  
+  // Add existing joint length entries (which may have variants like "JT-04 extrados")
+  (state.jointlen||[]).forEach(r=>all.add(r.jt));
+  
+  // Add base joint IDs that don't have entries yet
+  baseJoints.forEach(j=>{
+    if(!existingIds.has(j)) all.add(j);
+  });
+  
+  return Array.from(all).sort().map(j=>`<option${j===sel?' selected':''}>${j}</option>`).join('');
+}
 function co(sel){ return CLOCK.map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
 function charo(sel){ return [''].concat(IND_CHAR).map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
 function yno(sel){ return ['','Yes','No','N/A'].map(c=>`<option${c===sel?' selected':''}>${c}</option>`).join(''); }
@@ -1002,60 +1113,102 @@ function emptyRow(msg){
 /* ===== 12pt UTT ===== */
 function renderUTT12(){
   const rows = state.utt12||[];
-  const rowHtml = rows.length ? rows.map((r,i)=>{
-    const vals = r.vals||Array(12).fill('');
-    const filled = vals.filter(v=>v!=='');
-    // Normalize: if stored as integer (e.g. 511 from DFPR import), divide by 1000
-    const normVal = v=>{ const n=parseFloat(v); return n>1 ? n/1000 : n; };
-    const avg = filled.length ? (filled.reduce((a,b)=>a+normVal(b),0)/filled.length).toFixed(3) : '—';
-    const mn  = filled.length ? Math.min(...filled.map(normVal)).toFixed(3) : '—';
-    const jt  = (state.joints||[]).find(j=>j.id===r.jt);
-    const nwt = jt ? parseFloat(jt.nwt)||0 : 0;
-    const low = mn!=='—' && nwt && parseFloat(mn)<nwt*0.8;
-    return `<tr>
-      <td><select onchange="rowUpdate('utt12',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
-      <td><select onchange="rowUpdate('utt12',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
-      <td><input type="number" step="0.5" value="${r.dist||''}" onchange="rowUpdate('utt12',${i},'dist',this.value)"></td>
-      <td><select onchange="rowUpdate('utt12',${i},'bfg',this.value)">${BFG_AFG.map(v=>`<option${v===r.bfg?' selected':''}>${v}</option>`).join('')}</select></td>
-      ${vals.map((v,ci)=>`<td><input type="number" step="0.001" value="${(v!==''&&parseFloat(v)>1)?( parseFloat(v)/1000).toFixed(3):v}" onchange="uttVal(${i},${ci},this.value)"></td>`).join('')}
-      <td class="stat-col">${avg}</td>
-      <td class="stat-col${low?' val-low':''}">${mn}${low?' ⚠':''}</td>
-      <td><select class="tech-select" onchange="rowUpdate('utt12',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('utt12',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('utt12',i)}<td><button class="icon-btn" onclick="removeRow('utt12',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
-    </tr>`;
-  }).join('') : `<tr><td colspan="20"><div class="empty-state"><i class="ti ti-table-off"></i>No readings yet — click Add reading</div></td></tr>`;
+  const joints = state.joints||[];
+
+  // Build the add-row button and bulk controls
+  const addRowBtn = `<button class="btn btn-sm" onclick="addUTT12Row()" style="margin:4px 0">
+    <i class="ti ti-plus"></i> Add row</button>`;
+
+  if(!rows.length) return `<div class="panel"><div class="panel-header"><span class="panel-title">
+    <i class="ti ti-ruler-2"></i> 12-Point UTT Wall Thickness</span></div>
+    ${scopeSummaryTable('utt12','12-PT UTT')}
+    ${indBannerWithBulk('utt12','12-Point UTT')}
+    <div class="empty-state"><i class="ti ti-ruler-2"></i> No UTT data yet<br>${addRowBtn}</div>
+    ${fieldNotesSection('utt12')}${photoSection('utt12')}
+    ${methodCalPanel('utt12')}</div>`;
+
+  // Group rows by joint
+  const {groups, order} = groupRowsByJoint(rows);
+
+  let grouped = order.map(jtId=>{
+    const jt = joints.find(j=>j.id===jtId)||{};
+    const nwt = parseFloat(jt.nwt)||0;
+    const items = groups[jtId];
+    const collapsed = state._uttCollapsed?.[jtId];
+
+    // Compute joint-level stats
+    const allVals = items.flatMap(({row:r})=>(r.vals||[]).map(v=>{
+      const n=parseFloat(v); return n>1?n/1000:n;
+    }).filter(v=>!isNaN(v)&&v>0));
+    const jtMin  = allVals.length ? Math.min(...allVals).toFixed(3) : '—';
+    const jtAvg  = allVals.length ? (allVals.reduce((a,b)=>a+b,0)/allVals.length).toFixed(3) : '—';
+    const low    = jtMin!=='—' && nwt && parseFloat(jtMin)<nwt*0.8;
+
+    const rowsHtml = items.map(({row:r, idx:i})=>{
+      const vals = r.vals||Array(12).fill('');
+      const filled = vals.filter(v=>v!=='');
+      const normVal = v=>{ const n=parseFloat(v); return n>1?n/1000:n; };
+      const avg = filled.length ? (filled.reduce((a,b)=>a+normVal(b),0)/filled.length).toFixed(3) : '—';
+      const mn  = filled.length ? Math.min(...filled.map(normVal)).toFixed(3) : '—';
+      const rowNwt = parseFloat(jt.nwt)||0;
+      const rowLow = mn!=='—' && rowNwt && parseFloat(mn)<rowNwt*0.8;
+      return `<tr>
+        <td><select onchange="rowUpdate('utt12',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
+        <td><select onchange="rowUpdate('utt12',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+        <td><input type="number" step="0.5" style="width:52px" value="${r.dist||''}" onchange="rowUpdate('utt12',${i},'dist',this.value)"></td>
+        <td><select onchange="rowUpdate('utt12',${i},'bfg',this.value)"><option ${r.bfg==='BFG'?'selected':''}>BFG</option><option ${r.bfg==='AFG'?'selected':''}>AFG</option></select></td>
+        ${vals.map((v,ci)=>`<td><input type="number" step="0.001" style="width:64px" value="${(v!==''&&parseFloat(v)>1)?(parseFloat(v)/1000).toFixed(3):v}" onchange="uttVal(${i},${ci},this.value)"></td>`).join('')}
+        <td class="stat-col">${avg}</td>
+        <td class="stat-col${rowLow?' val-low':''}" style="font-weight:700;color:#000">${mn}${rowLow?' ⚠':''}</td>
+        <td><select class="tech-select" onchange="rowUpdate('utt12',${i},'tech',this.value)">${to(r.tech)}</select></td>
+        <td><input type="date" value="${r.date||''}" onchange="rowUpdate('utt12',${i},'date',this.value)" style="font-size:11px"></td>
+        ${rowPhotoCell('utt12',i)}
+        <td><button class="icon-btn" onclick="removeRow('utt12',${i})"><i class="ti ti-trash"></i></button></td>
+      </tr>`;
+    }).join('');
+
+    return `<div style="margin-bottom:6px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--color-bg-secondary);cursor:pointer;user-select:none"
+           onclick="toggleUTTJoint('${jtId}')">
+        <strong style="font-size:13px;min-width:60px">${jtId}</strong>
+        <span style="font-size:11px;color:var(--color-text-secondary)">${jt.type||'Pipe'} · OD ${jt.od||'?'}" · NWT ${jt.nwt||'?'}"</span>
+        <span style="font-size:11px;margin-left:8px;color:${low?'var(--color-danger-text)':'var(--color-text-secondary)'}">
+          Min: <strong style="color:#000">${jtMin}"</strong> · Avg: ${jtAvg}"
+        </span>
+        <i class="ti ti-chevron-${collapsed?'right':'down'}" style="margin-left:auto;font-size:13px;color:var(--color-text-tertiary)"></i>
+      </div>
+      ${collapsed?'': `<div class="table-wrap" style="overflow-x:auto"><table class="utt-table">
+        <thead><tr>
+          <th>Joint</th><th>Ref GW</th><th>Dist (in.)</th><th>BFG/AFG</th>
+          <th>12:00</th><th>1:00</th><th>2:00</th><th>3:00</th><th>4:00</th><th>5:00</th>
+          <th>6:00</th><th>7:00</th><th>8:00</th><th>9:00</th><th>10:00</th><th>11:00</th>
+          <th>Avg</th><th>Min</th><th>Tech</th><th>Date</th><th>📷</th><th></th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table></div>`}
+    </div>`;
+  }).join('');
 
   return `<div class="panel">
-    <div class="panel-header">
-      <span class="panel-title"><i class="ti ti-ruler-2"></i> 12-Point UTT Wall Thickness</span>
-      <div class="panel-actions${nriLocked('utt12')?' nri-locked':''}">
-        <button class="btn" onclick="addUTT12Row()"><i class="ti ti-plus"></i> Add reading</button>
-        <button class="btn" onclick="openPhoto('utt12')"><i class="ti ti-camera"></i> Add photos</button>
-      </div>
+    <div class="panel-header"><span class="panel-title"><i class="ti ti-ruler-2"></i> 12-Point UTT Wall Thickness</span></div>
+    ${scopeSummaryTable('utt12','12-PT UTT')}
+    ${indBannerWithBulk('utt12','12-Point UTT')}
+    <div style="padding:8px 12px">
+      ${grouped}
+      ${addRowBtn}
     </div>
-    <div class="alert alert-info"><i class="ti ti-info-circle"></i> Enter values as thousandths (e.g. 511 = 0.511"). Avg and Min auto-calculated. Min flagged red if &lt;80% NWT.</div>
-    ${nriBar('utt12')}
-    ${scopeSummaryTable('utt12','12-Point UTT')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — 12-Point UTT</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('utt12',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
-    <div class="${nriLocked('utt12')?'nri-locked':''}">  
-    <div class="utt-table-wrap"><table class="utt-table">
-      <thead><tr><th>Joint</th><th>Ref</th><th>Dist</th><th>BFG/AFG</th>${UTT12_CLOCKS.map(c=>`<th>${c}</th>`).join('')}<th>Avg (in)</th><th>Min (in)</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
-      <tbody>${rowHtml}</tbody>
-    </table></div>
-    </div>
-    ${photoSection('utt12')}
+    ${fieldNotesSection('utt12')}${photoSection('utt12')}
+    ${methodCalPanel('utt12')}
   </div>`;
 }
-function addUTT12Row(){
-  if(!state.utt12) state.utt12=[];
-  state.utt12.push({jt:(state.joints||[])[0]?.id||'',ref:'U/S',dist:'',bfg:'BFG',vals:Array(12).fill('')});
+
+function toggleUTTJoint(jtId){
+  if(!state._uttCollapsed) state._uttCollapsed={};
+  state._uttCollapsed[jtId] = !state._uttCollapsed[jtId];
   save(); renderTab('utt12');
 }
-function uttVal(i,ci,v){
-  if(!state.utt12[i].vals) state.utt12[i].vals=Array(12).fill('');
-  state.utt12[i].vals[ci]=v; save(); renderTab('utt12');
-}
 
-/* ===== UTT Locations ===== */
+
 function renderUTTLoc(){
   const rows = state.uttloc||[];
   const rowHtml = rows.length ? rows.map((r,i)=>{
@@ -1089,14 +1242,16 @@ function renderUTTLoc(){
     </div>
     ${nriBar('uttloc')}
     ${scopeSummaryTable('uttloc','UTT of Test Locations')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — UTT of Test Locations</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('uttloc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('uttloc','UTT of Test Locations')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('uttloc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('uttloc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('uttloc')}
     ${photoSection('uttloc')}
+    ${methodCalPanel('uttloc')}
   </div>`;
 }
 
@@ -1105,8 +1260,9 @@ function renderUTTLoc(){
 /* ===== Joint Lengths ===== */
 function renderJointLen(){
   const rows = state.jointlen||[];
-  const rowHtml = rows.length ? rows.map((r,i)=>`<tr>
-    <td><select onchange="rowUpdate('jointlen',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    return `<tr>
+    <td style="padding:8px;min-width:140px"><select onchange="rowUpdate('jointlen',${i},'jt',this.value)" style="font-weight:700;font-size:12px;padding:6px;width:100%;min-width:130px">${joJointLen(r.jt)}</select></td>
     <td><select onchange="rowUpdate('jointlen',${i},'type',this.value)"><option>Pipe</option><option>Mfg Bend</option><option>Straight Tee</option><option>Reducing Tee</option><option>Reducer</option><option>Cap</option></select></td>
     <td><input type="number" step="0.01" value="${r.length||''}" onchange="rowUpdate('jointlen',${i},'length',this.value)" style="width:75px"></td>
     <td><input type="number" step="0.125" value="${r.od1||''}" onchange="rowUpdate('jointlen',${i},'od1',this.value)" style="width:60px"></td>
@@ -1115,7 +1271,8 @@ function renderJointLen(){
     <td><input type="number" step="0.001" value="${r.nwt2||''}" placeholder="N/A" onchange="rowUpdate('jointlen',${i},'nwt2',this.value)" style="width:65px"></td>
     <td><textarea rows="2" onchange="rowUpdate('jointlen',${i},'notes',this.value)">${r.notes||''}</textarea></td>
     <td><select class="tech-select" onchange="rowUpdate('jointlen',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('jointlen',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('jointlen',i)}<td><button class="icon-btn" onclick="removeRow('jointlen',${i})"><i class="ti ti-trash"></i></button></td>
-  </tr>`).join('') : emptyRow('No joint lengths recorded yet');
+  </tr>`;
+  }).join('') : emptyRow('No joint lengths recorded yet');
   return `<div class="panel">
     <div class="panel-header">
       <span class="panel-title"><i class="ti ti-dimensions"></i> Joint Lengths</span>
@@ -1204,14 +1361,16 @@ function renderVA(){
     </div>
     ${nriBar('va')}
     ${scopeSummaryTable('va','Visual Assessment (VA)')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Visual Assessment (VA)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('va',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('va','Visual Assessment (VA)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('va',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('va')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>EC Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('va')}
     ${photoSection('va')}
+    ${methodCalPanel('va')}
   </div>`;
 }
 
@@ -1245,14 +1404,16 @@ function renderMT(){
     </div>
     ${nriBar('mt')}
     ${scopeSummaryTable('mt','Magnetic Particle Testing (MT)')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Magnetic Particle Testing (MT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mt',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('mt','Magnetic Particle Testing (MT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mt',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mt')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('mt')}
     ${photoSection('mt')}
+    ${methodCalPanel('mt')}
   </div>`;
 }
 
@@ -1287,7 +1448,7 @@ function renderAUT(){
     </div>
     ${nriBar('aut')}
     ${scopeSummaryTable('aut','Automated UT (AUT)')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Automated UT (AUT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('aut','Automated UT (AUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('aut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1296,6 +1457,50 @@ function renderAUT(){
     </div>
     ${autScansPanel()}
    ${photoSection('aut')}
+   ${methodCalPanel('aut')}
+  </div>`;
+}
+
+/* ===== GW (Guided Wave) ===== */
+function renderGW(){
+  const rows = state.gw||[];
+  const rowHtml = rows.length ? rows.map((r,i)=>{
+    const pct = r.minwt&&r.wt ? (parseFloat(r.minwt)/parseFloat(r.wt)*100).toFixed(1)+'%' : '—';
+    return `<tr>
+      <td><select onchange="rowUpdate('gw',${i},'jt',this.value)" style="font-weight:700;font-size:13px;min-width:80px">${jo(r.jt)}</select></td>
+      <td><input value="${r.indid||''}" placeholder="GW-001" onchange="rowUpdate('gw',${i},'indid',this.value)" style="width:70px"></td>
+      <td><select onchange="rowUpdate('gw',${i},'char',this.value)">${charo(r.char)}</select></td>
+      <td><select onchange="rowUpdate('gw',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
+      <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('gw',${i},'dist',this.value)" style="width:55px"></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('gw',${i},'clock',this.value)"></td>
+      <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('gw',${i},'len',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('gw',${i},'wid',this.value)" style="width:55px"></td>
+      <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('gw',${i},'minwt',this.value);renderTab('gw')" style="width:60px"></td>
+      <td><input type="number" step="0.001" value="${r.wt||''}" onchange="rowUpdate('gw',${i},'wt',this.value);renderTab('gw')" style="width:60px"></td>
+      <td><select onchange="rowUpdate('gw',${i},'nl',this.value)">${NL.map(v=>`<option${v===r.nl?' selected':''}>${v}</option>`).join('')}</select></td>
+      <td class="stat-cell">${pct}</td>
+      <td><select class="tech-select" onchange="rowUpdate('gw',${i},'tech',this.value)">${to(r.tech||'')}</select></td><td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('gw',${i},'date',this.value)" title="Inspection date for this row"></td>${rowPhotoCell('gw',i)}<td><button class="threat-flag-btn${r.threat?' flagged':''}" onclick="toggleThreat('gw',${i},!r.threat)" title="${r.threat?'Remove threat flag':'⚠ Flag as immediate threat'}"><i class="ti ti-alert-triangle"></i>${r.threat?' ⚠':''}</button></td><td><button class="icon-btn" onclick="removeRow('gw',${i})"><i class="ti ti-trash"></i></button></td>
+    </tr>`;
+  }).join('') : emptyRow('No GW indications recorded');
+  return `<div class="panel">
+    <div class="panel-header">
+      <span class="panel-title"><i class="ti ti-wave-sine-alt"></i> Guided Wave (GW) Indications</span>
+      <div class="panel-actions${nriLocked('gw')?' nri-locked':''}">
+        <button class="btn" onclick="addRow('gw',{jt:(state.joints||[])[0]?.id||'',ref:'U/S',clock:'N/A',char:'',nl:'L'})"><i class="ti ti-plus"></i> Add indication</button>
+        <button class="btn" onclick="openPhoto('gw')"><i class="ti ti-camera"></i> Add photos</button>
+      </div>
+    </div>
+    ${nriBar('gw')}
+    ${scopeSummaryTable('gw','Guided Wave (GW)')}
+    ${indBannerWithBulk('gw','Guided Wave (GW)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('gw',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    <div class="${nriLocked('gw')?'nri-locked':''}">  
+    <div class="table-wrap"><table>
+      <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
+      <tbody>${rowHtml}</tbody>
+    </table></div>
+    </div>
+   ${photoSection('gw')}
+   ${methodCalPanel('gw')}
   </div>`;
 }
 
@@ -1330,7 +1535,7 @@ function renderMUT(){
     </div>
     ${nriBar('mut')}
     ${scopeSummaryTable('mut','Manual UT (MUT)')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Manual UT (MUT)</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('mut','Manual UT (MUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>MUT Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1339,6 +1544,7 @@ function renderMUT(){
     </div>
     ${mutGridsPanel()}
    ${photoSection('mut')}
+   ${methodCalPanel('mut')}
   </div>`;
 }
 
@@ -1364,14 +1570,16 @@ function renderMUTHand(){
     </div>
     ${nriBar('muthand')}
     ${scopeSummaryTable('muthand','MUT Hand Scans')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — MUT Hand Scans</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('muthand',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('muthand','MUT Hand Scans')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('muthand',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('muthand')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Start X,Y (Axial,Circ) in.</th><th>End X,Y (Axial,Circ) in.</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('muthand')}
     ${photoSection('muthand')}
+    ${methodCalPanel('muthand')}
   </div>`;
 }
 
@@ -1402,14 +1610,16 @@ function renderPAUTBM(){
     </div>
     ${nriBar('pautbm')}
     ${scopeSummaryTable('pautbm','PAUT Base Metal')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Base Metal</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautbm',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('pautbm','PAUT Base Metal')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautbm',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautbm')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('pautbm')}
     ${photoSection('pautbm')}
+    ${methodCalPanel('pautbm')}
   </div>`;
 }
 
@@ -1440,14 +1650,16 @@ function renderPAUTLS(){
     </div>
     ${nriBar('pautls')}
     ${scopeSummaryTable('pautls','PAUT Long Seam')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — PAUT Long Seam</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautls',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('pautls','PAUT Long Seam')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautls',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautls')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('pautls')}
     ${photoSection('pautls')}
+    ${methodCalPanel('pautls')}
   </div>`;
 }
 
@@ -1675,6 +1887,18 @@ function getScopeStatus(tabId, jtId){
 
 function setScopeStatus(tabId, jtId, field, val){
   getScopeStatus(tabId, jtId);
+  // If setting tech, offer to propagate to all rows for this tab+joint
+  if(field === 'tech' && val){
+    // Auto-fill any rows for this joint that have no tech set
+    const TAB_TO_STATE = {utt12:'utt12',uttloc:'uttloc',va:'va',mt:'mt',
+      aut:'aut',mut:'mut',muthand:'muthand',pautbm:'pautbm',pautls:'pautls',aelsc:'aelsc'};
+    const stateKey = TAB_TO_STATE[tabId];
+    if(stateKey){
+      (state[stateKey]||[]).forEach(r=>{
+        if(r.jt===jtId && !r.tech) r.tech=val;
+      });
+    }
+  }
   state.scopeStatus[tabId][jtId][field] = val;
   save();
   if(field==='date') computeDateRange();
@@ -1686,12 +1910,6 @@ function scopeSummaryTable(tabId, methodLabel){
   const joints = state.joints||[];
   if(!joints.length) return `<div class="alert alert-info" style="margin-bottom:0"><i class="ti ti-info-circle"></i> No joints in scope yet — add joints in the project header above.</div>`;
 
-  // Map tabId → NDE_METHODS id
-  const TAB_TO_METHOD = {
-    utt12:'utt', uttloc:'utt', lsc:'aelsc', aelsc:'aelsc', jointlen:null,
-    va:'mt', mt:'mt', aut:'aut', mut:'mut', muthand:'mut',
-    pautbm:'paut', pautls:'paut',
-  };
   const methodId = TAB_TO_METHOD[tabId] || null;
 
   // Group joints by date+tech combo
@@ -1712,18 +1930,56 @@ function scopeSummaryTable(tabId, methodLabel){
     return ka.localeCompare(kb);
   });
 
+  // Bucket groups by whether an NDE/cal sheet has been started for them
+  const bucketed = {started:[], pending:[], unassigned:[]};
+  sortedGroups.forEach(entry=>{
+    const [gKey, gInfo] = entry;
+    if(gKey === '||'){ bucketed.unassigned.push(entry); return; }
+    const calKey = methodId ? `${methodId}__${gInfo.date}__${gInfo.tech}` : null;
+    const hasCard = calKey && !!(state.ndeCards||{})[calKey];
+    (hasCard ? bucketed.started : bucketed.pending).push(entry);
+  });
+
+  const BUCKET_META = {
+    started:    {label:'NDE Sheet Started',  icon:'ti-circle-check',  bg:'var(--color-success-bg)',   text:'var(--color-success-text)'},
+    pending:    {label:'No NDE Sheet Yet',   icon:'ti-circle-dashed', bg:'var(--color-warning-bg)',   text:'var(--color-warning-text)'},
+    unassigned: {label:'Unassigned',          icon:'ti-help-circle',   bg:'var(--color-bg-tertiary)',  text:'var(--color-text-tertiary)'},
+  };
+
+  // Build a single ordered list with bucket markers so we can render
+  // a section header whenever the bucket changes.
+  const orderedGroups = [];
+  ['started','pending','unassigned'].forEach(bucket=>{
+    bucketed[bucket].forEach((entry,i)=>orderedGroups.push({bucket, isFirstInBucket:i===0, entry}));
+  });
+
   const colSpan = (tabId==='pautbm'||tabId==='pautls') ? 10 : 9;
 
   let tableHtml = `<table class="scope-table">
     <thead><tr>
-      <th>Joint</th><th>Feature Type</th><th>OD</th><th>NWT</th><th>Seam Type</th>
+      <th>Joint</th><th>Feature Type</th><th>OD</th><th>NWT</th><th>Seam Location (hh:mm)</th>
       <th>Status</th><th>Date Performed</th>
       ${(tabId==='pautbm'||tabId==='pautls')?'<th>Scan Spacing (in.)</th>':''}
       <th>Technician</th><th>Mark Done</th>
     </tr></thead>
     <tbody>`;
 
-  sortedGroups.forEach(([gKey, gInfo], gi)=>{
+  orderedGroups.forEach(({bucket, isFirstInBucket, entry}, gi)=>{
+    const [gKey, gInfo] = entry;
+
+    // Section header when entering a new bucket (only if this method has cal linkage)
+    if(isFirstInBucket && methodId){
+      const meta = BUCKET_META[bucket];
+      const count = bucketed[bucket].reduce((sum,[,gi2])=>sum+gi2.joints.length,0);
+      tableHtml += `<tr class="scope-section-header">
+        <td colspan="${colSpan}" style="padding:6px 10px;font-size:11px;font-weight:700;text-transform:uppercase;
+            letter-spacing:0.06em;color:${meta.text};background:${meta.bg};
+            border-top:1px solid var(--color-border)">
+          <i class="ti ${meta.icon}"></i> ${meta.label} <span style="font-weight:500;text-transform:none;opacity:0.8">(${count} joint${count!==1?'s':''})</span>
+        </td>
+      </tr>`;
+    }
+
     // Rows for this group
     gInfo.joints.forEach(jtId=>{
       const j   = joints.find(x=>x.id===jtId)||{};
@@ -1772,7 +2028,7 @@ function scopeSummaryTable(tabId, methodLabel){
       </tr>`;
     });
 
-    // Cal badge linking to Daily Cal tab
+    // Cal badge — jumps to the inline Calibration Record panel in this tab
     if(methodId && (gInfo.date || gInfo.tech)){
       const calKey = `${methodId}__${gInfo.date}__${gInfo.tech}`;
       const card = (state.ndeCards||{})[calKey];
@@ -1781,13 +2037,13 @@ function scopeSummaryTable(tabId, methodLabel){
         ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;font-weight:600;
             background:${comp.complete?'var(--color-success-bg)':'var(--color-warning-bg)'};
             color:${comp.complete?'var(--color-success-text)':'var(--color-warning-text)'}"
-            onclick="switchTab('calrec')" title="Open Daily Cal">
+            onclick="jumpToMethodCal('${tabId}','${calKey}')" title="Open Calibration Record below">
             <i class="ti ti-certificate" style="font-size:10px"></i>
             ${comp.complete?'✓ Cal':'Cal '+comp.pct+'%'}
           </span>`
         : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;
             background:var(--color-bg-tertiary);color:var(--color-text-tertiary)"
-            onclick="switchTab('calrec')" title="Add cal record in Daily Cal">
+            onclick="ensureNDECard('${methodId}','${gInfo.date}','${gInfo.tech}');jumpToMethodCal('${tabId}','${calKey}')" title="Add cal record below">
             <i class="ti ti-certificate" style="font-size:10px"></i> Add cal
           </span>`;
       tableHtml += `<tr class="cal-inline-row">
@@ -1798,7 +2054,7 @@ function scopeSummaryTable(tabId, methodLabel){
     }
 
     // Divider between groups
-    if(gi < sortedGroups.length - 1){
+    if(gi < orderedGroups.length - 1){
       tableHtml += `<tr><td colspan="${colSpan}" class="cal-group-divider"></td></tr>`;
     }
   });
@@ -1821,13 +2077,25 @@ function scopeSummaryTable(tabId, methodLabel){
   </div>`;
 }
 
+// Ensure a cal card exists for method+date+tech (creates one with default
+// procedure values if missing). Returns the card. Used when a scope row's
+// date/tech is set, so a matching Daily Cal record is auto-created.
+function ensureNDECard(methodId, date, tech){
+  if(!methodId) return null;
+  const key = `${methodId}__${date||''}__${tech||''}`;
+  const existed = !!(state.ndeCards||{})[key];
+  const card = getNDECard(key, methodId, date, tech);
+  if(!existed) save();
+  return card;
+}
+
 // Get or create a cal card by key
 function getNDECard(key, methodId, date, tech){
   if(!state.ndeCards) state.ndeCards={};
   if(!state.ndeCards[key]){
     const _dp = getProcedure(methodId);
     state.ndeCards[key] = {
-      id:key, method:methodId, date:date||'', tech:tech||'', certLevel:'',
+      id:key, method:methodId, date:date||'', tech:tech||'', certLevel:'II',
       procedure:_dp.proc||'', revNo:_dp.rev||'', calIn:'', calOut:'', calDue:'',
       utUnit:'', utSerial:'', utModel:'',
       transManuf:'', transModel:'', transSerial:'',
@@ -1872,7 +2140,7 @@ function renderNDECardFields(card){
       <div class="nde-param-grid">
         ${ndeField(id,'utUnit','Brand / Model',card.utUnit,{placeholder:'e.g. Olympus Epoch 650'})}
         ${ndeField(id,'utSerial','Serial Number',card.utSerial)}
-        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true})}
+        ${ndeField(id,'calDue','Cal Due Date',card.calDue,{isCalDate:true, examDate:card.date})}
       </div>
     </div>
     <div class="nde-param-section">
@@ -1906,7 +2174,7 @@ function renderNDECardFields(card){
       <div class="nde-param-grid">
         ${ndeField(id,'yokeModel','Yoke Model',card.yokeModel,{placeholder:'e.g. B-310'})}
         ${ndeField(id,'yokeSerial','Yoke Serial',card.yokeSerial)}
-        ${ndeField(id,'yokeCal','Yoke Cal Due',card.yokeCal,{isCalDate:true})}
+        ${ndeField(id,'yokeCal','Yoke Cal Due',card.yokeCal,{isCalDate:true, examDate:card.date})}
         ${ndeSelect(id,'technique','Technique',card.technique,['Wet/Fluorescent (WFMT)','Dry Powder','Visible Wet'])}
         ${ndeField(id,'wfmtMedium','WFMT Medium',card.wfmtMedium,{placeholder:'e.g. 20B'})}
         ${ndeField(id,'wfmtBatch','Medium Batch',card.wfmtBatch)}
@@ -1922,7 +2190,7 @@ function renderNDECardFields(card){
         ${ndeField(id,'lmModel','Light Meter Model',card.lmModel)}
         ${ndeField(id,'lmSerial','Light Meter Serial',card.lmSerial)}
         ${ndeField(id,'detectorSN','Detector S/N',card.detectorSN)}
-        ${ndeField(id,'lmCal','Light Meter Cal Due',card.lmCal,{isCalDate:true})}
+        ${ndeField(id,'lmCal','Light Meter Cal Due',card.lmCal,{isCalDate:true, examDate:card.date})}
         ${ndeField(id,'visLight','Vis. Light (fc)',card.visLight,{placeholder:'<2'})}
         ${ndeField(id,'uvLight','UV Intensity (µW/cm²)',card.uvLight,{placeholder:'>1000'})}
       </div>
@@ -1930,15 +2198,15 @@ function renderNDECardFields(card){
 
   const bodyMap = {
     utt:     utFields,
-    aelsc:   `<div class="nde-param-section"><div class="nde-param-title">Acid Etch</div><div class="nde-param-grid">${ndeField(id,'etchantType','Etchant Type',card.etchantType,{placeholder:'e.g. Nital 10%'})}${ndeField(id,'etchantExp','Etchant Expiry',card.etchantExp,{isCalDate:true})}</div></div>${mtExtra}${utFields}`,
+    aelsc:   `<div class="nde-param-section"><div class="nde-param-title">Acid Etch</div><div class="nde-param-grid">${ndeField(id,'etchantType','Etchant Type',card.etchantType,{placeholder:'e.g. Nital 10%'})}${ndeField(id,'etchantExp','Etchant Expiry',card.etchantExp,{isCalDate:true, examDate:card.date})}</div></div>${mtExtra}${utFields}`,
     mt:      mtExtra + utFields,
     aut:     utFields + `<div class="nde-param-section"><div class="nde-param-title">AUT Specific</div><div class="nde-param-grid">${ndeField(id,'calBlockTemp','Cal Block Temp (°F)',card.calBlockTemp)}${ndeField(id,'pipeTemp','Pipe Temp (°F)',card.pipeTemp)}${ndeField(id,'scanSpeed','Scan Speed',card.scanSpeed,{placeholder:'<2 in/sec'})}${ndeSelect(id,'echoToEcho','Echo-to-Echo',card.echoToEcho,['Yes','No'])}</div></div>`,
     mut:     utFields,
     paut:    utFields + `<div class="nde-param-section"><div class="nde-param-title">PAUT Specific</div><div class="nde-param-grid"><div class="nde-param-field"><span class="nde-param-label">Element Activity Check</span><label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;padding:5px 0"><input type="checkbox" ${card.elementActivityCheck?'checked':''} style="width:14px;height:14px" onchange="updateNDECard('${id}','elementActivityCheck',this.checked)"> Verified</label></div>${ndeField(id,'calBlock','Cal Block (OD × WT curved)',card.calBlock,{placeholder:'e.g. 16.00 x 0.250'})}${ndeField(id,'calBlockMaterial','Material',card.calBlockMaterial,{placeholder:'Carbon Steel'})}${ndeField(id,'calBlockSerial','Cal Block Serial',card.calBlockSerial)}${ndeField(id,'calBlockTemp','Cal Block Temp Within 25°F',card.calBlockTemp,{placeholder:'Yes/No'})}</div></div>`,
-    xrf:     `<div class="nde-param-section"><div class="nde-param-title">XRF/LIBS Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit,{placeholder:'e.g. ThermoFisher Niton Apollo'})}${ndeField(id,'utSerial','Serial Number',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Data Checker Tool / Version',card.procedure)}</div></div>`,
-    hard:    `<div class="nde-param-section"><div class="nde-param-title">Hardness Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','UCI Equipment',card.utUnit,{placeholder:'e.g. SonoDur-100H'})}${ndeField(id,'utSerial','UCI Serial',card.utSerial)}${ndeField(id,'transModel','Ernst Equipment',card.transModel,{placeholder:'e.g. E-Dynatest'})}${ndeField(id,'transSerial','Ernst Serial',card.transSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Hardness Template / Version',card.procedure)}</div></div>`,
+    xrf:     `<div class="nde-param-section"><div class="nde-param-title">XRF/LIBS Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit,{placeholder:'e.g. ThermoFisher Niton Apollo'})}${ndeField(id,'utSerial','Serial Number',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true, examDate:card.date})}${ndeField(id,'procedure','Data Checker Tool / Version',card.procedure)}</div></div>`,
+    hard:    `<div class="nde-param-section"><div class="nde-param-title">Hardness Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','UCI Equipment',card.utUnit,{placeholder:'e.g. SonoDur-100H'})}${ndeField(id,'utSerial','UCI Serial',card.utSerial)}${ndeField(id,'transModel','Ernst Equipment',card.transModel,{placeholder:'e.g. E-Dynatest'})}${ndeField(id,'transSerial','Ernst Serial',card.transSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true, examDate:card.date})}${ndeField(id,'procedure','Hardness Template / Version',card.procedure)}</div></div>`,
     filings: `<div class="nde-param-section"><div class="nde-param-title">Metal Filings</div><div class="nde-param-grid">${ndeField(id,'procedure','Surface Prep Method',card.procedure)}${ndeField(id,'utUnit','Buffing/Grinding Tool',card.utUnit)}${ndeField(id,'notes','Date Shipped to Bryan Labs',card.notes)}</div></div>`,
-    iit:     `<div class="nde-param-section"><div class="nde-param-title">IIT Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit)}${ndeField(id,'utSerial','Serial',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true})}${ndeField(id,'procedure','Procedure / Rev',card.procedure)}</div></div>`,
+    iit:     `<div class="nde-param-section"><div class="nde-param-title">IIT Equipment</div><div class="nde-param-grid">${ndeField(id,'utUnit','Equipment',card.utUnit)}${ndeField(id,'utSerial','Serial',card.utSerial)}${ndeField(id,'calDue','Cal Due',card.calDue,{isCalDate:true, examDate:card.date})}${ndeField(id,'procedure','Procedure / Rev',card.procedure)}</div></div>`,
     metallo: `<div class="nde-param-section"><div class="nde-param-title">Field Metallography</div><div class="nde-param-grid">${ndeField(id,'procedure','Procedure',card.procedure)}${ndeField(id,'utUnit','Replica Film Brand',card.utUnit)}${ndeField(id,'transManuf','Etchant Used',card.transManuf)}${ndeField(id,'notes','Date Shipped to ATS',card.notes)}</div></div>`,
   };
 
@@ -1995,7 +2263,13 @@ function renderAELSC(){
     <td><textarea rows="1" style="min-height:28px;width:120px" onchange="rowUpdate('aelsc',${i},'comments',this.value)">${r.comments||''}</textarea></td>
     <td><input type="date" class="date-input" value="${r.date||''}" onchange="rowUpdate('aelsc',${i},'date',this.value)" title="Inspection date"></td>
     <td><select class="tech-select" onchange="rowUpdate('aelsc',${i},'tech',this.value)">${to(r.tech||'')}</select></td>
-    ${rowPhotoCell('aelsc',i)}<td><button class="icon-btn" onclick="removeRow('aelsc',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
+    ${rowPhotoCell('aelsc',i)}<td>${(()=>{
+      const bfg=getBFGForJoint(r.jt);
+      return bfg?`<button class="btn btn-sm" style="font-size:10px;white-space:nowrap"
+        onclick="autoFillBFG('aelsc',${i},'${r.jt}')" title="Auto-fill BFG from 12-PT UTT">
+        <i class="ti ti-wand"></i> BFG</button>`:'';
+    })()}</td>
+    <td><button class="icon-btn" onclick="removeRow('aelsc',${i})" aria-label="Delete"><i class="ti ti-trash"></i></button></td>
   </tr>`).join('') : emptyRow('No AE/LSC entries — joints added to scope auto-populate here');
 
   return `<div class="panel">
@@ -2015,7 +2289,9 @@ function renderAELSC(){
       <tbody>${rowHtml}</tbody>
     </table></div>
     </div>
+    ${fieldNotesSection('aelsc')}
     ${photoSection('aelsc')}
+    ${methodCalPanel('aelsc')}
   </div>`;
 }
 
@@ -2093,7 +2369,7 @@ function exportJSON(){
 
 function clearAll(){
   if(!confirm('Clear ALL field data? This cannot be undone.')) return;
-  state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},projectPhotos:[],nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},procedures:{},ecGrids:{},mutGrids:{},autScans:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
+  savedProcedures = (state.procedures||{}); state = {config:{},joints:[],photos:{},technicians:[],jointNotes:{},projectPhotos:[],nri:{},scopeStatus:{},pautSpacing:{},rowPhotos:{},ndeCards:{},calPanelOpen:{},procedures:savedProcedures,ecGrids:{},mutGrids:{},autScans:{},utt12:[],uttloc:[],lsc:[],lscGroups:[],jointlen:[],va:[],mt:[],aut:[],mut:[],muthand:[],pautbm:[],pautls:[],aelsc:[],calrec:[]};
   localStorage.removeItem('nde_field_report');
   loadConfig(); renderJoints(); renderTabs(); renderTab(activeTab); updateSubtitle();
 }
@@ -3443,7 +3719,42 @@ function cardCompletionLabel(card){
   }
   const done = checks.filter(([,v])=>v).length;
   const missing = checks.filter(([,v])=>!v).map(([k])=>k);
-  return {pct:Math.round(done/checks.length*100), missing, complete: missing.length===0};
+
+  // Flag if any of this card's equipment cal-due dates had already expired
+  // on the day the examination itself was performed.
+  const calDueFields = ['calDue','yokeCal','lmCal','etchantExp'];
+  let calExpiredAtExam = false;
+  if(card.date){
+    // Helper to parse dates in either MM/DD/YYYY or YYYY-MM-DD format
+    const parseDate = (dateStr) => {
+      if(!dateStr) return null;
+      dateStr = String(dateStr).trim();  // Convert to string and trim whitespace
+      if(!dateStr) return null;
+      // Try YYYY-MM-DD format first
+      if(dateStr.includes('-')){
+        const [y, m, d] = dateStr.split('-');
+        return new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+      }
+      // Try MM/DD/YYYY format
+      if(dateStr.includes('/')){
+        const [m, d, y] = dateStr.split('/');
+        return new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+      }
+      return null;
+    };
+    
+    const ed = parseDate(card.date);
+    if(ed){
+      for(const f of calDueFields){
+        const v = card[f];
+        if(!v || String(v).trim()==='9999-09-09') continue;
+        const cd = parseDate(v);
+        if(cd && cd < ed){ calExpiredAtExam = true; break; }
+      }
+    }
+  }
+
+  return {pct:Math.round(done/checks.length*100), missing, complete: missing.length===0 && !calExpiredAtExam, calExpiredAtExam};
 }
 
 /* ===== Auto-generate Indication IDs (per PG&E convention) ===== */
@@ -3579,28 +3890,44 @@ function resetProcedure(methodId){
 
 /* ===== NDE Report Cards ===== */
 
-const NDE_METHODS = [
-  {id:'utt',    label:'UTT',           icon:'ti-ruler-2',      tabs:['utt12','uttloc']},
-  {id:'aelsc',  label:'AE/LSC',        icon:'ti-flask',        tabs:['aelsc','lsc']},
-  {id:'mt',     label:'MT/VT',         icon:'ti-magnet',       tabs:['mt','va']},
-  {id:'aut',    label:'AUT',           icon:'ti-scan',         tabs:['aut']},
-  {id:'mut',    label:'MUT',           icon:'ti-wave-sine',    tabs:['mut','muthand']},
-  {id:'paut',   label:'PAUT',          icon:'ti-layers-subtract', tabs:['pautbm','pautls']},
-  {id:'xrf',    label:'XRF/LIBS',      icon:'ti-atom',         tabs:[]},
-  {id:'hard',   label:'Hardness',      icon:'ti-hammer',       tabs:[]},
-  {id:'filings',label:'Metal Filings', icon:'ti-needle',       tabs:[]},
-  {id:'iit',    label:'IIT',           icon:'ti-activity',     tabs:[]},
-  {id:'metallo',label:'Field Metallo.', icon:'ti-microscope',  tabs:[]},
-];
-
-let activeNDEMethod = 'utt';
-
-function calStatus(dateStr){
+// Checks a calibration due date against today, and (if provided) against the
+// date the examination was actually performed — flags if the equipment's
+// calibration had already expired on the day of that specific exam.
+function calStatus(dateStr, examDate){
   if(!dateStr || dateStr === '9999-09-09') return {cls:'cal-ok', label:''};
   try{
-    const d = new Date(dateStr);
+    // Helper to parse dates in either MM/DD/YYYY or YYYY-MM-DD format
+    const parseDate = (str) => {
+      if(!str) return null;
+      str = String(str).trim();
+      if(!str) return null;
+      // Try YYYY-MM-DD format first
+      if(str.includes('-')){
+        const [y, m, d] = str.split('-');
+        return new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+      }
+      // Try MM/DD/YYYY format
+      if(str.includes('/')){
+        const [m, d, y] = str.split('/');
+        return new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+      }
+      return null;
+    };
+
+    const d = parseDate(dateStr);
+    if(!d || isNaN(d)) return {cls:'',label:''};
+    
     const now = new Date();
     const days = Math.round((d-now)/86400000);
+
+    // Check against the exam date for this card, if known
+    if(examDate){
+      const ed = parseDate(examDate);
+      if(ed && !isNaN(ed) && d < ed){
+        return {cls:'cal-exp', label:' ⚠ CAL EXPIRED BEFORE EXAM DATE'};
+      }
+    }
+
     if(days < 0)  return {cls:'cal-exp',  label:' ⚠ EXPIRED'};
     if(days < 30) return {cls:'cal-warn', label:` (${days}d)`};
     return {cls:'cal-ok', label:''};
@@ -3608,7 +3935,7 @@ function calStatus(dateStr){
 }
 
 function ndeField(cardId, field, label, value, opts={}){
-  const cal = opts.isCalDate ? calStatus(value) : {cls:'',label:''};
+  const cal = opts.isCalDate ? calStatus(value, opts.examDate) : {cls:'',label:''};
   const cls = (opts.isCalDate && value && new Date(value)<new Date()) ? ' cal-expired' : '';
   const inputType = opts.isCalDate ? 'date' : (opts.isTime ? 'time' : 'text');
   const extra = opts.wide ? ' style="width:100%"' : '';
@@ -3675,16 +4002,133 @@ function autoFillFromEquipment(cardId, techName){
   renderTab('calrec');
 }
 
+// Fields that describe equipment/setup (rather than this specific exam) and
+// are reasonable to offer propagating to a technician's other cal records
+// when filled in for the first time.
+const PROPAGATABLE_FIELDS = new Set([
+  // UT Unit
+  'utUnit','utSerial','utModel','calDue',
+  // Transducer
+  'transManuf','transModel','transSerial','transSize','elementQty','frequency',
+  // Calibration settings
+  'screenRange','refScanDb','velocity','calBlock','calBlockMaterial','calBlockSerial',
+  'couplant','couplantBatch','calBlockTemp',
+  // MT Yoke / UV equipment
+  'yokeModel','yokeSerial','yokeCal','technique','wfmtMedium','wfmtBatch',
+  'blBrand','blModel','blSerial','lmBrand','lmModel','lmSerial','detectorSN','lmCal',
+  // AE/LSC
+  'etchantType','etchantExp',
+  // Procedure
+  'procedure','revNo',
+]);
+
+// Human-readable labels for propagation prompts (falls back to the raw field name)
+const FIELD_LABELS = {
+  utUnit:'UT Unit Brand/Model', utSerial:'UT Unit Serial Number', calDue:'Cal Due Date',
+  transManuf:'Transducer Manufacturer', transModel:'Transducer Model', transSerial:'Transducer Serial Number',
+  transSize:'Transducer Size/Dia.', elementQty:'Element/Qty', frequency:'Frequency (MHz)',
+  screenRange:'Screen Range', refScanDb:'Ref+Scan (dB)', velocity:'Velocity', calBlock:'Cal Block',
+  calBlockMaterial:'Cal Block Material', calBlockSerial:'Cal Block Serial', couplant:'Couplant',
+  couplantBatch:'Couplant Batch', calBlockTemp:'Cal Block Temp',
+  yokeModel:'Yoke Model', yokeSerial:'Yoke Serial', yokeCal:'Yoke Cal Due',
+  technique:'Technique', wfmtMedium:'WFMT Medium', wfmtBatch:'Medium Batch',
+  blBrand:'Blacklight Brand', blModel:'Blacklight Model', blSerial:'Blacklight Serial',
+  lmBrand:'Light Meter Brand', lmModel:'Light Meter Model', lmSerial:'Light Meter Serial',
+  detectorSN:'Detector S/N', lmCal:'Light Meter Cal Due',
+  etchantType:'Etchant Type', etchantExp:'Etchant Expiry',
+  procedure:'Procedure', revNo:'Revision No',
+};
+
 function updateNDECard(cardId, field, val){
   if(!state.ndeCards) state.ndeCards={};
-  if(state.ndeCards[cardId]){
-    state.ndeCards[cardId][field]=val;
+  const card = state.ndeCards[cardId];
+  const wasBlank = card && !card[field];
+  if(card){
+    card[field]=val;
     save();
   }
   if(field==='date') computeDateRange();
+
+  // Auto-pull equipment from Knack the moment a technician is assigned
+  // (only if the card doesn't already have a UT unit filled in, so we
+  // don't clobber manual edits or re-pull unnecessarily).
+  if(field==='tech' && val){
+    if(card && !card.utUnit && !card.yokeModel){
+      pullEquipmentFromKnack(cardId, val);
+      return;
+    } else {
+      renderTab(activeTab);
+      return;
+    }
+  } else if(field==='date'){
+    // Re-render so the "Cal expired before exam date" check re-evaluates
+    // against the new examination date.
+    renderTab(activeTab);
+  }
+
+  // If the user just filled in a previously-blank equipment/setup field,
+  // offer to fill the same value on this technician's other cal records
+  // where that field is also still blank.
+  if(wasBlank && val && PROPAGATABLE_FIELDS.has(field) && card?.tech){
+    const targets = Object.values(state.ndeCards||{})
+      .filter(c=>c.id!==cardId && (c.tech||'')===card.tech && !c[field]);
+    if(targets.length){
+      promptPropagateField(cardId, field, val, targets);
+    }
+  }
 }
 
-function addNDECard(methodId){
+// Offers to copy a newly-entered equipment/setup field value to a
+// technician's other cal records where that field is currently blank.
+function promptPropagateField(sourceCardId, field, val, targets){
+  const label = FIELD_LABELS[field] || field;
+  const tech = state.ndeCards[sourceCardId]?.tech || '';
+  const rows = targets.map(c=>{
+    const mInfo = NDE_METHODS.find(m=>m.id===c.method) || {label:c.method||'?'};
+    return `${mInfo.label}${c.date?' · '+c.date:''}`;
+  }).join(', ');
+
+  const modal = document.createElement('div');
+  modal.className = 'knack-modal-overlay open';
+  modal.id = 'propagate-field-modal';
+  modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
+  modal.innerHTML = `
+    <div class="knack-modal" style="max-width:480px">
+      <div class="knack-modal-title"><i class="ti ti-copy" style="color:var(--color-info-text)"></i> Apply to other records?</div>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">
+        You set <strong>${label}</strong> to <strong>${val}</strong> for ${tech}.
+        ${targets.length} other record${targets.length!==1?'s':''} for ${tech} ${targets.length!==1?'are':'is'} missing this field:
+      </p>
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md)">
+        ${rows}
+      </div>
+      <div class="knack-modal-footer">
+        <button class="btn" onclick="document.getElementById('propagate-field-modal').remove()">No, just this one</button>
+        <button class="btn btn-primary" onclick="confirmPropagateField('${sourceCardId}','${field}')"><i class="ti ti-check"></i> Apply to all ${targets.length}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function confirmPropagateField(sourceCardId, field){
+  const card = state.ndeCards[sourceCardId];
+  if(!card) return;
+  const val = card[field];
+  const tech = card.tech;
+  let count = 0;
+  Object.values(state.ndeCards||{}).forEach(c=>{
+    if(c.id!==sourceCardId && (c.tech||'')===tech && !c[field]){
+      c[field] = val;
+      count++;
+    }
+  });
+  save();
+  renderTab(activeTab);
+  document.getElementById('propagate-field-modal')?.remove();
+  showToast(`✓ Applied ${FIELD_LABELS[field]||field} to ${count} other record${count!==1?'s':''} for ${tech}`);
+}
+
+function addNDECard(methodId, returnTab){
   if(!state.ndeCards) state.ndeCards={};
   const id = 'nde_'+Date.now();
   const _defProc = getProcedure(methodId);
@@ -3710,16 +4154,16 @@ function addNDECard(methodId){
     // PAUT specific
     elementActivityCheck:false,
     // Notes
-    notes:'',
+    notes:'', _open:true,
   };
   save();
-  renderTab('calrec');
+  renderTab(returnTab||'calrec');
 }
 
-function deleteNDECard(cardId){
+function deleteNDECard(cardId, returnTab){
   if(!confirm('Delete this NDE parameter record?')) return;
   if(state.ndeCards) delete state.ndeCards[cardId];
-  save(); renderTab('calrec');
+  save(); renderTab(returnTab||'calrec');
 }
 
 function renderNDECardBody(card){
@@ -3949,19 +4393,135 @@ function renderNDECardBody(card){
     </div>`;
 }
 
-/* ===== Rewritten renderCalRec ===== */
+/* ===== Inline "Calibration Record" panel — embedded inside each method tab ===== */
+// Shows the cal record(s) for this tab's NDE method, with inline editing.
+// Daily Cal tab remains a read-only overview of all records across methods.
+function methodCalPanel(tabId){
+  const methodId = TAB_TO_METHOD[tabId];
+  if(!methodId) return '';
+
+  if(!state.ndeCards) state.ndeCards={};
+  if(!state.calPanelOpen) state.calPanelOpen={};
+
+  const mInfo = NDE_METHODS.find(m=>m.id===methodId) || {label:methodId, icon:'ti-certificate'};
+  const cards = Object.values(state.ndeCards)
+    .filter(c=>c.method===methodId)
+    .sort((a,b)=>(a.date||'').localeCompare(b.date||'') || (a.tech||'').localeCompare(b.tech||''));
+
+  const allComplete = cards.length && cards.every(c=>cardCompletionLabel(c).complete);
+  const anyCalExpiredAtExam = cards.some(c=>cardCompletionLabel(c).calExpiredAtExam);
+  const sectionOpen = state.calPanelOpen[tabId] ?? (cards.length>0 && (!allComplete || anyCalExpiredAtExam));
+
+  const cardsHtml = cards.length ? cards.map(card=>{
+    const comp = cardCompletionLabel(card);
+    const isOpen = card._open||false;
+    return `<div id="cal-card-${card.id}" style="margin-bottom:6px;border:0.5px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
+                 border-radius:var(--radius-md);overflow:hidden;
+                 border-left:3px solid ${comp.complete?'var(--color-success-text)':'var(--color-info-border)'}">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+           background:${comp.complete?'var(--color-success-bg)':'var(--color-bg-secondary)'};
+           cursor:pointer;user-select:none"
+           onclick="toggleCalCard('${card.id}','${tabId}')">
+        <span style="font-size:13px;font-weight:600">${card.date||'<span style="color:var(--color-text-tertiary)">No date</span>'}</span>
+        <span style="font-size:13px">${card.tech||'<span style="color:var(--color-text-tertiary)">No tech</span>'}</span>
+        <span style="font-size:11px;color:${comp.complete?'var(--color-success-text)':'var(--color-warning-text)'}">
+          ${comp.complete?'✓ Complete':`${comp.pct}% — ${comp.missing.slice(0,3).join(', ')}`}
+        </span>
+        ${comp.calExpiredAtExam?`<span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--color-danger-bg);color:var(--color-danger-text)" title="A calibration due date on this record is earlier than the examination date">
+          <i class="ti ti-alert-triangle"></i> Cal expired before exam
+        </span>`:''}
+        <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+          <button class="btn btn-sm" onclick="event.stopPropagation();pullEquipmentFromKnack('${card.id}','${card.tech||''}')"
+            title="Pull equipment from Knack" style="font-size:11px">
+            <i class="ti ti-cloud-download"></i> Pull equipment
+          </button>
+          <button class="btn btn-sm" onclick="event.stopPropagation();autoFillEquipmentFromHForm('${card.id}','${card.tech||''}')"
+            title="Auto-populate equipment from H-Form (first import H-Form file)" style="font-size:11px">
+            <i class="ti ti-download"></i> From H-Form
+          </button>
+          <button class="icon-btn" onclick="event.stopPropagation();deleteNDECard('${card.id}','${tabId}')"
+            title="Delete this cal record"><i class="ti ti-trash"></i></button>
+          <i class="ti ti-chevron-${isOpen?'down':'right'}" style="font-size:13px;color:var(--color-text-tertiary)"></i>
+        </div>
+      </div>
+      ${isOpen?`<div style="padding:12px 14px;border-top:0.5px solid var(--color-border)">
+        ${renderNDECardFields(card)}
+      </div>`:''}
+    </div>`;
+  }).join('') : `<div class="alert alert-info" style="margin-bottom:0">
+      <i class="ti ti-info-circle"></i> No calibration records yet for ${mInfo.label} — click "Add cal record" to get started.
+    </div>`;
+
+  const badge = cards.length
+    ? (anyCalExpiredAtExam
+        ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;background:var(--color-danger-bg);color:var(--color-danger-text)"><i class="ti ti-alert-triangle"></i> Cal expired before exam date</span>`
+        : allComplete
+          ? `<span style="font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;background:var(--color-success-bg);color:var(--color-success-text)">✓ ${cards.length} complete</span>`
+          : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;background:var(--color-warning-bg);color:var(--color-warning-text)">${cards.length} record${cards.length>1?'s':''} — needs info</span>`)
+    : `<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--color-bg-tertiary);color:var(--color-text-tertiary)">None yet</span>`;
+
+  return `<div class="collapsible-section" id="calpanel-${tabId}">
+    <div class="collapsible-header${sectionOpen?'':' collapsed'}" onclick="toggleMethodCalPanel('${tabId}')">
+      <i class="ti ti-certificate"></i> Calibration Record — ${mInfo.label}
+      ${badge}
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="collapsible-body${sectionOpen?'':' collapsed'}" id="calpanel-body-${tabId}">
+      <div class="panel-actions" style="margin-bottom:8px">
+        <button class="btn" onclick="addNDECard('${methodId}','${tabId}')"><i class="ti ti-plus"></i> Add cal record</button>
+      </div>
+      ${cardsHtml}
+    </div>
+  </div>`;
+}
+
+function toggleMethodCalPanel(tabId){
+  if(!state.calPanelOpen) state.calPanelOpen={};
+  const methodId = TAB_TO_METHOD[tabId];
+  const cards = Object.values(state.ndeCards||{}).filter(c=>c.method===methodId);
+  const allComplete = cards.length && cards.every(c=>cardCompletionLabel(c).complete);
+  const anyCalExpiredAtExam = cards.some(c=>cardCompletionLabel(c).calExpiredAtExam);
+  const current = state.calPanelOpen[tabId] ?? (cards.length>0 && (!allComplete || anyCalExpiredAtExam));
+  state.calPanelOpen[tabId] = !current;
+  save();
+  renderTab(tabId);
+}
+
+// Opens this tab's Calibration Record panel, expands the given card, and
+// scrolls it into view. Used by the "Cal" badge in the scope summary table.
+function jumpToMethodCal(tabId, cardKey){
+  if(!state.calPanelOpen) state.calPanelOpen={};
+  state.calPanelOpen[tabId] = true;
+  const card = (state.ndeCards||{})[cardKey];
+  if(card) card._open = true;
+  save();
+  renderTab(tabId);
+  requestAnimationFrame(()=>{
+    const el = document.getElementById(card ? `cal-card-${cardKey}` : `calpanel-${tabId}`);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+}
+
+/* ===== Daily Cal — read-only overview of all cal records ===== */
+// Editing now happens inline within each method's tab via methodCalPanel().
+// This view summarizes everything across methods and links back to the
+// relevant tab for editing.
 function renderCalRec(){
   if(!state.ndeCards) state.ndeCards={};
-  const cfg = state.config||{};
+
+  // Reverse map: method id -> a tab id where its cal panel lives
+  const METHOD_TO_TAB = {};
+  Object.entries(TAB_TO_METHOD).forEach(([tab, method])=>{
+    if(method && !METHOD_TO_TAB[method]) METHOD_TO_TAB[method] = tab;
+  });
 
   // Group cards by date then method
   const cards = Object.values(state.ndeCards).sort((a,b)=>{
-    if(a.date < b.date) return -1;
-    if(a.date > b.date) return 1;
+    if((a.date||'') < (b.date||'')) return -1;
+    if((a.date||'') > (b.date||'')) return 1;
     return (a.method||'').localeCompare(b.method||'');
   });
 
-  // Cards by date
   const byDate = {};
   cards.forEach(c=>{
     const d = c.date||'No date';
@@ -3978,14 +4538,12 @@ function renderCalRec(){
       ${dayCards.map(card=>{
         const comp = cardCompletionLabel(card);
         const mInfo = NDE_METHODS.find(m=>m.id===card.method)||{label:card.method,icon:'ti-certificate'};
-        const isOpen = card._open||false;
+        const editTab = METHOD_TO_TAB[card.method];
         return `<div style="margin-bottom:6px;border:0.5px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
                      border-radius:var(--radius-md);overflow:hidden;
                      border-left:3px solid ${comp.complete?'var(--color-success-text)':'var(--color-info-border)'}">
           <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
-               background:${comp.complete?'var(--color-success-bg)':'var(--color-bg-secondary)'};
-               cursor:pointer;user-select:none"
-               onclick="toggleCalCard('${card.id}')">
+               background:${comp.complete?'var(--color-success-bg)':'var(--color-bg-secondary)'}">
             <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
                  background:var(--color-info-bg);color:var(--color-info-text);flex-shrink:0">
               <i class="ti ${mInfo.icon}" style="font-size:10px"></i> ${mInfo.label}
@@ -3995,141 +4553,92 @@ function renderCalRec(){
               ${comp.complete?'✓ Complete':`${comp.pct}% — ${comp.missing.slice(0,3).join(', ')}`}
             </span>
             <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
-              <button class="btn btn-sm" onclick="event.stopPropagation();pullEquipmentFromKnack('${card.id}','${card.tech||''}')"
-                title="Pull equipment from Knack" style="font-size:11px">
-                <i class="ti ti-cloud-download"></i> Pull equipment
-              </button>
-              <button class="icon-btn" onclick="event.stopPropagation();deleteNDECard('${card.id}')"
-                title="Delete this cal record"><i class="ti ti-trash"></i></button>
-              <i class="ti ti-chevron-${isOpen?'down':'right'}" style="font-size:13px;color:var(--color-text-tertiary)"></i>
+              ${editTab?`<button class="btn btn-sm" onclick="switchTab('${editTab}')" title="Edit in ${mInfo.label} tab">
+                <i class="ti ti-pencil"></i> Edit in ${mInfo.label}
+              </button>`:''}
             </div>
           </div>
-          ${isOpen?`<div style="padding:12px 14px;border-top:0.5px solid var(--color-border)">
-            ${renderNDECardFields(card)}
-          </div>`:''}
         </div>`;
       }).join('')}
     </div>
   `).join('') : `<div class="empty-state"><i class="ti ti-certificate"></i>
-      No cal records yet — click "+ Add cal record" to get started
+      No cal records yet — add one from the "Calibration Record" panel inside each method's tab.
     </div>`;
+
+  // ── Joints awaiting an NDE sheet ──────────────────────────────────────────
+  // For each method with a linked tab, find joints that have a date/tech
+  // assigned in the scope table but no corresponding cal record yet.
+  const joints = state.joints||[];
+  const awaiting = []; // {method, mInfo, tabId, items:[{jtId, date, tech}]}
+  NDE_METHODS.forEach(mInfo=>{
+    const tabId = METHOD_TO_TAB[mInfo.id];
+    if(!tabId) return;
+    const items = [];
+    joints.forEach(j=>{
+      const st = getScopeStatus(tabId, j.id);
+      if(!st.date && !st.tech) return; // not yet assigned — not "awaiting", just unstarted scope
+      const calKey = `${mInfo.id}__${st.date||''}__${st.tech||''}`;
+      if(!(state.ndeCards||{})[calKey]){
+        items.push({jtId:j.id, date:st.date||'', tech:st.tech||''});
+      }
+    });
+    if(items.length) awaiting.push({mInfo, tabId, items});
+  });
+
+  const awaitingSection = awaiting.length ? `
+    <div style="margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+           color:var(--color-warning-text);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+        <i class="ti ti-circle-dashed"></i> Joints Awaiting an NDE Sheet
+      </div>
+      ${awaiting.map(({mInfo, tabId, items})=>`
+        <div style="margin-bottom:6px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);
+             overflow:hidden;border-left:3px solid var(--color-warning-border)">
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-bg-secondary)">
+            <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
+                 background:var(--color-info-bg);color:var(--color-info-text);flex-shrink:0">
+              <i class="ti ${mInfo.icon}" style="font-size:10px"></i> ${mInfo.label}
+            </span>
+            <span style="font-size:12px;color:var(--color-text-secondary)">
+              ${items.map(it=>`${it.jtId}${it.tech?` (${it.tech}${it.date?', '+it.date:''})`:it.date?` (${it.date})`:''}`).join(', ')}
+            </span>
+            <div style="margin-left:auto">
+              <button class="btn btn-sm" onclick="switchTab('${tabId}')" title="Open ${mInfo.label} tab">
+                <i class="ti ti-pencil"></i> Open ${mInfo.label}
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
 
   return `<div class="panel">
     <div class="panel-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <span class="panel-title"><i class="ti ti-certificate"></i> Daily Cal Records</span>
-      <button class="btn btn-primary" onclick="openAddCalModal()">
-        <i class="ti ti-plus"></i> Add cal record
-      </button>
+      <span class="panel-title"><i class="ti ti-certificate"></i> Daily Cal Records — Overview</span>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:12px">
+      <i class="ti ti-info-circle"></i> This is a read-only summary of all calibration records. To add or edit a
+      record, open the relevant NDE method's tab and use its "Calibration Record" panel.
     </div>
     ${renderProcedureSettings()}
     <div style="padding:0 12px 12px">
+      ${awaitingSection}
+      ${cards.length ? `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+           color:var(--color-success-text);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+        <i class="ti ti-circle-check"></i> NDE Sheets Started
+      </div>`:''}
       ${calCards}
     </div>
   </div>`;
 }
 
-function toggleCalCard(cardId){
+function toggleCalCard(cardId, returnTab){
   const card = state.ndeCards[cardId];
   if(!card) return;
   card._open = !card._open;
   save();
-  renderTab('calrec');
-}
-
-function deleteNDECard(cardId){
-  if(!confirm('Delete this cal record?')) return;
-  delete state.ndeCards[cardId];
-  save(); renderTab('calrec');
-}
-
-// ── Add cal record modal ───────────────────────────────────────────────────────
-function openAddCalModal(){
-  // Populate method and tech options
-  const methodOpts = NDE_METHODS.map(m=>
-    `<option value="${m.id}">${m.label}</option>`
-  ).join('');
-  const techOpts = (state.technicians||[]).map(t=>
-    `<option value="${t.name}">${t.name}</option>`
-  ).join('');
-
-  const today = new Date().toISOString().slice(0,10);
-
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay open';
-  modal.id = 'add-cal-modal';
-  modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
-  modal.innerHTML = `
-    <div class="modal-box" style="max-width:400px">
-      <div class="modal-title"><i class="ti ti-certificate"></i> Add Cal Record</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px">
-        <div>
-          <label class="field-label">NDE Method</label>
-          <select id="acm-method" style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
-            ${methodOpts}
-          </select>
-        </div>
-        <div>
-          <label class="field-label">Date</label>
-          <input type="date" id="acm-date" value="${today}"
-            style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
-        </div>
-        <div>
-          <label class="field-label">Technician</label>
-          <select id="acm-tech" style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
-            <option value="">— Select technician —</option>
-            ${techOpts}
-          </select>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-primary" style="flex:1" onclick="confirmAddCal()">
-          <i class="ti ti-plus"></i> Create
-        </button>
-        <button class="btn" onclick="document.getElementById('add-cal-modal').remove()">Cancel</button>
-      </div>
-    </div>`;
-  document.body.appendChild(modal);
-}
-
-function confirmAddCal(){
-  const method = document.getElementById('acm-method')?.value;
-  const date   = document.getElementById('acm-date')?.value;
-  const tech   = document.getElementById('acm-tech')?.value;
-  if(!method || !date){ showToast('Method and date are required','error'); return; }
-
-  const key = `${method}__${date}__${tech}`;
-  if(!state.ndeCards) state.ndeCards={};
-  if(state.ndeCards[key]){
-    showToast('A cal record for this method/date/tech already exists','error');
-    return;
-  }
-
-  const p = getProcedure(method);
-  state.ndeCards[key] = {
-    id:key, method, date, tech, certLevel:'',
-    procedure:p.proc||'', revNo:p.rev||'',
-    calIn:'', calOut:'', calDue:'',
-    utUnit:'', utSerial:'', utModel:'',
-    transManuf:'', transModel:'', transSerial:'',
-    frequency:'', transSize:'', elementQty:'',
-    screenRange:'', refScanDb:'', velocity:'',
-    calBlock:'', calBlockMaterial:'', calBlockSerial:'',
-    calBlockTemp:'', pipeTemp:'', couplant:'', couplantBatch:'',
-    etchantType:'', etchantExp:'',
-    yokeModel:'', yokeSerial:'', yokeCal:'',
-    technique:'', wfmtMedium:'', wfmtBatch:'',
-    blBrand:'', blModel:'', blSerial:'',
-    lmBrand:'', lmModel:'', lmSerial:'', detectorSN:'', lmCal:'',
-    visLight:'', uvLight:'',
-    scanSpeed:'', echoToEcho:'',
-    elementActivityCheck:false,
-    notes:'', _open:true,
-  };
-
-  save();
-  document.getElementById('add-cal-modal')?.remove();
-  renderTab('calrec');
-  showToast(`Cal record created for ${tech||'unassigned'} · ${method.toUpperCase()} · ${date}`);
+  renderTab(returnTab||'calrec');
 }
 
 /* ===== Grid Engine ===== */
@@ -4744,8 +5253,15 @@ const ML = 12.7;  // margins
 const MR = PW - 12.7;
 const TW = MR - ML; // usable width
 
+const ACUREN_LOGO = 'data:image/png;base64,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';
+
 // ── Header bar (every page) ──────────────────────────────────────────────────
 function pageHeader(doc, y=0){
+  // Acuren logo, top-left
+  try{
+    const logoH = 11, logoW = logoH * (151/93);
+    doc.addImage(ACUREN_LOGO,'PNG', ML, y+1, logoW, logoH, undefined, 'FAST');
+  }catch(e){}
   // Top address line
   doc.setFontSize(9); doc.setFont('helvetica','bold');
   doc.setTextColor(...R_BLACK);
@@ -4798,8 +5314,11 @@ async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
   const col3W = 38, col4W = TW/2 - col3W - 2;
 
   // Single-col rows
+  const reportNameVal = methodTitle.startsWith('Visual Assessment (VA) and Magnetic')
+    ? `${cfg.project||''}_Acuren_VA & WFMT_Report`
+    : `${cfg.project||''} — ${methodTitle} Report`;
   ['Project Name','Address','Report Name'].forEach((label,ri)=>{
-    const val = ri===0?cfg.project||'': ri===1?cfg.address||'': `${cfg.project||''} — ${methodTitle} Report`;
+    const val = ri===0?cfg.project||'': ri===1?cfg.address||'': reportNameVal;
     doc.setFillColor(...R_DKBLUE);
     doc.rect(ML, y, col1W, rowH, 'F');
     doc.setTextColor(...R_WHITE); doc.setFontSize(8); doc.setFont('helvetica','bold');
@@ -4846,23 +5365,62 @@ async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
   doc.text(methodTitle.toUpperCase() + ' REPORT', PW/2, y+6, {align:'center'});
   y += 12;
 
-  // Overview photo (project photo or first joint photo)
+  // Collect all overview photos
   const allPhotos = [...(state.projectPhotos||[])];
   (state.joints||[]).forEach(j=>{
     (state.jointNotes[j.id]||[]).filter(p=>p.isOverview).forEach(p=>allPhotos.push(p));
   });
 
   if(allPhotos.length){
-    const ph = allPhotos[0];
-    const maxH = 90, maxW = TW;
+    const maxAreaH = 95;
+    const n = allPhotos.length;
     try{
-      const img = new Image();
-      await new Promise(res=>{ img.onload=res; img.src=ph.data; });
-      const aspect = img.width/img.height;
-      let iw = maxW, ih = maxW/aspect;
-      if(ih > maxH){ ih=maxH; iw=maxH*aspect; }
-      doc.addImage(ph.data,'JPEG', ML+(TW-iw)/2, y, iw, ih, undefined, 'FAST');
-      y += ih + 4;
+      if(n === 1){
+        // Single photo — full width
+        const ph = allPhotos[0];
+        const img = new Image();
+        await new Promise(res=>{ img.onload=res; img.src=ph.data; });
+        const aspect = img.width/img.height;
+        let iw=TW, ih=TW/aspect;
+        if(ih>maxAreaH){ ih=maxAreaH; iw=maxAreaH*aspect; }
+        doc.addImage(ph.data,'JPEG',ML+(TW-iw)/2,y,iw,ih,undefined,'FAST');
+        y += ih + 4;
+      } else if(n === 2){
+        // Two photos side by side
+        const gap = 4;
+        const halfW = (TW - gap) / 2;
+        let maxH = 0;
+        for(let pi=0;pi<2;pi++){
+          const ph = allPhotos[pi];
+          const img = new Image();
+          await new Promise(res=>{ img.onload=res; img.src=ph.data; });
+          const aspect = img.width/img.height;
+          let iw=halfW, ih=halfW/aspect;
+          if(ih>maxAreaH){ ih=maxAreaH; iw=maxAreaH*aspect; }
+          const x = ML + pi*(halfW+gap) + (halfW-iw)/2;
+          doc.addImage(ph.data,'JPEG',x,y,iw,ih,undefined,'FAST');
+          maxH = Math.max(maxH, ih);
+        }
+        y += maxH + 4;
+      } else {
+        // 3+ photos: 2 per row grid
+        const gap = 3;
+        const halfW = (TW - gap) / 2;
+        const rowH = maxAreaH / Math.ceil(n/2);
+        for(let pi=0;pi<Math.min(n,6);pi++){
+          const ph = allPhotos[pi];
+          const col = pi % 2, row = Math.floor(pi/2);
+          const img = new Image();
+          await new Promise(res=>{ img.onload=res; img.src=ph.data; });
+          const aspect = img.width/img.height;
+          let iw=halfW, ih=halfW/aspect;
+          if(ih>rowH-2){ ih=rowH-2; iw=(rowH-2)*aspect; }
+          const x = ML + col*(halfW+gap) + (halfW-iw)/2;
+          const yPos = y + row*(rowH+2);
+          doc.addImage(ph.data,'JPEG',x,yPos,iw,ih,undefined,'FAST');
+        }
+        y += Math.ceil(Math.min(n,6)/2)*(rowH+2) + 4;
+      }
     }catch(e){ y += 4; }
   }
 
@@ -4892,15 +5450,72 @@ async function buildCoverPage(doc, cfg, methodTitle, techs, photos){
   y += hdrH + 2;
 
   // Signature images (or blank lines)
-  const prepSig = prepTech.sig || techs.find(t=>t.sig)?.sig;
+  // Use the method's assigned tech signature specifically
+  // Helper: crop a signature data URL to its actual ink bounding box (trims transparent/white margins)
+  const trimSigImage = (sigData) => new Promise(resolve=>{
+    try{
+      const img = new Image();
+      img.onload = () => {
+        try{
+          const cw = img.width, ch = img.height;
+          const canvas = document.createElement('canvas');
+          canvas.width = cw; canvas.height = ch;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img,0,0);
+          const data = ctx.getImageData(0,0,cw,ch).data;
+          let minX=cw, minY=ch, maxX=-1, maxY=-1;
+          for(let yy=0; yy<ch; yy++){
+            for(let xx=0; xx<cw; xx++){
+              const idx=(yy*cw+xx)*4;
+              const a = data[idx+3];
+              const r = data[idx], g = data[idx+1], b = data[idx+2];
+              // Consider "ink" if not fully transparent and not near-white
+              if(a>10 && !(r>245 && g>245 && b>245)){
+                if(xx<minX) minX=xx; if(xx>maxX) maxX=xx;
+                if(yy<minY) minY=yy; if(yy>maxY) maxY=yy;
+              }
+            }
+          }
+          if(maxX<0 || maxY<0){ resolve(sigData); return; } // nothing found, fallback to original
+          const pad = Math.max(2, Math.round(Math.min(cw,ch)*0.01));
+          minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad);
+          maxX=Math.min(cw-1,maxX+pad); maxY=Math.min(ch-1,maxY+pad);
+          const cropW = maxX-minX+1, cropH = maxY-minY+1;
+          const outCanvas = document.createElement('canvas');
+          outCanvas.width = cropW; outCanvas.height = cropH;
+          const octx = outCanvas.getContext('2d');
+          octx.drawImage(canvas, minX, minY, cropW, cropH, 0, 0, cropW, cropH);
+          resolve(outCanvas.toDataURL('image/png'));
+        }catch(e){ resolve(sigData); }
+      };
+      img.onerror = () => resolve(sigData);
+      img.src = sigData;
+    }catch(e){ resolve(sigData); }
+  });
+
+  // Helper: draw a signature image scaled to fit within a box, preserving aspect ratio and centering it
+  const drawFittedSig = async (sigData, boxX, boxW2) => {
+    try{
+      const trimmed = await trimSigImage(sigData);
+      const props = doc.getImageProperties(trimmed);
+      const aspect = props.width / props.height;
+      let iw = boxW2 - 8, ih = iw / aspect;
+      if(ih > sigH){ ih = sigH; iw = ih * aspect; }
+      const dx = boxX + (boxW2 - iw) / 2;
+      const dy = y + (sigH - ih) / 2;
+      doc.addImage(trimmed,'PNG',dx,dy,iw,ih,undefined,'FAST');
+    }catch(e){}
+  };
+
+  const prepSig = prepTech.sig || null;
   if(prepSig){
-    try{ doc.addImage(prepSig,'PNG',ML+4,y,boxW-8,sigH,undefined,'FAST'); }catch(e){}
+    await drawFittedSig(prepSig, ML, boxW);
   } else {
     doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.4);
     doc.line(ML+8, y+sigH-2, ML+boxW-8, y+sigH-2);
   }
   if(sup.sig){
-    try{ doc.addImage(sup.sig,'PNG',ML+boxW+12,y,boxW-8,sigH,undefined,'FAST'); }catch(e){}
+    await drawFittedSig(sup.sig, ML+boxW+8, boxW);
   } else {
     doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.4);
     doc.line(ML+boxW+12, y+sigH-2, ML+boxW*2, y+sigH-2);
@@ -5013,6 +5628,61 @@ function buildCalSheet(doc, methodId, methodLabel){
   });
 }
 
+// ── Combined VA + MT scope summary table (WFMT / VA Inspection Scope Summary) ──
+function buildScopeTableVAMT(doc, y){
+  const joints = state.joints||[];
+  if(!joints.length) return y;
+
+  // Section header
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 7, 'F');
+  doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.text('WFMT / VA Inspection Scope Summary', PW/2, y+5, {align:'center'});
+  doc.setTextColor(...R_BLACK);
+  y += 7;
+
+  const head = [['Joint\n(JT-#)','Feature Type','Outer Diameter 1\n(in.)','Outer Diameter 2\n(in.)','Nominal Wall Thickness\n(in.)','Surface Condition','MT Indications\nFound (Yes/No)','VA Indications\nFound (Yes/No)']];
+  const body = joints.map(j=>{
+    const mtSt = getScopeStatus('mt', j.id);
+    const vaSt = getScopeStatus('va', j.id);
+    const mtFound = (state.mt||[]).some(r=>r.jt===j.id) ? 'Yes' : 'No';
+    const vaFound = (state.va||[]).some(r=>r.jt===j.id) ? 'Yes' : 'No';
+    return [j.id, j.type||'Pipe', j.od?String(j.od):'—', j.od2?String(j.od2):'N/A',
+      j.nwt?String(j.nwt):'—', 'Media Blasted', mtFound, vaFound];
+  });
+
+  doc.autoTable({
+    head, body, startY:y, margin:{left:ML, right:ML, top:16},
+    headStyles:{fillColor:R_DKBLUE, textColor:R_WHITE, fontSize:7, fontStyle:'bold', cellPadding:1.5, halign:'center'},
+    bodyStyles:{fontSize:7.5, cellPadding:1.5, halign:'center'},
+    columnStyles:{0:{fontStyle:'bold'}, 1:{halign:'left'}},
+    alternateRowStyles:{fillColor:R_LGRAY},
+    styles:{lineColor:R_MGRAY, lineWidth:0.2},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }
+  });
+  y = doc.lastAutoTable.finalY;
+
+  // Field notes
+  y += 2;
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...R_BLACK);
+  doc.text('Field Notes:', ML, y+4);
+  y += 5;
+  const fnNotes = getFieldNotesPDF('va') || getFieldNotesPDF('mt');
+  if(fnNotes){
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...R_BLACK);
+    const fnLines = doc.splitTextToSize(fnNotes, TW-4);
+    const fnH2 = Math.min(20, fnLines.length*4+4);
+    doc.setFillColor(...R_WHITE); doc.rect(ML,y,TW,fnH2,'F');
+    doc.setDrawColor(...R_MGRAY); doc.rect(ML,y,TW,fnH2,'S');
+    doc.text(fnLines, ML+2, y+4);
+    y += fnH2+2;
+  } else {
+    doc.setFillColor(...R_WHITE); doc.rect(ML, y, TW, 12, 'F');
+    doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2); doc.rect(ML, y, TW, 12, 'S');
+    y += 14;
+  }
+  return y;
+}
+
 // ── Scope summary table ────────────────────────────────────────────────────────
 function buildScopeTable(doc, tabId, methodLabel, extraCols, y){
   const joints = state.joints||[];
@@ -5025,22 +5695,25 @@ function buildScopeTable(doc, tabId, methodLabel, extraCols, y){
   doc.setTextColor(...R_BLACK);
   y += 7;
 
-  const head = [['Joint\n(JT-#)','Feature\nType','Outer\nDia. (in.)','Nominal WT\n(in.)','Long Seam\n(hh:mm)','Surface\nCondition',methodLabel,'UTT Scan\nTest Locs',...(extraCols||[])]];
+  const head = [['Joint\n(JT-#)','Feature\nType','Outer\nDia. (in.)','Nominal WT\n(in.)','Long Seam\nLocation (hh:mm)','Surface\nCondition',methodLabel,'UTT Scan\nTest Locs',...(extraCols||[])]];
   const body = joints.map(j=>{
     const st = getScopeStatus(tabId, j.id);
-    const autoDate = computeJointTabMaxDate(tabId, j.id);
+    // Use LSC group clock position as seam location if available
+    const lscGroup = (state.lscGroups||[]).find(g=>g.joints.includes(j.id));
+    const seamLoc = lscGroup?.clock || j.seamClock || j.seam || '—';
     return [j.id, j.type||'Pipe', j.od?j.od+'"':'—', j.nwt?j.nwt+'"':'—',
-      j.seam||'—', 'Media Blasted', st.done?'Yes':'No', 'No',
+      seamLoc, 'Media Blasted', st.done?'Yes':'No', 'No',
       ...(extraCols||[]).map(()=>'')];
   });
 
   doc.autoTable({
-    head, body, startY:y, margin:{left:ML, right:ML},
+    head, body, startY:y, margin:{left:ML, right:ML, top:16},
     headStyles:{fillColor:R_DKBLUE, textColor:R_WHITE, fontSize:7, fontStyle:'bold', cellPadding:1.5, halign:'center'},
     bodyStyles:{fontSize:7.5, cellPadding:1.5, halign:'center'},
     columnStyles:{0:{fontStyle:'bold'}, 1:{halign:'left'}},
     alternateRowStyles:{fillColor:R_LGRAY},
     styles:{lineColor:R_MGRAY, lineWidth:0.2},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }
   });
   y = doc.lastAutoTable.finalY;
 
@@ -5052,11 +5725,107 @@ function buildScopeTable(doc, tabId, methodLabel, extraCols, y){
   doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
   doc.setFillColor(...R_WHITE); doc.rect(ML, y, TW, 12, 'F');
   doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2); doc.rect(ML, y, TW, 12, 'S');
-  y += 14;
+  // Field notes
+  const fnNotes = getFieldNotesPDF(tabId);
+  if(fnNotes){
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...R_BLACK);
+    const fnLines = doc.splitTextToSize(fnNotes, TW-4);
+    const fnH2 = Math.min(20, fnLines.length*4+4);
+    doc.setFillColor(...R_WHITE); doc.rect(ML,y,TW,fnH2,'F');
+    doc.setDrawColor(...R_MGRAY); doc.rect(ML,y,TW,fnH2,'S');
+    doc.text(fnLines, ML+2, y+4);
+    y += fnH2+2;
+  }
   return y;
 }
 
 // ── UTT12 data table ───────────────────────────────────────────────────────────
+function buildUTTDataSheet(doc, y, cardId){
+  try {
+    let card = (state.ndeCards||{})[cardId];
+    if(!card){
+      card = {
+        procedure: 'BP-4190P-507', revNo: '1',
+        utUnit: 'Olympus', utModel: 'Epoch 650', utSerial: '231597403',
+        calDue: '1/8/2027', calIn: '8:00 AM', calOut: '4:00 PM',
+        transManuf: 'Britek', transModel: 'BD-25', transSerial: 'B21771',
+        transSize: '0.25', frequency: '5', elementQty: 'Dual',
+        screenRange: '1', refScanDb: '58', velocity: '0.2342',
+        calBlock: '0.1 min. to 0.5 max.', calBlockMaterial: '1018 Carbon Steel', calBlockSerial: 'K-135',
+        couplant: 'Ultragel II', couplantBatch: '22H028',
+        tech: 'Tyler Laviolette', certLevel: 'II', date: 'Daily'
+      };
+    }
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('Ultrasonic Thickness Testing Data Sheet Technician # 1', ML, y);
+    y += 6;
+
+    // Header
+    doc.setFillColor(44, 62, 80);
+    doc.rect(ML, y, TW, 5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
+    doc.text('Ultrasonic Thickness Testing (UTT) Testing Parameters:', ML+2, y+3);
+    y += 5;
+
+    // Variable rows - different column counts per row
+    const rows = [
+      {cols: 4, data: ['Procedure Used:', card.procedure||'BP-4190P-507', 'Revision No:', card.revNo||'1']},
+      {cols: 6, data: ['(UT) Unit Brand:', card.utUnit||'Olympus', 'Model:', card.utModel||'Epoch 650', 'Serial Number:', card.utSerial||'231597403']},
+      {cols: 6, data: ['Cal Due Date:', card.calDue||'1/8/2027', 'Cal In Time:', card.calIn||'8:00 AM', 'Cal Out Time:', card.calOut||'4:00 PM']},
+      {cols: 6, data: ['Transducer Mfr:', card.transManuf||'Britek', 'Model:', card.transModel||'BD-25', 'Serial Number:', card.transSerial||'B21771']},
+      {cols: 6, data: ['Size/Dia. (in.):', card.transSize||'0.25', 'Element:', card.elementQty||'Dual', 'Frequency (MHz):', card.frequency||'5']},
+      {cols: 6, data: ['Screen Range (in.):', card.screenRange||'1', 'Ref+Scan (dB):', card.refScanDb||'58', 'Velocity (in./µsec.):', card.velocity||'0.2342']},
+      {cols: 6, data: ['Cal Block Used:', card.calBlock||'0.1-0.5', 'Material:', card.calBlockMaterial||'1018 Carbon Steel', 'Serial Number:', card.calBlockSerial||'K-135']},
+      {cols: 6, data: ['Couplant Type:', card.couplant||'Ultragel II', 'Batch No:', card.couplantBatch||'22H028', 'Cal Block Temp ±25°F:', 'Yes']},
+      {cols: 6, data: ['Technician:', card.tech||'Tyler Laviolette', 'Certification Level:', card.certLevel||'II', 'Inspection Date:', card.date||'Daily']}
+    ];
+
+    console.log('buildUTTDataSheet called with', rows.length, 'rows');
+
+    doc.setTextColor(0, 0, 0);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(100, 100, 100);
+
+    rows.forEach((row, rowIdx) => {
+      const colW = TW / row.cols;
+      console.log('Row', rowIdx, 'has', row.cols, 'columns, colW =', colW);
+      
+      for(let c = 0; c < row.cols; c++){
+        const x = ML + (c * colW);
+        const isLabel = (c % 2 === 0);
+        
+        // Fill
+        if(isLabel){
+          doc.setFillColor(200, 200, 200);
+        } else {
+          doc.setFillColor(255, 255, 255);
+        }
+        doc.rect(x, y, colW, 4, 'FD');
+        
+        // Text
+        doc.setTextColor(0, 0, 0);
+        if(isLabel) doc.setFont('helvetica', 'bold');
+        else doc.setFont('helvetica', 'normal');
+        
+        const text = String(row.data[c] || '');
+        doc.text(text, x + 0.5, y + 2.5, {maxWidth: colW - 1, align: isLabel ? 'center' : 'left'});
+      }
+      y += 4;
+    });
+
+    console.log('buildUTTDataSheet completed, final y =', y);
+    return y;
+  } catch(err) {
+    console.error('Error in buildUTTDataSheet:', err);
+    return y;
+  }
+}
+
 function buildUTT12Table(doc, y){
   const rows = state.utt12||[];
   doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 7, 'F');
@@ -5079,12 +5848,13 @@ function buildUTT12Table(doc, y){
   });
 
   doc.autoTable({
-    head, body, startY:y, margin:{left:ML,right:ML},
+    head, body, startY:y, margin:{left:ML,right:ML,top:16},
     headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
     bodyStyles:{fontSize:7,cellPadding:1.2,halign:'center'},
     columnStyles:{0:{fontStyle:'bold',cellWidth:14},1:{cellWidth:9},2:{cellWidth:9},3:{cellWidth:9},16:{fontStyle:'bold'},17:{fontStyle:'bold',textColor:[198,40,40]}},
     alternateRowStyles:{fillColor:R_LGRAY},
     styles:{lineColor:R_MGRAY,lineWidth:0.15},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }
   });
   y = doc.lastAutoTable.finalY;
   // Field notes box
@@ -5114,12 +5884,13 @@ function buildUTTLocTable(doc, y){
     const warn=bm&&((bm-am)/bm*100)>10;
     return [r.jt||'',r.ndtid||'',r.ref||'U/S',r.dist||'',r.clock||'',r.alen||'',r.awid||'',r.bfgmin||'',r.bfgmax||'',r.afgmin||'',r.afgmax||'',pct,r.result||'NRI'];
   });
-  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML,top:16},
     headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
     bodyStyles:{fontSize:7,cellPadding:1.2,halign:'center'},
     columnStyles:{0:{fontStyle:'bold'},11:{fontStyle:'bold'}},
     alternateRowStyles:{fillColor:R_LGRAY},
-    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+    styles:{lineColor:R_MGRAY,lineWidth:0.15},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }});
   return doc.lastAutoTable.finalY+4;
 }
 
@@ -5154,12 +5925,13 @@ function buildFlawTable(doc, tabId, title, y){
     head=[['Joint\n(JT-#)','Indication\nID','Indication\nCharacterization','Ref\nGW','Dist\n(in.)','Clock\n(hh:mm)','Length\n(in.)','Width\n(in.)',isVA?'Depth\n(in.)':'Height\n(in.)','Wall WT\n(in.)','N/L']];
     body=rows.map(r=>[r.jt,r.indid||'',r.char||'',r.ref||'',r.dist||'',r.clock||'',r.len||'',r.wid||'',r.dep||r.ht||'',r.wt||'',r.nl||'']);
   }
-  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML,top:16},
     headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:6.5,fontStyle:'bold',cellPadding:1.2,halign:'center'},
     bodyStyles:{fontSize:7.5,cellPadding:1.5,halign:'center'},
     columnStyles:{0:{fontStyle:'bold'},1:{fontStyle:'bold'}},
     alternateRowStyles:{fillColor:R_LGRAY},
-    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+    styles:{lineColor:R_MGRAY,lineWidth:0.15},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }});
   return doc.lastAutoTable.finalY+4;
 }
 
@@ -5175,17 +5947,18 @@ function buildLSCTable(doc, y){
   const body=groups.length
     ? groups.flatMap(g=>g.joints.map(jid=>[jid,g.seam||'—',g.clock||'—',g.notes||'']))
     : rows.map(r=>[r.jt||'',r.lsctype||'—',r.clock||'—',r.notes||'']);
-  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+  doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML,top:16},
     headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:7,fontStyle:'bold',cellPadding:2,halign:'center'},
     bodyStyles:{fontSize:7.5,cellPadding:2,halign:'center'},
     columnStyles:{0:{fontStyle:'bold',cellWidth:25},3:{halign:'left'}},
     alternateRowStyles:{fillColor:R_LGRAY},
-    styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+    styles:{lineColor:R_MGRAY,lineWidth:0.15},
+    didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }});
   return doc.lastAutoTable.finalY+4;
 }
 
 // ── Joint photos section ───────────────────────────────────────────────────────
-async function buildPhotosSection(doc, tabId, title, inclProjPhotos=true){
+async function buildPhotosSection(doc, tabId, title, inclProjPhotos=true, inclJointOverview=true){
   // ── Project overview photos (always included) ──────────────────────────
   const projPhotos = (state.projectPhotos||[]);
   for(const p of projPhotos){
@@ -5215,7 +5988,7 @@ async function buildPhotosSection(doc, tabId, title, inclProjPhotos=true){
   const joints = state.joints||[];
   for(const j of joints){
     // Collect this joint's overview photos
-    const ovwPhotos = ((state.jointNotes||{})[j.id]||[]).filter(p=>p.isOverview);
+    const ovwPhotos = inclJointOverview ? ((state.jointNotes||{})[j.id]||[]).filter(p=>p.isOverview) : [];
     // Also collect any row-level photos for this tab
     const rowPhotoMap = (state.rowPhotos||{})[tabId]||{};
     const rowPhotos   = Object.values(rowPhotoMap).flat();
@@ -5268,38 +6041,53 @@ async function generatePDF(){
 
     const METHOD_MAP=[
       {id:'utt12',  label:'Ultrasonic Thickness Testing (UTT)', calId:'utt',
-        build: async(doc)=>{
-          let y=buildScopeTable(doc,'utt12','12-PT UTT',[],0);
+        build: async(doc,startY)=>{
+          let y=buildScopeTable(doc,'utt12','12-PT UTT',[],startY);
           if(state.uttloc?.length){ doc.addPage(); y=pageHeader(doc); y=buildUTTLocTable(doc,y); }
-          doc.addPage(); y=pageHeader(doc); buildUTT12Table(doc,y);
+          doc.addPage(); y=pageHeader(doc);
+          // Find the UTT calibration card for parameters
+          const uttCard = Object.entries(state.ndeCards||{}).find(([id,card])=>card.method==='utt12');
+          y=buildUTTDataSheet(doc, y, uttCard?.[0]);  // Always call, uses sample data if no card exists
+          y=buildUTT12Table(doc,y);
           await buildPhotosSection(doc,'utt12','UTT');
         }},
       {id:'uttloc', label:'UTT of Test Locations', calId:'utt',
-        build: async(doc)=>{ let y=pageHeader(doc); buildUTTLocTable(doc,y); }},
+        build: async(doc,startY)=>{ buildUTTLocTable(doc,startY); }},
       {id:'aelsc',  label:'Long Seam Characterization (LSC)', calId:'aelsc',
-        build: async(doc)=>{ let y=buildScopeTable(doc,'aelsc','AE/LSC',[],0); doc.addPage(); y=pageHeader(doc); buildLSCTable(doc,y); }},
+        build: async(doc,startY)=>{ let y=buildScopeTable(doc,'aelsc','AE/LSC',[],startY); doc.addPage(); y=pageHeader(doc); buildLSCTable(doc,y); }},
       {id:'jointlen',label:'Joint Lengths', calId:null,
-        build: async(doc)=>{
-          let y=pageHeader(doc);
+        build: async(doc,startY)=>{
+          let y=startY;
           const rows=state.jointlen||[];
           const head=[['Joint (JT-#)','Feature Type','Length (in.)','OD1 (in.)','NWT1 (in.)','OD2 (in.)','NWT2 (in.)','Notes']];
           const body=rows.map(r=>[r.jt,r.type||'Pipe',r.length||'',r.od1||'',r.nwt1||'',r.od2||'N/A',r.nwt2||'N/A',r.notes||'']);
           doc.setFillColor(...R_DKBLUE);doc.rect(ML,y,TW,7,'F');
           doc.setTextColor(...R_WHITE);doc.setFontSize(9);doc.setFont('helvetica','bold');
           doc.text('Joint Lengths (in.)',PW/2,y+5,{align:'center'});y+=7;
-          doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML},
+          doc.autoTable({head,body,startY:y,margin:{left:ML,right:ML,top:16},
             headStyles:{fillColor:R_DKBLUE,textColor:R_WHITE,fontSize:7,fontStyle:'bold',cellPadding:2,halign:'center'},
             bodyStyles:{fontSize:7.5,cellPadding:2,halign:'center'},
             columnStyles:{0:{fontStyle:'bold'}},alternateRowStyles:{fillColor:R_LGRAY},
-            styles:{lineColor:R_MGRAY,lineWidth:0.15}});
+            styles:{lineColor:R_MGRAY,lineWidth:0.15},
+            didDrawPage:(data)=>{ if(data.pageNumber>1) pageHeader(doc); }});
         }},
-      {id:'va',    label:'Visual Assessment (VA)',     calId:'mt',  build:async(doc)=>{ buildScopeTable(doc,'va','Visual Assessment (VA)',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'va','VT Indications',y);y=await buildGridsSection(doc,'va',y); await buildPhotosSection(doc,'va','VA'); }},
-      {id:'mt',    label:'Magnetic Particle Testing (MT)', calId:'mt', build:async(doc)=>{ buildScopeTable(doc,'mt','MT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'mt','MT Indications',y);y=await buildGridsSection(doc,'mt',y); await buildPhotosSection(doc,'mt','MT'); }},
-      {id:'aut',   label:'Automated UT (AUT)',         calId:'aut', build:async(doc)=>{ buildScopeTable(doc,'aut','AUT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'aut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'aut',y); await buildPhotosSection(doc,'aut','AUT'); }},
-      {id:'mut',   label:'Manual UT (MUT)',            calId:'mut', build:async(doc)=>{ buildScopeTable(doc,'mut','MUT',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'mut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'mut',y); await buildPhotosSection(doc,'mut','MUT'); }},
-      {id:'muthand',label:'MUT Hand Scans',            calId:'mut', build:async(doc)=>{ let y=pageHeader(doc); buildFlawTable(doc,'muthand','MUT Hand Scan Results',y); }},
-      {id:'pautbm',label:'PAUT Base Metal',            calId:'paut',build:async(doc)=>{ buildScopeTable(doc,'pautbm','PAUT BM',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'pautbm','PAUT Base Metal Indications (All Measurements are from the USGW)',y);y=await buildGridsSection(doc,'pautbm',y); await buildPhotosSection(doc,'pautbm','PAUT'); }},
-      {id:'pautls',label:'PAUT Long Seam',             calId:'paut',build:async(doc)=>{ buildScopeTable(doc,'pautls','PAUT LS',[],0); doc.addPage();let y=pageHeader(doc);y=buildFlawTable(doc,'pautls','PAUT Long Seam Indications',y);y=await buildGridsSection(doc,'pautls',y); await buildPhotosSection(doc,'pautls','PAUT LS'); }},
+      {id:'vamt',  label:'Visual Assessment (VA) and Magnetic Particle Testing (MT)', calId:'mt',
+        build:async(doc,startY)=>{
+          let y=buildScopeTableVAMT(doc,startY);
+          doc.addPage();y=pageHeader(doc);
+          y=buildFlawTable(doc,'mt','Wet Fluorescent Mag Particle (WFMT) Indications',y);
+          y=buildFlawTable(doc,'va','Visual Assessment (VA) Indications',y);
+          y=await buildGridsSection(doc,'mt',y);
+          y=await buildGridsSection(doc,'va',y);
+          await buildPhotosSection(doc,'mt','VA and MT');
+          await buildPhotosSection(doc,'va','VA and MT',false,false);
+        }},
+      {id:'aut',   label:'Automated UT (AUT)',         calId:'aut', build:async(doc,startY)=>{ let y=buildScopeTable(doc,'aut','AUT',[],startY); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'aut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'aut',y); await buildPhotosSection(doc,'aut','AUT'); }},
+      {id:'gw',    label:'Guided Wave (GW)',           calId:'gw', build:async(doc,startY)=>{ let y=buildScopeTable(doc,'gw','Guided Wave (GW)',[],startY); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'gw','Guided Wave (GW) Indications',y);y=await buildGridsSection(doc,'gw',y); await buildPhotosSection(doc,'gw','Guided Wave'); }},
+      {id:'mut',   label:'Manual UT (MUT)',            calId:'mut', build:async(doc,startY)=>{ let y=buildScopeTable(doc,'mut','MUT',[],startY); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'mut','AUT Indications or MUT Indications',y);y=await buildGridsSection(doc,'mut',y); await buildPhotosSection(doc,'mut','MUT'); }},
+      {id:'muthand',label:'MUT Hand Scans',            calId:'mut', build:async(doc,startY)=>{ buildFlawTable(doc,'muthand','MUT Hand Scan Results',startY); }},
+      {id:'pautbm',label:'PAUT Base Metal',            calId:'paut',build:async(doc,startY)=>{ let y=buildScopeTable(doc,'pautbm','PAUT BM',[],startY); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'pautbm','PAUT Base Metal Indications (All Measurements are from the USGW)',y);y=await buildGridsSection(doc,'pautbm',y); await buildPhotosSection(doc,'pautbm','PAUT'); }},
+      {id:'pautls',label:'PAUT Long Seam',             calId:'paut',build:async(doc,startY)=>{ let y=buildScopeTable(doc,'pautls','PAUT LS',[],startY); doc.addPage();y=pageHeader(doc);y=buildFlawTable(doc,'pautls','PAUT Long Seam Indications',y);y=await buildGridsSection(doc,'pautls',y); await buildPhotosSection(doc,'pautls','PAUT LS'); }},
     ];
 
     const methods=scope==='full'?METHOD_MAP:METHOD_MAP.filter(m=>m.id===method);
@@ -5320,12 +6108,12 @@ async function generatePDF(){
 
       // Data page
       doc.addPage();
-      pageHeader(doc);
+      const startY = pageHeader(doc);
 
       // Run method-specific builder
       doc.setPage(doc.internal.getNumberOfPages()); // ensure on last page
       // Re-get current Y (after header)
-      await m.build(doc);
+      await m.build(doc, startY);
 
       addFooters(doc);
 
@@ -5975,7 +6763,21 @@ async function importFromDFPR(){
         : [];
     }
     function findHdr(aoa, keyword){
-      return aoa.findIndex(r=>r.some(v=>String(v||'').toLowerCase().includes(keyword.toLowerCase())));
+      // DFPR sheets have a title row (Row 1) then header row (Row 2)
+      // Skip title rows (which have only 1-2 meaningful cells) and find REAL header rows
+      // A real header row has multiple column definitions (keywords like Joint, Ref, Distance, etc.)
+      let hdrIdx = -1;
+      for(let i=0; i<aoa.length; i++){
+        const row = aoa[i];
+        // Count non-empty cells in this row
+        const nonEmptyCells = row.filter(v => String(v||'').trim().length > 0);
+        // Real headers have many columns, title rows are mostly empty
+        if(nonEmptyCells.length >= 3 && row.some(v => String(v||'').toLowerCase().includes(keyword.toLowerCase()))){
+          hdrIdx = i;
+          break;
+        }
+      }
+      return hdrIdx;
     }
     function strDate(v){
       if(!v) return '';
@@ -6008,7 +6810,8 @@ async function importFromDFPR(){
             od2:String(r[12]||'').trim(), nwt2:String(r[13]||'').trim(),
             seam:String(r[7]||'').trim(), grade:String(r[8]||'').trim(),
             pfl:String(r[3]||'').trim(), length:String(r[5]||'').trim(),
-            installDate:strDate(r[9]), aboveGround:String(r[6]||'').trim(),
+            installDate:strDate(r[9]||r[14]||''), aboveGround:String(r[6]||'').trim(),
+            mpvType:String(r[15]||'').trim(),
           });
           existIds.add(jid);
           imported.joints++;
@@ -6053,7 +6856,12 @@ async function importFromDFPR(){
           const key=`${jt}|${ref}|${dist}`;
           if(existSet.has(key)) continue;
           if(!state.utt12) state.utt12=[];
-          const vals = r.slice(4,16).map(v=>String(v||'').trim());
+          // Remove Excel formatting (e.g., "0.497"" becomes "0.497")
+          const vals = r.slice(4,16).map(v=>{
+            const s = String(v||'').trim();
+            // Remove trailing quote marks and other formatting
+            return s.replace(/[""'′″]/g, '').trim();
+          });
           state.utt12.push({jt, ref, dist, bfg:String(r[3]||'BFG').trim(),
             vals, date:'', tech:''});
           existSet.add(key);
@@ -6095,8 +6903,10 @@ async function importFromDFPR(){
         const existSet=new Set((state.jointlen||[]).map(r=>r.jt));
         for(let ri=hdrIdx+1; ri<aoa.length; ri++){
           const r=aoa[ri];
-          const jt=String(r[0]||'').trim();
-          if(!jt||existSet.has(jt)) continue;
+          let jt=String(r[0]||'').trim();
+          if(!jt) continue;
+          // Keep full identifier: "JT-04 extrados", "JT-05 branch", etc.
+          if(existSet.has(jt)) continue;
           if(!state.jointlen) state.jointlen=[];
           state.jointlen.push({jt, type:String(r[1]||'Pipe'),
             length:String(r[2]||''), od1:String(r[3]||''), od2:String(r[4]||''),
@@ -6143,6 +6953,7 @@ async function importFromDFPR(){
         {sheet:'MT Indications',      key:'mt',      cols:['jt','indid','char','ref','dist','clock','len','wid','ht','wt','nl']},
         {sheet:'VA Indications',      key:'va',      cols:['jt','indid','char','ref','dist','clock','len','wid','dep','wt','nl']},
         {sheet:'AUT Indications',     key:'aut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
+        {sheet:'GW Indications',      key:'gw',      cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
         {sheet:'MUT Indications',     key:'mut',     cols:['jt','indid','char','ref','dist','clock','len','wid','minwt','wt','nl']},
         {sheet:'MUT Hand Scans',      key:'muthand', cols:['jt','start','end','minwt','indfound']},
         {sheet:'PAUT BM Indications', key:'pautbm',  cols:['jt','indid','char','ref','dist','clock','len','dep','ht','wt','nl']},
@@ -6162,7 +6973,12 @@ async function importFromDFPR(){
           if(existSet.has(`${jt}|${indid}`)) continue;
           if(!state[key]) state[key]=[];
           const row={date:'',tech:''};
-          cols.forEach((c,ci)=>{ row[c]=String(r[ci]||'').trim(); });
+          cols.forEach((c,ci)=>{ 
+            let val = String(r[ci]||'').trim();
+            // Remove Excel formatting quote marks
+            val = val.replace(/[""'′″]/g, '').trim();
+            row[c]=val; 
+          });
           state[key].push(row);
           existSet.add(`${jt}|${indid}`);
           imported.flaws++;
@@ -6274,6 +7090,275 @@ function classifyEquipment(name){
   return 'other';
 }
 
+// ────────────────────────────────────────────────────────────────────────────
+// H-FORM EQUIPMENT IMPORT
+// ────────────────────────────────────────────────────────────────────────────
+
+// Convert Excel date serial number to YYYY-MM-DD string
+// Excel dates: 1 = Jan 1, 1900; 46395 ≈ Jan 8, 2027
+function excelDateToString(excelDate) {
+  if (!excelDate || typeof excelDate === 'string') return excelDate || '';
+  
+  const num = Number(excelDate);
+  if (isNaN(num)) return String(excelDate);
+  
+  // If it looks like an Excel serial (positive number in reasonable range)
+  if (num > 0 && num < 100000) {
+    try {
+      // Excel epoch is Jan 1, 1900 (but with a bug - it thinks 1900 is a leap year)
+      // So serial 1 = Jan 1, 1900, serial 60 = Feb 29, 1900 (doesn't exist), serial 61 = Mar 1, 1900
+      const date = new Date((num - 1) * 86400000 + new Date(1900, 0, 1).getTime());
+      if (!isNaN(date.getTime())) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+    } catch (e) {}
+  }
+  
+  return String(excelDate);
+}
+
+let _hformWorkbook = null;
+
+async function importHFormEquipment(){
+  const input = document.getElementById('hform-file-input');
+  if(!input || !input.files[0]){ showToast('No H-Form file selected','error'); return; }
+  
+  try{
+    const file = input.files[0];
+    const arrayBuffer = await file.arrayBuffer();
+    
+    // Load XLSX library
+    if(!window.XLSX){
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      document.head.appendChild(script);
+      await new Promise(r => setTimeout(r, 1000)); // Wait for script to load
+    }
+    
+    const wb = XLSX.read(arrayBuffer);
+    _hformWorkbook = wb;
+    
+    const ws = wb.Sheets['Information Lists'];
+    if(!ws){ showToast('❌ "Information Lists" sheet not found in file','error'); return; }
+    
+    const aoa = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+    if(!aoa || aoa.length < 3){ showToast('❌ No data found in Information Lists sheet','error'); return; }
+    
+    // Parse technician equipment data - headers are in row 0 (first row), data starts at row 1
+    const headerRow = aoa[0]; // Row 1 (index 0) contains headers
+    if(!headerRow){ showToast('❌ No header row found','error'); return; }
+    
+    console.log('=== H-FORM IMPORT DEBUG ===');
+    console.log('Header row (aoa[0]):', headerRow);
+    console.log('First data row (aoa[1]):', aoa[1]);
+    
+    const findCol = (keyword) => {
+      const idx = headerRow.findIndex(h => h && String(h).toLowerCase().includes(keyword.toLowerCase()));
+      if(idx >= 0) {
+        console.log(`✓ findCol('${keyword}') = index ${idx}, value="${headerRow[idx]}"`);
+      } else {
+        console.log(`✗ findCol('${keyword}') = NOT FOUND`);
+      }
+      return idx >= 0 ? idx : -1;
+    };
+    
+    const techEquip = {};
+    for(let i=1; i<aoa.length; i++){
+      const row = aoa[i];
+      if(!row[0]) continue; // Skip empty rows
+      
+      const techName = String(row[0]||'').trim();
+      if(!techName) continue;
+      
+      if(i === 1) {
+        console.log(`Processing first tech: ${techName}`);
+        console.log('Sample values from row:');
+        console.log(`  UT Scope Brand (idx ${findCol('UT Scope Brand')}): ${row[findCol('UT Scope Brand')]}`);
+        console.log(`  UT Probe Diameter (idx ${findCol('UT Probe Diameter')}): ${row[findCol('UT Probe Diameter')]}`);
+        console.log(`  UT Couplant (idx ${findCol('UT Couplant')}): ${row[findCol('UT Couplant')]}`);
+      }
+      
+      techEquip[techName] = {
+        // UT/Ultrasonic Equipment
+        utUnit: row[findCol('UT Scope Brand and Model')] || '',
+        utSerial: row[findCol('UT Scope Serial Number')] || '',
+        calDue: excelDateToString(row[findCol('UT Scope Cal Due Date')]) || '',
+        transManuf: row[findCol('UT Probe Brand')] || '',
+        transModel: row[findCol('UT Probe Model')] || '',
+        transSerial: row[findCol('UT Probe Serial Number')] || '',
+        frequency: row[findCol('UT Probe Freq.')] || '',
+        transSize: row[findCol('UT Probe Diameter')] || '',
+        couplant: row[findCol('UT Couplant')] || '',
+        couplantBatch: row[findCol('UT Couplant Batch')] || '',
+        calBlockSerial: row[findCol('UT Step Wedge Serial Number')] || '',
+        
+        // MT Equipment
+        yokeModel: row[findCol('MT Yoke Model')] || '',
+        yokeSerial: row[findCol('MT Yoke Serial Number')] || '',
+        yokeCalDue: excelDateToString(row[findCol('MT Yoke Cal Due Date')]) || '',
+        wfmtMedium: row[findCol('WFMT Medium')] || '',
+        wfmtBatch: row[findCol('WFMT Medium Batch Number')] || '',
+        
+        // Visualization Equipment
+        blBrand: row[findCol('Blacklight Brand')] || '',
+        blModel: row[findCol('Blacklight Model')] || '',
+        blSerial: row[findCol('Blacklight Serial Number')] || '',
+        blCalDue: excelDateToString(row[findCol('Blacklight Cal Due Date')]) || '',
+        
+        // Light Meter
+        lmBrand: row[findCol('Light Meter Brand')] || '',
+        lmModel: row[findCol('Light Meter Model')] || '',
+        lmSerial: row[findCol('Light Meter Serial Number')] || '',
+        lmCalDue: excelDateToString(row[findCol('Light Meter Cal Due Date')]) || '',
+        detectorSerial: row[findCol('Detector Serial Number')] || '',
+        
+        // PAUT
+        pautBrand: row[findCol('PAUT Scope Brand')] || '',
+        pautSerial: row[findCol('PAUT S/N')] || '',
+        pautCalDue: excelDateToString(row[findCol('PAUT Cal Due Date')]) || '',
+        
+        // GPS
+        gpsBrand: row[findCol('GPS Brand')] || '',
+        gpsModel: row[findCol('GPS Model #')] || '',
+        gpsSerial: row[findCol('GPS Serial Number')] || ''
+      };
+    }
+    
+    if(Object.keys(techEquip).length === 0){
+      showToast('❌ No technician data found in Information Lists sheet','error');
+      return;
+    }
+    
+    // Save to state & localStorage
+    state.technicianEquipment = techEquip;
+    localStorage.setItem('technicianEquipment', JSON.stringify(techEquip));
+    
+    showToast(`✓ Imported equipment for ${Object.keys(techEquip).length} technicians`, 'success');
+    
+    // Update file input display
+    const fileLabel = document.querySelector('[data-for="hform-file-input"]');
+    if(fileLabel){
+      const fileName = file.name.replace(/___/, '').replace('.xlsm', '');
+      fileLabel.textContent = `📁 ${fileName}`;
+      fileLabel.style.color = 'var(--color-success)';
+    }
+    
+    // Show list of imported technicians
+    console.log('H-Form technicians imported:', Object.keys(techEquip));
+    const imported = Object.keys(techEquip).slice(0,10).join(', ');
+    showToast(`📋 Technicians: ${imported}${Object.keys(techEquip).length > 10 ? '...' : ''}`, 'info', 4000);
+  } catch(e){
+    console.error('H-Form import error:', e);
+    showToast('❌ Error importing H-Form: ' + e.message, 'error');
+  }
+}
+
+// Auto-populate equipment from H-Form for ALL cards of a technician simultaneously
+function autoFillEquipmentFromHForm(cardId, techName){
+  if(!techName){ 
+    showToast('⚠ Please select a technician first', 'warning'); 
+    return; 
+  }
+  
+  const equip = (state.technicianEquipment||{})[techName];
+  if(!equip){ 
+    const imported = Object.keys(state.technicianEquipment||{});
+    if(imported.length === 0){
+      showToast('❌ No H-Form data imported yet. Click "Load H-Form Equipment" first.', 'error');
+    } else {
+      showToast(`❌ "${techName}" not found in H-Form. Available: ${imported.slice(0,3).join(', ')}${imported.length > 3 ? '...' : ''}`, 'error');
+    }
+    return;
+  }
+  
+  // Find ALL cards for this technician and update them simultaneously
+  const allCards = Object.values(state.ndeCards||{}).filter(c => (c.tech||'').trim() === techName.trim());
+  
+  if(allCards.length === 0){
+    showToast(`⚠ No calibration records found for ${techName}`, 'warning');
+    return;
+  }
+  
+  let utCount = 0, mtCount = 0, pautCount = 0, missingElementQty = 0;
+  
+  // Update ALL cards for this technician
+  allCards.forEach(card => {
+    const isUT = card.method === 'utt12' || card.method === 'utt';
+    const isMT = card.method === 'mt' || card.method === 'va';
+    const isPAUT = card.method === 'pautbm' || card.method === 'pautls';
+    
+    if(isUT){
+      card.utUnit = equip.utUnit || card.utUnit;
+      card.utSerial = equip.utSerial || card.utSerial;
+      card.calDue = equip.calDue || card.calDue;
+      card.transManuf = equip.transManuf || card.transManuf;
+      card.transModel = equip.transModel || card.transModel;
+      card.transSerial = equip.transSerial || card.transSerial;
+      card.frequency = equip.frequency || card.frequency;
+      card.transSize = equip.transSize || card.transSize;
+      card.couplant = equip.couplant || card.couplant;
+      card.couplantBatch = equip.couplantBatch || card.couplantBatch;  // ← Couplant Batch included
+      card.calBlock = equip.calBlockSerial || card.calBlock;  // Step Wedge Serial = Cal Block
+      card.calBlockSerial = equip.calBlockSerial || card.calBlockSerial;
+      card.calBlockMaterial = '1018 Carbon Steel';  // Always this for UTT
+      
+      utCount++;
+      if(!card.elementQty) missingElementQty++;
+      
+    } else if(isMT){
+      card.yokeModel = equip.yokeModel || card.yokeModel;
+      card.yokeSerial = equip.yokeSerial || card.yokeSerial;
+      card.yokeCalDue = equip.yokeCalDue || card.yokeCalDue;
+      card.wfmtMedium = equip.wfmtMedium || card.wfmtMedium;
+      card.wfmtBatch = equip.wfmtBatch || card.wfmtBatch;
+      card.blBrand = equip.blBrand || card.blBrand;
+      card.blSerial = equip.blSerial || card.blSerial;
+      card.lmBrand = equip.lmBrand || card.lmBrand;
+      card.lmSerial = equip.lmSerial || card.lmSerial;
+      mtCount++;
+      
+    } else if(isPAUT){
+      card.pautUnit = equip.pautBrand || card.pautUnit;
+      card.pautSerial = equip.pautSerial || card.pautSerial;
+      card.pautCalDue = equip.pautCalDue || card.pautCalDue;
+      pautCount++;
+    }
+  });
+  
+  save();
+  
+  // Show summary toast
+  let message = `✓ Updated ${allCards.length} card${allCards.length === 1 ? '' : 's'} for ${techName}`;
+  if(utCount > 0) message += ` (${utCount} UTT)`;
+  if(mtCount > 0) message += ` (${mtCount} MT)`;
+  if(pautCount > 0) message += ` (${pautCount} PAUT)`;
+  if(missingElementQty > 0) message += ` — Please enter Element/Qty for ${missingElementQty} UTT card(s)`;
+  
+  showToast(message, 'success', 5000);
+  
+  // Re-render to show updated fields
+  setTimeout(()=>renderTab(activeTab), 100);
+}
+
+// Returns a Set of equipment serial numbers already assigned on other cal
+// cards for the same technician + date (so we can avoid silently assigning
+// the same physical instrument to multiple records, and warn if unavoidable).
+function getEquipmentSerialsInUse(techName, date, excludeCardId){
+  const serials = new Set();
+  if(!techName) return serials;
+  const SERIAL_FIELDS = ['utSerial','transSerial','yokeSerial','blSerial','lmSerial'];
+  Object.values(state.ndeCards||{}).forEach(c=>{
+    if(c.id===excludeCardId) return;
+    if((c.tech||'')!==techName) return;
+    if(date && (c.date||'')!==date) return; // only same-day conflicts matter
+    SERIAL_FIELDS.forEach(f=>{ if(c[f]) serials.add(String(c[f])); });
+  });
+  return serials;
+}
+
 async function pullEquipmentFromKnack(cardId, techName){
   if(!techName){ showToast('No technician assigned to this card yet','error'); return; }
   const {appId, apiKey} = KNACK_CONFIG;
@@ -6352,21 +7437,34 @@ async function pullEquipmentFromKnack(cardId, techName){
       equipAll[type].push({name, mfr, model, serial, calDue});
     });
 
-    // For types with only one option, auto-select; for multiple, prompt user
+    // For types with only one option, auto-select; for multiple, prompt user.
+    // When a type has multiple options, prefer one whose serial isn't already
+    // assigned to another card for this technician on this date.
+    const inUse = getEquipmentSerialsInUse(techName, card.date, cardId);
     const equip = {};
     const needPicker = {};
+    const reassigned = []; // types where we picked a non-default item to avoid duplication
+    const stillDuplicated = []; // single-option types whose only item is already in use elsewhere
     Object.entries(equipAll).forEach(([type, items])=>{
       if(items.length === 1){
         equip[type] = items[0];
+        if(items[0].serial && inUse.has(String(items[0].serial))){
+          stillDuplicated.push({type, item:items[0]});
+        }
       } else if(items.length > 1){
         needPicker[type] = items;
-        equip[type] = items[0]; // default to first while user decides
+        // Prefer the first item NOT already in use by another card today
+        const free = items.find(it=>!it.serial || !inUse.has(String(it.serial)));
+        const chosen = free || items[0];
+        equip[type] = chosen;
+        if(free && free!==items[0]) reassigned.push({type, item:chosen});
+        if(!free) stillDuplicated.push({type, item:chosen}); // every option already in use
       }
     });
 
     // If any type has multiple options, show the picker modal
     if(Object.keys(needPicker).length > 0){
-      showEquipPicker(needPicker, equip, cardId, card);
+      showEquipPicker(needPicker, equip, cardId, card, inUse);
       return; // picker will call applyEquipToCard when confirmed
     }
 
@@ -6381,6 +7479,18 @@ async function pullEquipmentFromKnack(cardId, techName){
     const pickerCount = Object.keys(needPicker||{}).length;
     showToast(`✓ Pulled ${filled} item${filled!==1?'s':''} for ${techName}${pickerCount?` — ${pickerCount} need confirmation`:''}`);
 
+    if(reassigned.length){
+      showToast(`ℹ Picked a different ${reassigned.map(r=>EQUIP_TYPE_LABELS[r.type]||r.type).join(', ')} to avoid duplicating equipment already assigned to ${techName} on ${card.date||'this date'}`);
+    }
+    if(stillDuplicated.length){
+      showToast(`⚠ ${stillDuplicated.map(r=>`${EQUIP_TYPE_LABELS[r.type]||r.type} (S/N ${r.item.serial||'?'})`).join(', ')} is already assigned to another record for ${techName} on ${card.date||'this date'} — same equipment can't be in two places at once`, 'error');
+    }
+
+    const comp = cardCompletionLabel(card);
+    if(comp.calExpiredAtExam){
+      showToast(`⚠ Cal due date is earlier than the exam date (${card.date||'date not set'}) — check equipment calibration`, 'error');
+    }
+
   }catch(err){
     console.error('Knack equipment pull error:', err);
     showToast('Equipment pull failed: '+err.message,'error');
@@ -6393,6 +7503,7 @@ let _equipPickerData  = null; // {type: [{name,mfr,model,serial,calDue}]}
 let _equipChoices     = null; // {type: selectedItem}
 let _equipCardId      = null;
 let _equipCard        = null;
+let _equipInUse       = null; // Set of serials already assigned to other cards (same tech/date)
 
 const EQUIP_TYPE_LABELS = {
   utScope:    'UT Scope (Conventional)',
@@ -6408,11 +7519,12 @@ const EQUIP_TYPE_LABELS = {
   hardness:   'Hardness Tester',
 };
 
-function showEquipPicker(needPicker, currentChoices, cardId, card){
+function showEquipPicker(needPicker, currentChoices, cardId, card, inUse){
   _equipPickerData = needPicker;
   _equipChoices    = currentChoices;
   _equipCardId     = cardId;
   _equipCard       = card;
+  _equipInUse      = inUse || new Set();
 
   const body = document.getElementById('equip-picker-body');
   const total = Object.keys(needPicker).length;
@@ -6421,15 +7533,20 @@ function showEquipPicker(needPicker, currentChoices, cardId, card){
 
   body.innerHTML = Object.entries(needPicker).map(([type, items])=>{
     const label = EQUIP_TYPE_LABELS[type] || type;
-    const options = items.map((item, idx)=>
-      `<option value="${idx}">${item.name}${item.model&&item.name!==item.model?' — '+item.model:''} · S/N: ${item.serial||'?'} · Cal: ${item.calDue||'?'}</option>`
-    ).join('');
+    const selectedItem = currentChoices?.[type];
+    const options = items.map((item, idx)=>{
+      const dup = item.serial && _equipInUse.has(String(item.serial));
+      const selected = selectedItem && item===selectedItem;
+      return `<option value="${idx}" ${selected?'selected':''}>${item.name}${item.model&&item.name!==item.model?' — '+item.model:''} · S/N: ${item.serial||'?'} · Cal: ${item.calDue||'?'}${dup?' ⚠ already assigned today':''}</option>`;
+    }).join('');
+    const anyDup = items.some(item=>item.serial && _equipInUse.has(String(item.serial)));
     return `<div>
       <div style="font-size:12px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${label}</div>
       <select onchange="equipPickerSelect('${type}',parseInt(this.value))"
         style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
         ${options}
       </select>
+      ${anyDup?`<div style="font-size:11px;color:var(--color-warning-text);margin-top:3px"><i class="ti ti-alert-triangle"></i> One or more options are already assigned to another record for this technician today</div>`:''}
     </div>`;
   }).join('');
 
@@ -6444,18 +7561,198 @@ function equipPickerSelect(type, idx){
 
 function closeEquipPicker(){
   document.getElementById('equip-picker-modal').classList.remove('open');
-  _equipPickerData = _equipChoices = _equipCardId = _equipCard = null;
+  _equipPickerData = _equipChoices = _equipCardId = _equipCard = _equipInUse = null;
 }
 
 function applyEquipmentChoices(){
   if(!_equipCard || !_equipChoices) return;
+
+  // Check if the user's final choices still duplicate equipment already
+  // assigned to another card for this technician/date.
+  const inUse = getEquipmentSerialsInUse(_equipCard.tech, _equipCard.date, _equipCard.id);
+  const dupes = Object.entries(_equipChoices)
+    .filter(([,item])=>item?.serial && inUse.has(String(item.serial)))
+    .map(([type,item])=>`${EQUIP_TYPE_LABELS[type]||type} (S/N ${item.serial})`);
+
   applyEquipToCard(_equipCard, _equipChoices);
   save();
   renderTab(activeTab);
   const count = Object.keys(_equipChoices).length;
   showToast(`✓ Applied ${count} equipment item${count!==1?'s':''}`);
+  if(dupes.length){
+    showToast(`⚠ ${dupes.join(', ')} ${dupes.length>1?'are':'is'} already assigned to another record for ${_equipCard.tech||'this tech'} on ${_equipCard.date||'this date'}`, 'error');
+  }
+  const comp = cardCompletionLabel(_equipCard);
+  if(comp.calExpiredAtExam){
+    showToast(`⚠ Cal due date is earlier than the exam date (${_equipCard.date||'date not set'}) — check equipment calibration`, 'error');
+  }
+
+  // Propagate the selected equipment to this technician's other cal records.
+  propagateEquipmentChoices(_equipCard, _equipChoices);
+
   closeEquipPicker();
 }
+
+// Propagates the chosen equipment items to all of this technician's other
+// cal records (any method/date). Fields that are blank on a target card get
+// filled immediately; fields that already hold a *different* unit are
+// collected as conflicts and presented for the user to resolve.
+function propagateEquipmentChoices(sourceCard, choices){
+  const tech = sourceCard.tech;
+  if(!tech) return;
+
+  const targets = Object.values(state.ndeCards||{})
+    .filter(c=>c.id!==sourceCard.id && (c.tech||'')===tech);
+  if(!targets.length) return;
+
+  let filledCount = 0;
+  const conflicts = []; // {cardId, type, label, current, incoming}
+
+  targets.forEach(target=>{
+    Object.entries(choices).forEach(([type, item])=>{
+      if(!item) return;
+      const serialField = EQUIP_TYPE_SERIAL_FIELD[type];
+
+      if(!serialField){
+        // No serial to compare (e.g. couplant) — only fill if blank, never overwrite.
+        if(type==='couplant' && target.couplant) return;
+        applyEquipToCard(target, {[type]: item});
+        filledCount++;
+        return;
+      }
+
+      const currentSerial = target[serialField];
+      if(currentSerial && item.serial && String(currentSerial)!==String(item.serial)){
+        conflicts.push({
+          cardId: target.id, type, item,
+          label: EQUIP_TYPE_LABELS[type]||type,
+          current: currentSerial,
+        });
+        return;
+      }
+      if(currentSerial && item.serial && String(currentSerial)===String(item.serial)) return; // already matches
+
+      // Blank — fill it in
+      applyEquipToCard(target, {[type]: item});
+      filledCount++;
+    });
+  });
+
+  if(filledCount){
+    save();
+    renderTab(activeTab);
+    showToast(`✓ Applied equipment to ${targets.length} other record${targets.length!==1?'s':''} for ${tech}`);
+  }
+
+  if(conflicts.length){
+    showEquipConflictModal(tech, conflicts);
+  }
+}
+
+// ── Equipment propagation conflict modal ───────────────────────────────────
+// Shown when propagating equipment to a technician's other cal records would
+// overwrite a different unit already on file there.
+let _equipConflicts = null; // [{cardId, type, item, label, current}]
+
+function showEquipConflictModal(tech, conflicts){
+  _equipConflicts = conflicts;
+
+  const rows = conflicts.map((c, idx)=>{
+    const card = (state.ndeCards||{})[c.cardId];
+    const mInfo = NDE_METHODS.find(m=>m.id===card?.method) || {label:card?.method||'?'};
+    const cardLabel = `${mInfo.label}${card?.date?' · '+card.date:''}`;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:6px">
+      <div style="flex:1;font-size:12px">
+        <div style="font-weight:600">${cardLabel}</div>
+        <div style="color:var(--color-text-secondary)">${c.label}: currently S/N ${c.current} → new S/N ${c.item.serial||'?'}</div>
+      </div>
+      <div style="display:flex;gap:4px;flex-shrink:0">
+        <button class="btn btn-sm" onclick="resolveEquipConflict(${idx},'overwrite')"><i class="ti ti-replace"></i> Overwrite</button>
+        <button class="btn btn-sm" onclick="resolveEquipConflict(${idx},'skip')">Keep current</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const modal = document.createElement('div');
+  modal.className = 'knack-modal-overlay open';
+  modal.id = 'equip-conflict-modal';
+  modal.onclick = e=>{ if(e.target===modal) closeEquipConflictModal(); };
+  modal.innerHTML = `
+    <div class="knack-modal" style="max-width:560px">
+      <div class="knack-modal-title"><i class="ti ti-alert-triangle" style="color:var(--color-warning-text)"></i> Equipment Conflicts — ${tech}</div>
+      <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">
+        These other records for ${tech} already list different equipment for the type you just selected.
+        Choose whether to overwrite each with the equipment you picked.
+      </p>
+      <div id="equip-conflict-body" style="display:flex;flex-direction:column;max-height:60vh;overflow-y:auto;padding-right:4px">
+        ${rows}
+      </div>
+      <div class="knack-modal-footer" style="margin-top:12px">
+        <span style="font-size:12px;color:var(--color-text-secondary)">${conflicts.length} conflict${conflicts.length!==1?'s':''}</span>
+        <div style="display:flex;gap:6px">
+          <button class="btn" onclick="resolveAllEquipConflicts('skip')">Keep all current</button>
+          <button class="btn btn-primary" onclick="resolveAllEquipConflicts('overwrite')"><i class="ti ti-replace"></i> Overwrite all</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function resolveEquipConflict(idx, action){
+  const c = _equipConflicts?.[idx];
+  if(!c) return;
+  if(action==='overwrite'){
+    const target = state.ndeCards[c.cardId];
+    if(target) applyEquipToCard(target, {[c.type]: c.item});
+  }
+  // Remove this conflict from the list and re-render the modal
+  _equipConflicts.splice(idx,1);
+  save();
+  renderTab(activeTab);
+  if(_equipConflicts.length){
+    const tech = (state.ndeCards||{})[_equipConflicts[0].cardId]?.tech || '';
+    document.getElementById('equip-conflict-modal')?.remove();
+    showEquipConflictModal(tech, _equipConflicts);
+  } else {
+    closeEquipConflictModal();
+    showToast('✓ Equipment conflicts resolved');
+  }
+}
+
+function resolveAllEquipConflicts(action){
+  if(!_equipConflicts) return;
+  if(action==='overwrite'){
+    _equipConflicts.forEach(c=>{
+      const target = state.ndeCards[c.cardId];
+      if(target) applyEquipToCard(target, {[c.type]: c.item});
+    });
+    save();
+    renderTab(activeTab);
+    showToast(`✓ Overwrote equipment on ${_equipConflicts.length} record${_equipConflicts.length!==1?'s':''}`);
+  } else {
+    showToast('Kept existing equipment on those records');
+  }
+  closeEquipConflictModal();
+}
+
+function closeEquipConflictModal(){
+  document.getElementById('equip-conflict-modal')?.remove();
+  _equipConflicts = null;
+}
+
+// Maps an equipment "type" key (from classifyEquipment/equipAll) to the
+// serial-number field on an ndeCard that holds that equipment's S/N.
+// Used to detect when propagating equipment to other cal records would
+// overwrite a different unit already assigned there.
+const EQUIP_TYPE_SERIAL_FIELD = {
+  utScope:    'utSerial',
+  pautUnit:   'utSerial',
+  transducer: 'transSerial',
+  pautProbe:  'transSerial',
+  yoke:       'yokeSerial',
+  blacklight: 'blSerial',
+  lightMeter: 'lmSerial',
+};
 
 function applyEquipToCard(card, equip){
   const isPAUT = card.method === 'paut';
@@ -6594,6 +7891,7 @@ function saveSig(){
   save();
   renderTechRoster();
   renderSupervisorSection();
+  updateSectionSummaries();
   closeSigModal();
   showToast('Signature saved');
 }
@@ -6695,6 +7993,191 @@ document.addEventListener('DOMContentLoaded', ()=>{
   };
 });
 
+
+/* ===== Field Notes per method ===== */
+function getFieldNotes(tabId){ return (state.fieldNotes||{})[tabId]||''; }
+function setFieldNotes(tabId, val){
+  if(!state.fieldNotes) state.fieldNotes={};
+  state.fieldNotes[tabId] = val;
+  save();
+}
+
+function fieldNotesSection(tabId){
+  const val = getFieldNotes(tabId);
+  return `<div style="margin:10px 0 4px">
+    <div class="section-divider" style="margin-bottom:4px"><i class="ti ti-notes"></i> Field Notes</div>
+    <textarea style="width:100%;min-height:56px;padding:7px 10px;font-size:12px;
+      border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);
+      background:var(--color-input-bg);color:var(--color-text);font-family:inherit;resize:vertical"
+      placeholder="Enter field notes for this method..."
+      onchange="setFieldNotes('${tabId}',this.value)">${val}</textarea>
+  </div>`;
+}
+
+/* ===== Bulk date + tech fill ===== */
+function bulkSetRowDate(tabId, dateVal){
+  if(!dateVal) return;
+  (state[tabId]||[]).forEach(r=>{ r.date = dateVal; });
+  save(); renderTab(activeTab);
+  showToast(`Set all ${tabId.toUpperCase()} rows to ${dateVal}`);
+}
+
+// Enhanced ind-banner with both date AND tech bulk fill
+function indBannerWithBulk(tabId, methodLabel){
+  return `<div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+    <span><i class="ti ti-alert-triangle"></i> Indications / Data — ${methodLabel}</span>
+    <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <span style="font-size:10px;color:var(--color-text-tertiary)">Fill date:</span>
+      <input type="date" style="padding:2px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+        onchange="if(this.value)bulkSetRowDate('${tabId}',this.value)">
+      <span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span>
+      <select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);max-width:130px"
+        onchange="if(this.value)bulkSetRowTech('${tabId}',this.value);this.value=''">
+        <option value="">— all rows —</option>
+        ${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}
+      </select>
+    </span>
+  </div>`;
+}
+
+
+/* ===== Auto-populate BFG from UTT12 ===== */
+function getBFGForJoint(jtId){
+  // Get min/max/avg from all UTT12 rows for this joint
+  const rows = (state.utt12||[]).filter(r=>r.jt===jtId);
+  if(!rows.length) return null;
+  const allVals = rows.flatMap(r=>(r.vals||[]).map(v=>{
+    const n=parseFloat(v); return n>1?n/1000:n;
+  }).filter(v=>!isNaN(v)&&v>0));
+  if(!allVals.length) return null;
+  return {
+    min: Math.min(...allVals).toFixed(3),
+    max: Math.max(...allVals).toFixed(3),
+    avg: (allVals.reduce((a,b)=>a+b,0)/allVals.length).toFixed(3),
+  };
+}
+
+
+/* ===== Group rows by joint for display ===== */
+function groupRowsByJoint(rows){
+  const groups = {};
+  const order = [];
+  rows.forEach((r,i)=>{
+    const jt = r.jt||'Unknown';
+    if(!groups[jt]){ groups[jt]=[]; order.push(jt); }
+    groups[jt].push({row:r, idx:i});
+  });
+  return {groups, order};
+}
+
+
+function getFieldNotesPDF(tabId){
+  return (state.fieldNotes||{})[tabId]||'';
+}
+
+
+function autoFillBFG(tabId, rowIdx, jtId){
+  const bfg = getBFGForJoint(jtId);
+  if(!bfg){ showToast('No UTT12 data for '+jtId,'error'); return; }
+  const row = (state[tabId]||[])[rowIdx];
+  if(!row) return;
+  // Store BFG min/max on the row
+  row.bfgmin = bfg.min;
+  row.bfgmax = bfg.max;
+  row.bfgavg = bfg.avg;
+  save(); renderTab(activeTab);
+  showToast(`BFG auto-filled for ${jtId}: min=${bfg.min}" max=${bfg.max}"`);
+}
+
+
+/* ===== Smart date paste — accepts M/D/YY, MM/DD/YYYY, YYYY-MM-DD ===== */
+document.addEventListener('paste', function(e){
+  const el = e.target;
+  if(el.type !== 'date') return;
+  const text = (e.clipboardData||window.clipboardData).getData('text').trim();
+  if(!text) return;
+  // Try to parse various date formats
+  let parsed = null;
+  const fmts = [
+    // YYYY-MM-DD
+    text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/),
+    // M/D/YY or M/D/YYYY
+    text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/),
+    // M-D-YY
+    text.match(/^(\d{1,2})-(\d{1,2})-(\d{2,4})$/),
+  ];
+  for(const m of fmts){
+    if(!m) continue;
+    let y,mo,d;
+    if(m[1]?.length===4){ [,y,mo,d]=m; }
+    else { [,mo,d,y]=m; if(y.length===2) y='20'+y; }
+    const date = new Date(parseInt(y), parseInt(mo)-1, parseInt(d));
+    if(!isNaN(date)){
+      parsed = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      break;
+    }
+  }
+  if(parsed){
+    e.preventDefault();
+    el.value = parsed;
+    el.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+}, true);
+
+
+/* ===== Collapsible sections ===== */
+const _sectionState = {config:true, tech:true}; // true = collapsed by default once data exists
+
+function toggleSection(name){
+  const header = document.getElementById(name+'-header');
+  const body   = document.getElementById(name+'-body');
+  if(!header || !body) return;
+  const collapsed = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', collapsed);
+  header.classList.toggle('collapsed', collapsed);
+  _sectionState[name] = collapsed;
+}
+
+function updateSectionSummaries(){
+  const cfg = state.config||{};
+  const configSummary = document.getElementById('config-summary');
+  if(configSummary){
+    const parts = [];
+    if(cfg.project) parts.push(cfg.project);
+    if(cfg.line) parts.push('Line '+cfg.line);
+    configSummary.textContent = parts.length ? '— '+parts.join(' · ') : '';
+  }
+
+  const techSummary = document.getElementById('tech-summary');
+  if(techSummary){
+    const n = (state.technicians||[]).length;
+    const signed = (state.technicians||[]).filter(t=>t.sig).length;
+    const supSigned = !!(state.supervisorSig||{}).sig;
+    if(n){
+      techSummary.textContent = `— ${n} tech${n!==1?'s':''} (${signed} signed)${supSigned?' · Supervisor ✓':''}`;
+    } else {
+      techSummary.textContent = '';
+    }
+  }
+}
+
+// Collapse config + tech sections by default if they already have data (returning user)
+function initCollapsibleSections(){
+  const cfg = state.config||{};
+  const hasConfig = !!(cfg.project || cfg.sap || cfg.job);
+  const hasTechs  = (state.technicians||[]).length > 0;
+
+  if(hasConfig){
+    document.getElementById('config-body')?.classList.add('collapsed');
+    document.getElementById('config-header')?.classList.add('collapsed');
+  }
+  if(hasTechs){
+    document.getElementById('tech-body')?.classList.add('collapsed');
+    document.getElementById('tech-header')?.classList.add('collapsed');
+  }
+  updateSectionSummaries();
+}
+
 </script>
 
 <div class="modal-overlay" id="pdf-modal" onclick="if(event.target===this)closePDFModal()">
@@ -6719,8 +8202,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
           <option value="uttloc">UTT of Test Locations</option>
           <option value="aelsc">AE / Long Seam Characterization</option>
           <option value="jointlen">Joint Lengths</option>
-          <option value="va">Visual Assessment (VA)</option>
-          <option value="mt">Magnetic Particle Testing (MT)</option>
+          <option value="vamt">Visual Assessment (VA) and Magnetic Particle Testing (MT)</option>
           <option value="aut">Automated UT (AUT)</option>
           <option value="mut">Manual UT (MUT)</option>
           <option value="muthand">MUT Hand Scans</option>
@@ -7159,3 +8641,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
 <input type="file" id="sig-file-input" accept="image/*" style="display:none" onchange="handleSigUpload(event)">
 </body>
 </html>
+1781613683
