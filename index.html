@@ -264,24 +264,11 @@ td textarea:placeholder-shown{
 .jt-notes-add:hover{background:var(--color-bg-secondary)}
 
 
-.knack-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1001;align-items:center;justify-content:center}
-.knack-modal-overlay.open{display:flex}
-.knack-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:90%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;gap:10px}
-.knack-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
-.knack-search{width:100%;padding:7px 10px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px;font-family:inherit}
-.knack-list{flex:1;overflow-y:auto;border:0.5px solid var(--color-border);border-radius:var(--radius-md);min-height:0}
-.knack-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;border-bottom:0.5px solid var(--color-border);transition:background 0.1s}
-.knack-item:last-child{border-bottom:none}
-.knack-item:hover{background:var(--color-bg-secondary)}
-.knack-item.selected{background:var(--color-info-bg)}
-.knack-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--color-info-text);flex-shrink:0}
-.knack-item-name{font-size:13px;font-weight:500;flex:1}
-.knack-item-meta{font-size:11px;color:var(--color-text-secondary)}
-.knack-item.already-added{opacity:0.45;pointer-events:none}
-.knack-item.already-added .knack-item-meta::after{content:' · already in roster';color:var(--color-success-text);font-weight:500}
-.knack-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.knack-select-count{font-size:12px;color:var(--color-text-secondary)}
-.knack-loading{text-align:center;padding:2rem;color:var(--color-text-secondary);font-size:13px}
+.app-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1001;align-items:center;justify-content:center}
+.app-modal-overlay.open{display:flex}
+.app-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:90%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;gap:10px}
+.app-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.app-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 
 
 .roster-table{width:100%;border-collapse:collapse;font-size:13px}
@@ -623,8 +610,10 @@ button input { background-color: transparent !important; }
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
         <button class="btn btn-primary" onclick="addTechnician()"><i class="ti ti-plus"></i> Add</button>
       </div>
-      <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
-        <button class="btn" onclick="openKnackPicker()" title="Select technicians from Knack" style="border-style:dashed"><i class="ti ti-cloud-download"></i> Import from Knack</button>
+      <div class="field-group"><label class="field-label">From H-Form</label>
+        <select id="hform-tech-select" onchange="if(this.value){addTechFromHForm(this.value);this.value=''}" title="Choose a technician from the H-Form template" style="max-width:190px">
+          <option value="">＋ Choose technician…</option>
+        </select>
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label>
         <button class="btn" onclick="document.getElementById('hform-file-input').click()" title="Import technician equipment from H-Form template" style="border-style:dashed"><i class="ti ti-upload"></i> Load H-Form Equipment</button>
@@ -762,6 +751,8 @@ function load(){
   // Load cached technician equipment from H-Form import
   const cached = localStorage.getItem('technicianEquipment');
   if(cached){ try{ state.technicianEquipment = JSON.parse(cached); }catch(e){} }
+  const cachedNames = localStorage.getItem('hformTechNames');
+  if(cachedNames){ try{ state.hformTechNames = JSON.parse(cachedNames); }catch(e){} }
   loadConfig();
   renderTechRoster();
   renderSupervisorSection();
@@ -1724,6 +1715,7 @@ function removeTechnician(name){
 }
 
 function renderTechRoster(){
+  populateHFormTechDropdown();
   const el = document.getElementById('tech-roster-list');
   if(!el) return;
   const techs = state.technicians||[];
@@ -1731,7 +1723,7 @@ function renderTechRoster(){
   if(!techs.length){
     el.innerHTML = `<div class="roster-wrap"><div class="roster-empty">
       <i class="ti ti-users" style="font-size:20px;display:block;margin-bottom:4px;opacity:0.3"></i>
-      No technicians yet — add manually or load from Knack
+      No technicians yet — add manually or choose from the H-Form list
     </div></div>`;
     return;
   }
@@ -2949,193 +2941,52 @@ function showToast(msg, type='success'){
   toast._t = setTimeout(()=>{ toast.style.opacity='0'; },2800);
 }
 
-/* ===== Knack integration (ready when credentials available) ===== */
-const KNACK_CONFIG = {
-  appId:     '660ed1cef07d6b437f7b1cd7',
-  apiKey:    '1be6f991-feb8-43a7-82cd-5e71b6e486e5',
-  objectKey: 'object_9',
-  nameField: 'field_206',
-  certField: '',   // Add cert field key here if available in Knack
-};
+/* ===== Technician roster source =====
+   Technician names come from the H-Form source data: column A, starting at cell
+   A2 and ending at the first blank cell in that column. The built-in roster
+   (ACUREN_EQUIPMENT) is used only as a fallback when no H-Form has been loaded. */
 
-/* ===== Knack technician picker ===== */
-let _knackAllRecords = [];   // full list fetched from Knack
-let _knackSelected   = {};   // {id: record} of checked items
-
-async function openKnackPicker(){
-  const {appId, apiKey, objectKey} = KNACK_CONFIG;
-  if(!appId || !apiKey || !objectKey){
-    showToast('Knack credentials not configured', 'error');
-    return;
+// Names read from the imported H-Form (column A, A2 → first blank), in sheet
+// order. Falls back to the built-in roster when nothing has been imported.
+function getHFormTechNames(){
+  if(Array.isArray(state.hformTechNames) && state.hformTechNames.length){
+    const seen = new Set(); const out = [];
+    state.hformTechNames.forEach(n=>{ const s=String(n||'').trim(); if(s && !seen.has(s)){ seen.add(s); out.push(s); } });
+    return out;
   }
-  // Open modal immediately with loading state
-  document.getElementById('knack-modal').classList.add('open');
-  document.getElementById('knack-list').innerHTML =
-    '<div class="knack-loading"><i class="ti ti-loader"></i>&nbsp; Loading from Knack...</div>';
-  document.getElementById('knack-search').value = '';
-  _knackSelected = {};
-  updateKnackCount();
-
-  try{
-    // Fetch all pages
-    let page = 1, records = [], total = null;
-    do {
-      const res = await fetch(
-        `https://api.knack.com/v1/objects/${objectKey}/records?rows_per_page=100&page=${page}`,
-        { headers:{
-            'X-Knack-Application-Id': appId,
-            'X-Knack-REST-API-Key':   apiKey,
-            'Content-Type':           'application/json'
-        }}
-      );
-      if(!res.ok){
-        const txt = await res.text();
-        throw new Error(`HTTP ${res.status}: ${txt.slice(0,120)}`);
-      }
-      const data = await res.json();
-      records = records.concat(data.records || []);
-      total   = data.total_records || records.length;
-      page++;
-    } while(records.length < total && page <= 20);
-
-    // Sort alphabetically by name field before rendering
-    records.sort((a,b)=>{
-      const na = String(a[KNACK_CONFIG.nameField]||'').toLowerCase();
-      const nb = String(b[KNACK_CONFIG.nameField]||'').toLowerCase();
-      return na.localeCompare(nb);
-    });
-    _knackAllRecords = records;
-    renderKnackList(records);
-
-  } catch(err){
-    document.getElementById('knack-list').innerHTML =
-      `<div class="knack-loading" style="color:var(--color-danger-text)">
-        <i class="ti ti-alert-circle"></i>&nbsp; ${err.message}
-       </div>`;
-  }
+  const names = new Set();
+  (ACUREN_EQUIPMENT||[]).forEach(e=>{ if(e && e.name) names.add(String(e.name).trim()); });
+  return [...names].filter(Boolean).sort((a,b)=>a.localeCompare(b));
 }
 
-function extractKnackField(record, fieldKey){
-  if(!fieldKey) return '';
-  const v = record[fieldKey];
-  if(v === undefined || v === null) return '';
-  if(typeof v === 'string') return v.trim();
-  if(typeof v === 'object'){
-    if(v.first !== undefined) return `${v.first||''} ${v.last||''}`.trim();
-    if(v.identifier !== undefined) return String(v.identifier).trim();
-    const raw = record[fieldKey + '_raw'];
-    if(raw !== undefined) return String(raw).trim();
-  }
-  return String(v).trim();
-}
-
-function renderKnackList(records){
-  const {nameField, certField} = KNACK_CONFIG;
-  const existing = new Set((state.technicians||[]).map(t => t.name));
-  const search   = (document.getElementById('knack-search').value || '').toLowerCase();
-
-  const KNACK_EXCLUDE = ['Manteca Office', 'Mari Furlong'];
-
-  const filtered = records.filter(r => {
-    const name = extractKnackField(r, nameField);
-    if(!name) return false;
-    if(KNACK_EXCLUDE.some(ex => name.toLowerCase() === ex.toLowerCase())) return false;
-    return !search || name.toLowerCase().includes(search);
+// Populate the "From H-Form" dropdown in the Technicians panel. Names already on
+// the roster are shown disabled so they can't be added twice.
+function populateHFormTechDropdown(){
+  const sel = document.getElementById('hform-tech-select');
+  if(!sel) return;
+  const onRoster = new Set((state.technicians||[]).map(t=>t.name));
+  const opts = ['<option value="">\uFF0B Choose technician\u2026</option>'];
+  getHFormTechNames().forEach(name=>{
+    const esc = name.replace(/"/g,'&quot;');
+    const used = onRoster.has(name);
+    opts.push(`<option value="${esc}"${used?' disabled':''}>${name}${used?' \u2713':''}</option>`);
   });
-
-  if(!filtered.length){
-    document.getElementById('knack-list').innerHTML =
-      '<div class="knack-loading">No results found</div>';
-    return;
-  }
-
-  document.getElementById('knack-list').innerHTML = filtered.map(r => {
-    const name     = extractKnackField(r, nameField);
-    const cert     = certField ? extractKnackField(r, certField) : '';
-    const id       = r.id || name;
-    const alreadyIn= existing.has(name);
-    const checked  = !!_knackSelected[id];
-    return `<label class="knack-item${alreadyIn?' already-added':''}${checked?' selected':''}" data-id="${id}">
-      <input type="checkbox" ${checked?'checked':''} ${alreadyIn?'disabled':''}
-             onchange="toggleKnackItem('${id}', this.checked)"
-             onclick="event.stopPropagation()">
-      <div style="flex:1;min-width:0">
-        <div class="knack-item-name">${name}</div>
-        ${cert ? `<div class="knack-item-meta">Level ${cert}</div>` : '<div class="knack-item-meta"></div>'}
-      </div>
-    </label>`;
-  }).join('');
+  sel.innerHTML = opts.join('');
 }
 
-function filterKnackList(){
-  renderKnackList(_knackAllRecords);
-}
-
-function toggleKnackItem(id, checked){
-  const record = _knackAllRecords.find(r => r.id === id || r.id === id);
-  if(!record) return;
-  if(checked){
-    _knackSelected[id] = record;
-  } else {
-    delete _knackSelected[id];
-  }
-  // Update selected highlight
-  const label = document.querySelector(`.knack-item[data-id="${id}"]`);
-  if(label) label.classList.toggle('selected', checked);
-  updateKnackCount();
-}
-
-function updateKnackCount(){
-  const n = Object.keys(_knackSelected).length;
-  document.getElementById('knack-select-count').textContent =
-    n === 0 ? 'None selected' : `${n} technician${n!==1?'s':''} selected`;
-}
-
-function confirmKnackSelection(){
-  const {nameField, certField} = KNACK_CONFIG;
-  const selected = Object.values(_knackSelected);
-  if(!selected.length){
-    showToast('No technicians selected', 'error');
-    return;
-  }
+// Add a technician chosen from the H-Form dropdown to the roster.
+function addTechFromHForm(name){
+  name = String(name||'').trim();
+  if(!name) return;
   if(!state.technicians) state.technicians = [];
-  let added = 0;
-  selected.forEach(r => {
-    const name = extractKnackField(r, nameField);
-    const cert = certField ? extractKnackField(r, certField) : '';
-    if(!state.technicians.find(t => t.name === name)){
-      state.technicians.push({
-        name,
-        cert,
-        methods: '',
-        color:   techColor(state.technicians.length),
-        knackId: r.id || '',
-      });
-      added++;
-    }
-  });
+  if(state.technicians.find(t=>t.name===name)){ showToast(name+' is already on the roster','error'); return; }
+  state.technicians.push({ name, cert:'', methods:'', color: techColor(state.technicians.length) });
   state.technicians.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
-  state.technicians.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
   save();
   renderTechRoster();
-  renderTab(activeTab);
-  closeKnackModal();
-  showToast(`Added ${added} technician${added!==1?'s':''} to roster`);
-}
-
-function closeKnackModal(){
-  document.getElementById('knack-modal').classList.remove('open');
-  _knackSelected = {};
-}
-
-// Keep old name as alias for any legacy calls
-async function loadTechsFromKnack(){ await openKnackPicker(); }
-
-// Refresh Knack techs (clears roster first, re-fetches)
-async function refreshTechsFromKnack(){
-  if(!confirm('This will clear the current roster and reload from Knack. Continue?')) return;
-  state.technicians=[];
-  await loadTechsFromKnack();
+  renderTabs();
+  if(activeTab) renderTab(activeTab);
+  showToast(`Added ${name} to roster`);
 }
 
 
@@ -4049,12 +3900,13 @@ function updateNDECard(cardId, field, val){
   }
   if(field==='date') computeDateRange();
 
-  // Auto-pull equipment from Knack the moment a technician is assigned
-  // (only if the card doesn't already have a UT unit filled in, so we
-  // don't clobber manual edits or re-pull unnecessarily).
+  // Auto-fill equipment from the H-Form template the moment a technician is
+  // assigned (only if the card doesn't already have a UT unit / yoke filled in,
+  // so we don't clobber manual edits or re-fill unnecessarily).
   if(field==='tech' && val){
     if(card && !card.utUnit && !card.yokeModel){
-      pullEquipmentFromKnack(cardId, val);
+      autoFillFromEquipment(cardId, val);
+      renderTab(activeTab);
       return;
     } else {
       renderTab(activeTab);
@@ -4089,12 +3941,12 @@ function promptPropagateField(sourceCardId, field, val, targets){
   }).join(', ');
 
   const modal = document.createElement('div');
-  modal.className = 'knack-modal-overlay open';
+  modal.className = 'app-modal-overlay open';
   modal.id = 'propagate-field-modal';
   modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
   modal.innerHTML = `
-    <div class="knack-modal" style="max-width:480px">
-      <div class="knack-modal-title"><i class="ti ti-copy" style="color:var(--color-info-text)"></i> Apply to other records?</div>
+    <div class="app-modal" style="max-width:480px">
+      <div class="app-modal-title"><i class="ti ti-copy" style="color:var(--color-info-text)"></i> Apply to other records?</div>
       <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">
         You set <strong>${label}</strong> to <strong>${val}</strong> for ${tech}.
         ${targets.length} other record${targets.length!==1?'s':''} for ${tech} ${targets.length!==1?'are':'is'} missing this field:
@@ -4102,7 +3954,7 @@ function promptPropagateField(sourceCardId, field, val, targets){
       <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md)">
         ${rows}
       </div>
-      <div class="knack-modal-footer">
+      <div class="app-modal-footer">
         <button class="btn" onclick="document.getElementById('propagate-field-modal').remove()">No, just this one</button>
         <button class="btn btn-primary" onclick="confirmPropagateField('${sourceCardId}','${field}')"><i class="ti ti-check"></i> Apply to all ${targets.length}</button>
       </div>
@@ -4431,13 +4283,13 @@ function methodCalPanel(tabId){
           <i class="ti ti-alert-triangle"></i> Cal expired before exam
         </span>`:''}
         <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
-          <button class="btn btn-sm" onclick="event.stopPropagation();pullEquipmentFromKnack('${card.id}','${card.tech||''}')"
-            title="Pull equipment from Knack" style="font-size:11px">
-            <i class="ti ti-cloud-download"></i> Pull equipment
+          <button class="btn btn-sm" onclick="event.stopPropagation();autoFillFromEquipment('${card.id}','${card.tech||''}');renderTab(activeTab)"
+            title="Auto-fill equipment from the H-Form template" style="font-size:11px">
+            <i class="ti ti-wand"></i> Auto-fill equipment
           </button>
           <button class="btn btn-sm" onclick="event.stopPropagation();autoFillEquipmentFromHForm('${card.id}','${card.tech||''}')"
-            title="Auto-populate equipment from H-Form (first import H-Form file)" style="font-size:11px">
-            <i class="ti ti-download"></i> From H-Form
+            title="Populate equipment from an imported H-Form file" style="font-size:11px">
+            <i class="ti ti-download"></i> From H-Form file
           </button>
           <button class="icon-btn" onclick="event.stopPropagation();deleteNDECard('${card.id}','${tabId}')"
             title="Delete this cal record"><i class="ti ti-trash"></i></button>
@@ -7278,7 +7130,7 @@ async function importFromDFPR(){
 }
 
 
-/* ===== Knack Equipment Pull by Technician ===== */
+/* ===== Equipment pull by technician (from the H-Form template) ===== */
 
 // Classify equipment record by searching Equipment Name (field_21) for keywords
 function classifyEquipment(name){
@@ -7428,13 +7280,13 @@ async function importHFormEquipment(){
     };
     
     const techEquip = {};
+    const techNames = [];
     for(let i=1; i<aoa.length; i++){
-      const row = aoa[i];
-      if(!row[0]) continue; // Skip empty rows
-      
-      const techName = String(row[0]||'').trim();
-      if(!techName) continue;
-      
+      const row = aoa[i] || [];
+      const techName = String(row[0]==null?'':row[0]).trim();
+      if(!techName) break; // stop at the first blank cell in column A (A2 downward)
+      if(!techNames.includes(techName)) techNames.push(techName);
+
       if(i === 1) {
         console.log(`Processing first tech: ${techName}`);
         console.log('Sample values from row:');
@@ -7496,7 +7348,10 @@ async function importHFormEquipment(){
     
     // Save to state & localStorage
     state.technicianEquipment = techEquip;
+    state.hformTechNames = techNames;
     localStorage.setItem('technicianEquipment', JSON.stringify(techEquip));
+    localStorage.setItem('hformTechNames', JSON.stringify(techNames));
+    populateHFormTechDropdown();
     
     showToast(`✓ Imported equipment for ${Object.keys(techEquip).length} technicians`, 'success');
     
@@ -7621,142 +7476,10 @@ function getEquipmentSerialsInUse(techName, date, excludeCardId){
   return serials;
 }
 
-async function pullEquipmentFromKnack(cardId, techName){
-  if(!techName){ showToast('No technician assigned to this card yet','error'); return; }
-  const {appId, apiKey} = KNACK_CONFIG;
-  if(!appId||!apiKey){ showToast('Knack not configured','error'); return; }
-
-  showToast(`Pulling equipment for ${techName}...`);
-
-  try{
-    if(!state.ndeCards) state.ndeCards={};
-    const card = state.ndeCards[cardId];
-    if(!card){ showToast('Card not found','error'); return; }
-
-    // field_73 is a Connection field that concatenates as "C2C-123 / Tyler Laviolette"
-    // The Knack API 'contains' filter on a connection field matches against the
-    // display identifier (field_21 of the connected object). So we fetch ALL records
-    // and filter client-side by checking field_73_raw or field_73 string for the tech name.
-    // This is more reliable than server-side filtering on connection fields.
-
-    let page=1, records=[], total=null;
-    do{
-      const res = await fetch(
-        `https://api.knack.com/v1/objects/object_5/records?rows_per_page=100&page=${page}`,
-        {headers:{
-          'X-Knack-Application-Id': appId,
-          'X-Knack-REST-API-Key':   apiKey,
-          'Content-Type':           'application/json'
-        }}
-      );
-      if(!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      records = records.concat(data.records||[]);
-      total = data.total_records || records.length;
-      page++;
-    } while(records.length < total && page <= 20);
-
-    // Filter client-side: field_73 connection value contains tech name
-    // Also try last name only in case full name doesn't match exactly
-    const lastName = techName.split(' ').pop();
-    const records_filtered = records.filter(r=>{
-      const loc = String(r.field_73 || r.field_73_raw?.identifier || '');
-      const nameToCheck = techName.toLowerCase();
-      const lastNameCheck = lastName.toLowerCase();
-      return loc.toLowerCase().includes(nameToCheck) ||
-             loc.toLowerCase().includes(lastNameCheck);
-    });
-
-    if(!records_filtered.length){
-      // Log what we got to help debug
-      console.log('All field_73 values:', records.slice(0,5).map(r=>r.field_73));
-      showToast(`No equipment found for ${techName} — found ${records.length} total records. Check console for field_73 values.`,'error');
-      return;
-    }
-    records.length = 0;
-    records.push(...records_filtered);
-
-    if(!records.length){
-      showToast(`No equipment found for ${techName} in Knack`,'error');
-      return;
-    }
-
-    // Classify and extract each equipment record
-    // Collect ALL records per type (don't just take first)
-    const equipAll = {};
-
-    records.forEach(r=>{
-      const name    = String(r.field_21 || r.field_21_raw || '');
-      const mfr     = String(r.field_22 || '');
-      const model   = String(r.field_23 || '');
-      const serial  = String(r.field_26 || '');
-      const calDueRaw = r.field_24 || r.field_24_raw || '';
-      const calDue  = typeof calDueRaw==='object' && calDueRaw?.date
-        ? calDueRaw.date : String(calDueRaw).slice(0,10);
-      const type    = classifyEquipment(name);
-      if(type === 'other') return;
-      if(!equipAll[type]) equipAll[type] = [];
-      equipAll[type].push({name, mfr, model, serial, calDue});
-    });
-
-    // For types with only one option, auto-select; for multiple, prompt user.
-    // When a type has multiple options, prefer one whose serial isn't already
-    // assigned to another card for this technician on this date.
-    const inUse = getEquipmentSerialsInUse(techName, card.date, cardId);
-    const equip = {};
-    const needPicker = {};
-    const reassigned = []; // types where we picked a non-default item to avoid duplication
-    const stillDuplicated = []; // single-option types whose only item is already in use elsewhere
-    Object.entries(equipAll).forEach(([type, items])=>{
-      if(items.length === 1){
-        equip[type] = items[0];
-        if(items[0].serial && inUse.has(String(items[0].serial))){
-          stillDuplicated.push({type, item:items[0]});
-        }
-      } else if(items.length > 1){
-        needPicker[type] = items;
-        // Prefer the first item NOT already in use by another card today
-        const free = items.find(it=>!it.serial || !inUse.has(String(it.serial)));
-        const chosen = free || items[0];
-        equip[type] = chosen;
-        if(free && free!==items[0]) reassigned.push({type, item:chosen});
-        if(!free) stillDuplicated.push({type, item:chosen}); // every option already in use
-      }
-    });
-
-    // If any type has multiple options, show the picker modal
-    if(Object.keys(needPicker).length > 0){
-      showEquipPicker(needPicker, equip, cardId, card, inUse);
-      return; // picker will call applyEquipToCard when confirmed
-    }
-
-    // Apply to card
-
-
-    // Apply all auto-selected (single-option) equipment directly
-    applyEquipToCard(card, equip);
-    const filled = Object.values(equip).filter(Boolean).length;
-    save();
-    renderTab(activeTab);
-    const pickerCount = Object.keys(needPicker||{}).length;
-    showToast(`✓ Pulled ${filled} item${filled!==1?'s':''} for ${techName}${pickerCount?` — ${pickerCount} need confirmation`:''}`);
-
-    if(reassigned.length){
-      showToast(`ℹ Picked a different ${reassigned.map(r=>EQUIP_TYPE_LABELS[r.type]||r.type).join(', ')} to avoid duplicating equipment already assigned to ${techName} on ${card.date||'this date'}`);
-    }
-    if(stillDuplicated.length){
-      showToast(`⚠ ${stillDuplicated.map(r=>`${EQUIP_TYPE_LABELS[r.type]||r.type} (S/N ${r.item.serial||'?'})`).join(', ')} is already assigned to another record for ${techName} on ${card.date||'this date'} — same equipment can't be in two places at once`, 'error');
-    }
-
-    const comp = cardCompletionLabel(card);
-    if(comp.calExpiredAtExam){
-      showToast(`⚠ Cal due date is earlier than the exam date (${card.date||'date not set'}) — check equipment calibration`, 'error');
-    }
-
-  }catch(err){
-    console.error('Knack equipment pull error:', err);
-    showToast('Equipment pull failed: '+err.message,'error');
-  }
+async function pullEquipmentForTech(cardId, techName){
+  // Equipment comes from the H-Form template (ACUREN_EQUIPMENT).
+  autoFillFromEquipment(cardId, techName);
+  renderTab(activeTab);
 }
 
 
@@ -7936,12 +7659,12 @@ function showEquipConflictModal(tech, conflicts){
   }).join('');
 
   const modal = document.createElement('div');
-  modal.className = 'knack-modal-overlay open';
+  modal.className = 'app-modal-overlay open';
   modal.id = 'equip-conflict-modal';
   modal.onclick = e=>{ if(e.target===modal) closeEquipConflictModal(); };
   modal.innerHTML = `
-    <div class="knack-modal" style="max-width:560px">
-      <div class="knack-modal-title"><i class="ti ti-alert-triangle" style="color:var(--color-warning-text)"></i> Equipment Conflicts — ${tech}</div>
+    <div class="app-modal" style="max-width:560px">
+      <div class="app-modal-title"><i class="ti ti-alert-triangle" style="color:var(--color-warning-text)"></i> Equipment Conflicts — ${tech}</div>
       <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">
         These other records for ${tech} already list different equipment for the type you just selected.
         Choose whether to overwrite each with the equipment you picked.
@@ -7949,7 +7672,7 @@ function showEquipConflictModal(tech, conflicts){
       <div id="equip-conflict-body" style="display:flex;flex-direction:column;max-height:60vh;overflow-y:auto;padding-right:4px">
         ${rows}
       </div>
-      <div class="knack-modal-footer" style="margin-top:12px">
+      <div class="app-modal-footer" style="margin-top:12px">
         <span style="font-size:12px;color:var(--color-text-secondary)">${conflicts.length} conflict${conflicts.length!==1?'s':''}</span>
         <div style="display:flex;gap:6px">
           <button class="btn" onclick="resolveAllEquipConflicts('skip')">Keep all current</button>
@@ -8559,25 +8282,6 @@ function initCollapsibleSections(){
 <input type="file" id="dfpr-file-input" accept=".xlsx" style="display:none" onchange="handleDFPRFile(event)">
 
 
-<div class="knack-modal-overlay" id="knack-modal" onclick="if(event.target===this)closeKnackModal()">
-  <div class="knack-modal">
-    <div class="knack-modal-title">
-      <i class="ti ti-cloud-download" style="color:var(--color-info-text)"></i>
-      Select Technicians from Knack
-    </div>
-    <input class="knack-search" id="knack-search" placeholder="Search by name..." oninput="filterKnackList()">
-    <div class="knack-list" id="knack-list">
-      <div class="knack-loading"><i class="ti ti-loader"></i> Loading from Knack...</div>
-    </div>
-    <div class="knack-modal-footer">
-      <span class="knack-select-count" id="knack-select-count">0 selected</span>
-      <div style="display:flex;gap:6px">
-        <button class="btn" onclick="closeKnackModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="confirmKnackSelection()"><i class="ti ti-check"></i> Add selected</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <div class="tp-modal-overlay" id="tp-modal" onclick="if(event.target===this)closeTPModal()">
@@ -8616,9 +8320,9 @@ function initCollapsibleSections(){
 <input type="file" id="tp-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleTPFile(event)">
 
 
-<div class="knack-modal-overlay" id="lsc-group-modal" onclick="if(event.target===this)closeLSCGroupModal()">
-  <div class="knack-modal" style="max-width:540px">
-    <div class="knack-modal-title"><i class="ti ti-stack-2" style="color:var(--color-info-text)"></i> Create LSC Group</div>
+<div class="app-modal-overlay" id="lsc-group-modal" onclick="if(event.target===this)closeLSCGroupModal()">
+  <div class="app-modal" style="max-width:540px">
+    <div class="app-modal-title"><i class="ti ti-stack-2" style="color:var(--color-info-text)"></i> Create LSC Group</div>
     <p style="font-size:12px;color:var(--color-text-secondary)">Select joints that share the same seam characterization. They will share one checklist.</p>
 
     <div>
@@ -8666,7 +8370,7 @@ function initCollapsibleSections(){
       <textarea id="lsc-grp-notes" placeholder="Any additional observations..."></textarea>
     </div>
 
-    <div class="knack-modal-footer">
+    <div class="app-modal-footer">
       <span style="font-size:12px;color:var(--color-text-secondary)" id="lsc-grp-sel-count">0 joints selected</span>
       <div style="display:flex;gap:6px">
         <button class="btn" onclick="closeLSCGroupModal()">Cancel</button>
@@ -8677,9 +8381,9 @@ function initCollapsibleSections(){
 </div>
 
 
-<div class="knack-modal-overlay" id="threat-modal" onclick="if(event.target===this)closeThreatModal()">
-  <div class="knack-modal" style="max-width:520px;border:2px solid var(--color-danger-border)">
-    <div class="knack-modal-title" style="color:var(--color-danger-text)">
+<div class="app-modal-overlay" id="threat-modal" onclick="if(event.target===this)closeThreatModal()">
+  <div class="app-modal" style="max-width:520px;border:2px solid var(--color-danger-border)">
+    <div class="app-modal-title" style="color:var(--color-danger-text)">
       <i class="ti ti-alert-triangle" style="font-size:20px"></i>
       ⚠ IMMEDIATE THREAT — STOP WORK
     </div>
@@ -8834,12 +8538,12 @@ function initCollapsibleSections(){
   <option>11:00</option><option>11:30</option>
 </datalist>
 
-<div class="knack-modal-overlay" id="equip-picker-modal" onclick="if(event.target===this)closeEquipPicker()">
-  <div class="knack-modal" style="max-width:540px">
-    <div class="knack-modal-title"><i class="ti ti-tool" style="color:var(--color-info-text)"></i> Confirm Equipment Selection</div>
+<div class="app-modal-overlay" id="equip-picker-modal" onclick="if(event.target===this)closeEquipPicker()">
+  <div class="app-modal" style="max-width:540px">
+    <div class="app-modal-title"><i class="ti ti-tool" style="color:var(--color-info-text)"></i> Confirm Equipment Selection</div>
     <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Multiple items found for some equipment types. Select the correct one for each:</p>
     <div id="equip-picker-body" style="display:flex;flex-direction:column;gap:12px;max-height:60vh;overflow-y:auto;padding-right:4px"></div>
-    <div class="knack-modal-footer" style="margin-top:12px">
+    <div class="app-modal-footer" style="margin-top:12px">
       <span style="font-size:12px;color:var(--color-text-secondary)" id="equip-picker-count"></span>
       <div style="display:flex;gap:6px">
         <button class="btn" onclick="closeEquipPicker()">Cancel</button>
