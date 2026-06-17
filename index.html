@@ -340,6 +340,53 @@ td textarea:placeholder-shown{
 .lsc-joint-check.selected{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text)}
 .lsc-joint-check input{display:none}
 
+/* LSC characterization worksheet modal — styled to mirror the paper worksheet */
+.lscw-modal{max-width:1060px;width:97%}
+.lscw-scroll{overflow-y:auto;max-height:78vh;padding:0;background:#e9e9ec;border-radius:var(--radius-md)}
+.lscw-paper{background:#fff;color:#1a1a1a;margin:0 auto;padding:22px 24px;font-size:11px;line-height:1.35}
+.lscw-paper *{box-sizing:border-box}
+.lscw-doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px}
+.lscw-doc-ref{font-size:10px;color:#333;text-align:right;line-height:1.5;white-space:nowrap;min-width:140px}
+.lscw-title{text-align:center;flex:1}
+.lscw-title h2{font-size:16px;font-weight:700;margin:0}
+.lscw-title .sub{font-size:11px;color:#333}
+.lscw-instr{font-size:10px;color:#333;line-height:1.4;margin:6px 0 10px}
+.lscw-joints-line{font-size:11px;margin-bottom:10px}
+.lscw-joints-line b{font-weight:700}
+.lscw-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:start}
+.lscw-box{border:1px solid #555;border-radius:2px;padding:8px 9px;background:#fff}
+.lscw-box-title{text-align:center;font-weight:700;font-size:11px;border-bottom:1px solid #999;padding-bottom:4px;margin-bottom:5px}
+.lscw-chk{display:flex;gap:6px;align-items:flex-start;font-size:10px;line-height:1.28;padding:2px 0;cursor:pointer}
+.lscw-chk input{margin:1px 0 0;width:13px;height:13px;flex-shrink:0;accent-color:#1F3864;cursor:pointer}
+.lscw-chk u{text-decoration:underline;font-weight:700}
+.lscw-chk.on>span{font-weight:600}
+.lscw-foot{font-size:8.5px;color:#444;margin-top:6px;line-height:1.3}
+.lscw-note{font-weight:700;font-size:11px;text-align:center;margin:12px 4px;color:#1a1a1a}
+.lscw-sec{border:1px solid #555;border-radius:2px;padding:8px 10px;margin-top:12px}
+.lscw-sec-label{font-weight:700;font-size:11px;margin-bottom:6px}
+.lscw-frow{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:11px}
+.lscw-frow>label{font-weight:600;white-space:nowrap}
+.lscw-frow input{flex:1;border:none;border-bottom:1px solid #999;background:#fffdf0;padding:2px 5px;font-size:11px;color:#1a1a1a;font-family:inherit;min-width:60px}
+.lscw-frow input:focus{outline:none;background:#fff8c8}
+.lscw-results{font-size:11px;margin:2px 0 6px}
+.lscw-results .rrow{display:flex;gap:14px;align-items:center;margin:3px 0;flex-wrap:wrap}
+.lscw-results .rrow>span{min-width:62px;font-weight:600}
+.lscw-results label{display:inline-flex;align-items:center;gap:4px;color:#333}
+.lscw-results input{width:66px;border:none;border-bottom:1px solid #999;background:#fffdf0;text-align:center;font-size:11px;font-family:inherit;color:#1a1a1a;padding:1px 2px}
+.lscw-obs-label{font-weight:700;font-size:11px;margin:12px 0 3px}
+.lscw-obs-label i{font-weight:400;font-style:italic;color:#555;font-size:10px}
+.lscw-obs{width:100%;border:1px solid #555;border-radius:2px;min-height:52px;padding:6px;font-size:11px;font-family:inherit;color:#1a1a1a;background:#fff;resize:vertical}
+.lscw-seam-label{font-weight:700;font-size:11px;margin:14px 0 3px}
+.lscw-seam{border:1px solid #555;border-radius:2px;padding:7px 9px}
+.lscw-seam select{font-size:13px;font-weight:700;width:100%;border:none;background:transparent;color:#1a1a1a;font-family:inherit;cursor:pointer}
+.lscw-sig{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;margin:9px 0;font-size:11px}
+.lscw-sig .cell{display:flex;align-items:flex-end;gap:6px}
+.lscw-sig label{font-weight:600;white-space:nowrap}
+.lscw-sig label i{font-weight:400;font-style:italic;color:#555}
+.lscw-sig input{flex:1;border:none;border-bottom:1px solid #555;background:transparent;padding:2px 3px;font-size:11px;color:#1a1a1a;font-family:inherit}
+.lscw-sig input:focus{outline:none;background:#fff8c8}
+@media(max-width:820px){.lscw-grid3{grid-template-columns:1fr}.lscw-sig{grid-template-columns:1fr}}
+
 
 .jt-card{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s}
 .jt-card:hover{border-color:var(--color-border-secondary)}
@@ -693,6 +740,7 @@ const TABS = [
   {id:'pautbm',label:'PAUT BM',icon:'ti-layers-subtract'},
   {id:'pautls',label:'PAUT LS',icon:'ti-timeline'},
   {id:'aelsc',label:'AE/LSC',icon:'ti-flask'},
+  {id:'lsc',label:'LSC',icon:'ti-vector'},
   {id:'calrec',label:'Cal Overview',icon:'ti-certificate'},
 ];
 
@@ -1024,7 +1072,7 @@ function updateJointField(id, field, val){
 }
 
 const TAB_CATEGORIES = {
-  'MPV': ['utt12','uttloc','aelsc','jointlen'],
+  'MPV': ['utt12','uttloc','aelsc','lsc','jointlen'],
   'Flaw Detection': ['va','mt','aut','gw','mut','muthand','pautbm','pautls'],
   'Equipment': ['calrec'],
 };
@@ -3248,6 +3296,284 @@ const LSC_CHECKLIST_ITEMS = [
   'Area cleaned and neutralized after examination',
 ];
 
+/* ===== LSC Pipe Characterization Data Sheet (worksheet) =====
+   Replicates the "Pipe Characterization Data Sheet" worksheet. Completed per
+   LSC group (a bundle of joints sharing the same characteristics / seam type). */
+const LSC_SEAM_CATEGORIES = [
+  { id:'erw', name:'Electric Resistance Weld', items:[
+    'Uniform wall thickness (< 10% UTT)',
+    'Cutting tool marks where OD upset was trimmed (VT)',
+    'OD surface shows longitudinal ridges or flat spots (VT)',
+    'ID upset width ~ 1/8” to 3/16” and smaller than OD upset width (RT)',
+    'Presence of ID geometric features such as step, square edges or mis-match (UT 45°)',
+    'Localized thickness increase or decrease (UT 0°)',
+    'Acid etching shows signs of HAZ band and possibly weld interface line (VT)',
+    'Density change indicating presence of ID upset material (RT)',
+  ]},
+  { id:'fbw', name:'Furnace Butt Weld', items:[
+    'Uniform Wall Thickness (<10% UTT)',
+    'Visible weld line on OD (VT)',
+    'Mechanical gouges or markings ~ 45° from the longitudinal pipe axis',
+    'Presence of ID geometric features such as step, sharp groove, edge, irregular shape or mis-match (UT 45°)',
+    'Localized thickness increase (UT 0°)',
+    'OD visual line or marking lines up with irregular ID geometric features (VT)',
+    'Acid etching does not show distinct HAZ band; however, thin weld interface line may be present (VT)',
+    'Uniform density 360° (RT) with potential indications in straight line',
+    'Usually present in pipe ≤ 4” NPS',
+  ]},
+  { id:'aosa', name:'A.O. Smith (Arc Weld)', items:[
+    'Arc Weld Crown (VT)',
+    'Wide OD Crown ~3/4” or greater with non-uniform ripples (VT)',
+    'Uniform density in center area indicating unique ID shape (RT)',
+    'Dark density line in center of root indicating lack of penetration (RT)',
+    'Usually present in pipe > 12” NPS',
+    'Signs of weld starts and stops on the OD surface (VT)',
+  ]},
+  { id:'smls', name:'Seamless Pipe', items:[
+    'Non-uniform Wall Thickness (>10% UTT)',
+    'No evidence of any OD weld seams or weld crowns (VT)',
+    'No localized thickness increase (UT 0°)',
+    'Acid etching of surface does not show any significant changes in the surface appearance and no evidence of a heat affected zone band or thin line (VT)',
+    'Uniform density 360° around pipe (RT)',
+  ]},
+  { id:'lap', name:'Lap Weld', items:[
+    'Uniform wall thickness (< 10% UTT)',
+    'Evidence of overlapping edges on OD and visible as irregular line (VT)',
+    'OD shows prominent knurled, herringbone pattern or embossed surface features (VT)',
+    'Presence of ID geometric features such as step, edge, irregular shape or mis-match (UT 45°)',
+    'OD visual line or overlapping edges does not line up with irregular ID geometric features',
+    'Usually present in pipe ≥ 6” NPS',
+  ]},
+  { id:'aosf', name:'A.O. Smith Flash Butt Weld', items:[
+    'Trimmed OD upset clearly visible and protruding from surface ~ 1/32” to 1/8” (VT)',
+    'Tool marks at angle to pipe axis across OD upset surface (VT)',
+    'Acid etching⁽¹⁾ of OD upset shows thin white line near center (VT)',
+    'ID and OD upset width ~ 1/4” to 1/2” and similar in size (RT)',
+    'Usually present in pipe > 12” NPS',
+  ], note:'(1) Grinding and etching of A.O. Smith flash butt weld only performed if requested by Pipeline Engineer.' },
+  { id:'dsaw', name:'Double-Sided Submerged Arc Weld', items:[
+    'Weld crown is uniform and does not exhibit defined weld ripples (VT)',
+    'Weld crown has convex profile (VT)',
+    'Similar ID and OD crown but can be misaligned (RT)',
+    'Light density at weld center across superimposed caps (RT)',
+    'Visible edges of ID and OD weld crown (RT)',
+    'Using “Flat-Topped” or "Off-Set" method, ID crown has a uniform density across the 4” area (RT)',
+  ]},
+  { id:'ssaw', name:'Single-Sided Submerged Arc Weld', items:[
+    'Weld crown is uniform and does not exhibit defined weld ripples (VT)',
+    'ID crown not uniform (RT)',
+    'ID crown width notably smaller than OD crown (RT)',
+    'Evidence of temporary chill ring (VT)',
+    'More uniform density across weld crown indicating less reinforcement on ID (RT)',
+    'Root geometry (VT)',
+    'Moderate weld indications (RT)',
+  ]},
+  { id:'aofa', name:'A.O. Smith (Flash + Arc) Weld', items:[
+    'Arc welded crown (VT)',
+    'Wide OD crown ~3/4” or greater with non-uniform ripples (VT)',
+    'Appearance of trimmed ID upset ~ 1/4” to 1/2” (RT)',
+    'Signs of weld starts and stops on the OD surface (VT)',
+  ]},
+];
+// Visual column arrangement matching the worksheet (3 columns)
+const LSC_SEAM_COLUMNS = [['erw','smls','dsaw'], ['fbw','lap','ssaw'], ['aosa','aosf','aofa']];
+
+const LSC_OTHER_FEATURES = [
+  'Only OD crown with possible ID repair',
+  'Grinding marks or other surface marks',
+  'Pipe has spiral seam (VT)',
+  'Weld contains relevant indications (reference attached radiography inspection report)',
+  'Evidence of repairs (combination of weld processes)',
+  'Weld contains surface indications (reference attached NDE report)',
+];
+const LSC_METHODS = [
+  'Visual examination (VT)',
+  'Ultrasonic Thickness Measurements (UTT)',
+  'DSAW/SSAW Radiographic Characterization Process (RT)',
+  'Acid Etching',
+  'Ultrasonic Scanning with 0° Transducer (UT 0°)',
+  'Ultrasonic Scanning with 45° Transducer (UT 45°)',
+];
+const LSC_SEAM_TYPES = [
+  'Electric Resistance Weld (ERW)','Furnace Butt Weld (FBW)','A.O. Smith (Arc Weld)',
+  'Seamless','Lap Weld','A.O. Smith Flash Butt Weld',
+  'Double-Sided Submerged Arc Weld (DSAW)','Single-Sided Submerged Arc Weld (SSAW)',
+  'A.O. Smith (Flash + Arc) Weld','Indeterminate',
+];
+const LSC_CAT_BY_ID = Object.fromEntries(LSC_SEAM_CATEGORIES.map(c=>[c.id,c]));
+
+// Ensure a group has a worksheet object.
+function ensureLSCWs(g){
+  if(!g) return null;
+  if(!g.ws){
+    g.ws = { checks:{}, seamType:g.result||'', compDesc:'',
+      obsVisual:'', obsAcid:'Per Acid Etch procedure BP-4190P-505 Rev.0, ',
+      obsUt0:'Per UTT Procedure BP-4190P-507 Rev.1, ', obsUt45:'', obsSme:'',
+      utResults:[{min:'',max:'',avg:''}],
+      sig:{tech:'',techDate:'',peer:'',peerDate:'',sme:'',smeDate:'',final:'',finalDate:''} };
+  }
+  if(!g.ws.utResults || !g.ws.utResults.length) g.ws.utResults=[{min:'',max:'',avg:''}];
+  if(!g.ws.sig) g.ws.sig={tech:'',techDate:'',peer:'',peerDate:'',sme:'',smeDate:'',final:'',finalDate:''};
+  return g.ws;
+}
+
+// Summary used on the group card.
+function lscWsSummary(g){
+  const ws = g.ws||{};
+  const checks = ws.checks||{};
+  const n = Object.values(checks).filter(Boolean).length;
+  return { seamType: ws.seamType||g.result||'', checks:n };
+}
+
+let _lscWsGroup = null;
+
+function openLSCWorksheet(gi){
+  const g = (state.lscGroups||[])[gi];
+  if(!g){ return; }
+  ensureLSCWs(g);
+  _lscWsGroup = gi;
+  document.getElementById('lsc-ws-title-joints').textContent = (g.joints||[]).join(', ') || '—';
+  document.getElementById('lsc-ws-body').innerHTML = renderLSCWorksheetBody(gi);
+  document.getElementById('lsc-ws-modal').classList.add('open');
+}
+function closeLSCWorksheet(){
+  document.getElementById('lsc-ws-modal').classList.remove('open');
+  _lscWsGroup = null;
+  renderTab('lsc');
+}
+
+function lscWsCheck(id, on){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g); g.ws.checks[id]= on?true:undefined;
+  if(!on) delete g.ws.checks[id];
+  save();
+}
+function lscWsField(field, val){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g); g.ws[field]=val;
+  if(field==='seamType') g.result=val; // keep group summary in sync
+  save();
+}
+function lscWsSig(key, val){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g); g.ws.sig[key]=val; save();
+}
+function lscWsResult(idx, key, val){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g);
+  if(!g.ws.utResults[idx]) g.ws.utResults[idx]={min:'',max:'',avg:''};
+  g.ws.utResults[idx][key]=val; save();
+}
+function lscWsAddResult(){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g);
+  if(g.ws.utResults.length>=4){ showToast('Maximum of 4 sections','error'); return; }
+  g.ws.utResults.push({min:'',max:'',avg:''}); save();
+  document.getElementById('lsc-ws-body').innerHTML = renderLSCWorksheetBody(_lscWsGroup);
+}
+
+function renderLSCWorksheetBody(gi){
+  const g = (state.lscGroups||[])[gi]; const ws = ensureLSCWs(g);
+  const cfg = state.config||{};
+  const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  // Bold+underline the key differentiator words, like the worksheet does
+  const EMPH = ['Non-uniform','does not','no evidence'];
+  const emph = s => { let t=esc(s); EMPH.forEach(p=>{ t=t.replace(new RegExp('('+p.replace(/[-]/g,'\\$&')+')','g'),'<u>$1</u>'); }); return t; };
+
+  const chk = (id,txt)=>{
+    const on=!!ws.checks[id];
+    return `<label class="lscw-chk${on?' on':''}"><input type="checkbox" ${on?'checked':''} onchange="lscWsCheck('${id}',this.checked)"><span>${emph(txt)}</span></label>`;
+  };
+
+  // 9 seam-type category boxes, ordered row-major so the CSS grid reproduces the
+  // worksheet's 3 columns (col1: ERW/Seamless/DSAW, etc.)
+  const boxes = [];
+  for(let r=0;r<3;r++){
+    for(let c=0;c<3;c++){
+      const cat = LSC_CAT_BY_ID[LSC_SEAM_COLUMNS[c][r]]; if(!cat){ boxes.push('<div></div>'); continue; }
+      const items = cat.items.map((txt,i)=>chk(`${cat.id}_${i}`,txt)).join('');
+      boxes.push(`<div class="lscw-box"><div class="lscw-box-title">${esc(cat.name)}</div>${items}${cat.note?`<div class="lscw-foot">${esc(cat.note)}</div>`:''}</div>`);
+    }
+  }
+
+  const featGrid = LSC_OTHER_FEATURES.map((txt,i)=>chk(`feat_${i}`,txt)).join('');
+  const methGrid = LSC_METHODS.map((txt,i)=>chk(`meth_${i}`,txt)).join('');
+
+  const frow = (label,field,val,ph)=>`<div class="lscw-frow"><label>${label}</label><input value="${esc(val)}" placeholder="${ph||''}" onchange="lscWsField('${field}',this.value)"></div>`;
+
+  const results = ws.utResults.map((r,i)=>`
+    <div class="rrow"><span>Section ${i+1}</span>
+      <label>min.: <input value="${esc(r.min)}" onchange="lscWsResult(${i},'min',this.value)"></label>
+      <label>max.: <input value="${esc(r.max)}" onchange="lscWsResult(${i},'max',this.value)"></label>
+      <label>avg.: <input value="${esc(r.avg)}" onchange="lscWsResult(${i},'avg',this.value)"></label>
+    </div>`).join('');
+
+  const obs = (label,hint,field,val)=>`<div class="lscw-obs-label">${label} <i>${hint}</i></div>
+    <textarea class="lscw-obs" onchange="lscWsField('${field}',this.value)">${esc(val)}</textarea>`;
+
+  const sig = (label,nk,dk)=>`<div class="lscw-sig">
+    <div class="cell"><label>${label}</label><input value="${esc(ws.sig[nk])}" onchange="lscWsSig('${nk}',this.value)"></div>
+    <div class="cell"><label>Date:</label><input type="date" value="${esc(ws.sig[dk])}" onchange="lscWsSig('${dk}',this.value)"></div>
+  </div>`;
+
+  // Defaults pulled from project config (editable, stored per worksheet)
+  const dJob = ws.jobNo!==undefined ? ws.jobNo : (cfg.job||'');
+  const dProc = ws.procRev!==undefined ? ws.procRev : '345-WSC-01 Rev.3';
+  const dLine = ws.lineMP!==undefined ? ws.lineMP : [cfg.line, cfg.mp?('MP: '+cfg.mp):''].filter(Boolean).join(' ');
+  const dLatLon = ws.latLong!==undefined ? ws.latLong : [cfg.lat,cfg.lon].filter(Boolean).join(', ');
+
+  return `
+  <div class="lscw-paper">
+    <div class="lscw-doc-head">
+      <div style="min-width:120px;font-weight:700;color:#0a4a8f;font-size:13px">Applied<br><span style="font-weight:400;color:#444;font-size:11px">Technology Services</span></div>
+      <div class="lscw-title"><h2>Pipe Characterization Data Sheet</h2><div class="sub">(For Use When I.D. is Not Accessible)</div></div>
+      <div class="lscw-doc-ref">WP 345-WSC-01<br>Attachment 2, Rev. 1</div>
+    </div>
+    <div class="lscw-instr"><b>Instructions:</b> Complete data sheet per 345-WSC-01, Section 9 and the applicable inspection and examination methods. Check all boxes that apply below. After evaluating the results, complete the fields below and document the Seam Type. Where applicable, attach supplementary NDE data sheets to the pipe characterization data sheet or final NDE report.</div>
+    <div class="lscw-joints-line">Joints in this group: <b>${esc((g.joints||[]).join(', ')||'—')}</b></div>
+
+    <div class="lscw-grid3">${boxes.join('')}</div>
+
+    <div class="lscw-note">NOTE: Some features listed above for a specific process are only applicable if the examination process is requested by the Pipeline Engineer, GO NDE or SME. Radiography is an example.</div>
+
+    <div class="lscw-sec"><div class="lscw-sec-label">Other Notable Features</div><div class="lscw-grid3">${featGrid}</div></div>
+    <div class="lscw-sec"><div class="lscw-sec-label">Inspection Methods Used</div><div class="lscw-grid3">${methGrid}</div></div>
+
+    <div style="margin-top:14px">
+      ${frow('Project ID/Job Number/SWIM Number:','jobNo',dJob)}
+      ${frow('Seam Characterization Procedure No. / Rev.:','procRev',dProc)}
+      ${frow('Component Description:','compDesc',ws.compDesc,'e.g. 10.75\u2033 OD line pipe')}
+      ${frow('Line Number and MP:','lineMP',dLine)}
+      ${frow('Task No. and Dig Site Location:','taskSite',ws.taskSite||'')}
+      ${frow('Location Latitude & Longitude:','latLong',dLatLon)}
+      ${frow('Measured Pipe Diameter:','pipeDia',ws.pipeDia||'')}
+    </div>
+
+    <div class="lscw-obs-label" style="margin-top:10px">UT Thickness Results (min., max., and avg. before buffing)
+      <button class="btn btn-sm" style="margin-left:8px;font-size:10px" onclick="lscWsAddResult()"><i class="ti ti-plus"></i> Section</button></div>
+    <div class="lscw-results">${results}</div>
+
+    ${obs('Visual O.D. observations','(Add relevant observations and findings. This includes notable features.)','obsVisual',ws.obsVisual)}
+    ${obs('Acid Etching Results','(Add relevant observations and findings.)','obsAcid',ws.obsAcid)}
+    ${obs('UT 0\u00B0 Scanning Results','(Add relevant observations and findings.)','obsUt0',ws.obsUt0)}
+    ${obs('UT 45\u00B0 Scanning Results','(Add relevant observations and findings.)','obsUt45',ws.obsUt45)}
+    ${obs('SME Findings','(if applicable, summary of SME findings and conclusion.)','obsSme',ws.obsSme)}
+
+    <div class="lscw-seam-label">SEAM TYPE:</div>
+    <div class="lscw-seam"><select onchange="lscWsField('seamType',this.value)">
+      <option value="">— select seam type —</option>
+      ${LSC_SEAM_TYPES.map(s=>`<option ${s===ws.seamType?'selected':''}>${esc(s)}</option>`).join('')}
+    </select></div>
+
+    <div style="margin-top:16px">
+      ${sig('NDE Technician <i>(Name)</i>:','tech','techDate')}
+      ${sig('Peer Review <i>(Name)</i>:','peer','peerDate')}
+      ${sig('SME <i>(Name, if applicable)</i>:','sme','smeDate')}
+      ${sig('Final Review <i>(Name)</i>:','final','finalDate')}
+    </div>
+  </div>`;
+}
+
 let _lscGroupModalEditing = null; // null = new, or index to edit
 
 function openLSCGroupModal(editIdx){
@@ -3407,21 +3733,14 @@ function renderLSC(){
 
   // Build group cards
   const groupCards = groups.length ? groups.map((g,gi)=>{
-    const total   = g.checklist.length;
-    const done    = g.checklist.filter(c=>c.done).length;
-    const pct     = total ? Math.round(done/total*100) : 0;
-    const complete = pct===100;
+    const ws       = ensureLSCWs(g);
+    const summ     = lscWsSummary(g);
+    const complete = !!summ.seamType;
+    const pct      = complete ? 100 : 0;
 
     const jointBadges = g.joints.map(jid=>
       `<span class="lsc-joint-badge"><i class="ti ti-vector" style="font-size:10px"></i>${jid}</span>`
     ).join('');
-
-    const checkItems = g.checklist.map((item,ii)=>`
-      <div class="lsc-check-item${item.done?' done':''}">
-        <input type="checkbox" id="lsc-ci-${gi}-${ii}" ${item.done?'checked':''}
-               onchange="toggleLSCCheckItem(${gi},${ii},this.checked)">
-        <label for="lsc-ci-${gi}-${ii}">${item.text}</label>
-      </div>`).join('');
 
     const tabPhotos = (state.photos||{})['lscGroup_'+gi]||[];
     const thumbs = tabPhotos.map((p,pi)=>`
@@ -3434,7 +3753,7 @@ function renderLSC(){
       <div class="lsc-group-header">
         <div class="lsc-group-joints">${jointBadges}</div>
         <span id="lsc-status-badge-${gi}" class="${complete?'lsc-complete-badge':'lsc-pending-badge'}">
-          ${complete?'<i class="ti ti-circle-check"></i> Complete':'<i class="ti ti-clock"></i> '+pct+'%'}
+          ${complete?'<i class="ti ti-circle-check"></i> Complete':'<i class="ti ti-clock"></i> Pending'}
         </span>
         <div class="lsc-group-actions">
           <button class="btn btn-sm" onclick="openLSCGroupModal(${gi})" title="Edit group"><i class="ti ti-pencil"></i></button>
@@ -3486,10 +3805,13 @@ function renderLSC(){
         </div>
 
         <div class="lsc-checklist" style="grid-column:1/-1">
-          <div class="lsc-field-label" style="margin-bottom:6px">Checklist</div>
-          <div class="lsc-progress-bar"><div class="lsc-progress-fill" id="lsc-prog-fill-${gi}" style="width:${pct}%"></div></div>
-          <div class="lsc-progress-label" id="lsc-prog-lbl-${gi}">${done} / ${total} completed</div>
-          <div style="margin-top:8px">${checkItems}</div>
+          <div class="lsc-field-label" style="margin-bottom:6px">Pipe Characterization Worksheet</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" onclick="openLSCWorksheet(${gi})"><i class="ti ti-clipboard-check"></i> Open worksheet</button>
+            <span style="font-size:12px;color:var(--color-text-secondary)">
+              ${(()=>{const s=lscWsSummary(g);return `Seam type: <b style="color:var(--color-text)">${s.seamType||'—'}</b> · ${s.checks} characteristic${s.checks!==1?'s':''} checked`;})()}
+            </span>
+          </div>
         </div>
 
         ${tabPhotos.length||true?`<div style="grid-column:1/-1">
@@ -4517,6 +4839,31 @@ function thicknessColor(val, minVal, nwt, maxVal){
   return `rgb(${r},${g},${b})`;
 }
 
+// A cell reading of 0.000 (or empty/non-numeric) is treated as "no reading":
+// it is blacked out on heatmaps and excluded from min/max/avg calculations.
+function isBlackout(v){
+  if(v===null||v===undefined||v==='') return true;
+  const n = typeof v==='number' ? v : parseFloat(v);
+  if(isNaN(n)) return true;
+  return Math.abs(n) < 0.0005;
+}
+// Convert an editable MUT/EC grid (string cells + voids) to a numeric matrix
+// for heatmap rendering. Voids and 0.000 readings become null (blacked out).
+function cellsToMatrix(grid){
+  const {rows, cols, cells, voids} = grid;
+  const out = [];
+  for(let r=0; r<rows; r++){
+    const row = [];
+    for(let c=0; c<cols; c++){
+      if(voids?.[r]?.[c]){ row.push(null); continue; }
+      const n = parseFloat(cells?.[r]?.[c]);
+      row.push(isNaN(n) ? null : n);
+    }
+    out.push(row);
+  }
+  return out;
+}
+
 function depthColor(depth, maxDepth){
   if(depth===null||depth===undefined||isNaN(depth)||depth==='') return 'transparent';
   const t = Math.max(0, Math.min(1, depth / (maxDepth||1)));
@@ -4589,18 +4936,28 @@ function renderGridModal(type, gridData){
     renderAUTHeatmap(body, gridData);
     return;
   }
-  // MUT or EC grid table
+  // MUT or EC grid — choose Table (editable) or C-Scan (heatmap) view
   const {rows, cols, colStart, cells, voids, nwt, mode} = gridData;
   const isEC = type==='ec';
+  const view = (type==='mut' && ((_activeGrid && _activeGrid.view) || gridData._defaultView)) || 'table';
 
-  // Compute stats
+  const toggle = type==='mut' ? `<div style="display:flex;gap:6px;margin-bottom:10px">
+    <button class="btn btn-sm${view==='table'?' btn-primary':''}" onclick="setGridView('table')"><i class="ti ti-table"></i> Grid</button>
+    <button class="btn btn-sm${view==='cscan'?' btn-primary':''}" onclick="setGridView('cscan')"><i class="ti ti-chart-area"></i> C-Scan</button>
+  </div>` : '';
+
+  if(view==='cscan'){
+    body.innerHTML = toggle + '<div id="grid-heatmap-host"></div>';
+    renderHeatmapInto(document.getElementById('grid-heatmap-host'), cellsToMatrix(gridData), nwt,
+      {axisX:'Column (Axial)', axisY:'Row (Circ.)'});
+    return;
+  }
+
+  // Compute stats — exclude voids and 0.000 (no-reading) cells
   const vals = [];
   for(let r=0; r<rows; r++) for(let c=0; c<cols; c++){
     const v = cells[r]?.[c];
-    if(!voids?.[r]?.[c] && v!==''&&v!==null&&v!==undefined){
-      const n = parseFloat(v);
-      if(!isNaN(n)) vals.push(n);
-    }
+    if(!voids?.[r]?.[c] && !isBlackout(v)) vals.push(parseFloat(v));
   }
   const minV  = vals.length ? Math.min(...vals) : 0;
   const maxV  = vals.length ? Math.max(...vals) : (nwt||1);
@@ -4612,7 +4969,7 @@ function renderGridModal(type, gridData){
   drawLegend('grid-legend-canvas', isEC?'depth':'thickness', minV, nwt||0.5, maxV);
 
   // Build table
-  let html = `<table class="grid-table"><thead><tr><th style="min-width:32px">Row</th>`;
+  let html = toggle + `<table class="grid-table"><thead><tr><th style="min-width:32px">Row</th>`;
   for(let c=0; c<cols; c++) html += `<th>${(colStart||1)+c}</th>`;
   html += `</tr></thead><tbody>`;
 
@@ -4621,9 +4978,14 @@ function renderGridModal(type, gridData){
     for(let c=0; c<cols; c++){
       const isVoid = voids?.[r]?.[c];
       const val    = cells[r]?.[c];
+      const hasVal = val!==''&&val!==null&&val!==undefined;
       const numVal = parseFloat(val);
-      const bg     = isVoid ? '' : (!isNaN(numVal) ? (isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt||0.5, maxV)) : 'transparent');
-      const fg     = isVoid ? '#fff' : textColorFor(bg||'transparent');
+      const isZero = hasVal && isBlackout(val);   // entered 0.000 → blacked out
+      let bg, fg;
+      if(isVoid){ bg=''; fg='#fff'; }
+      else if(isZero){ bg='#000'; fg='#888'; }
+      else if(!isNaN(numVal)){ bg = isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt||0.5, maxV); fg = textColorFor(bg); }
+      else { bg='transparent'; fg=textColorFor('transparent'); }
 
       if(isVoid){
         html += `<td><div class="grid-cell-void" onclick="toggleVoid('${type}','${_activeGrid.key}',${r},${c})"
@@ -4634,6 +4996,7 @@ function renderGridModal(type, gridData){
             value="${val??''}"
             style="color:${fg};background:${bg}"
             data-r="${r}" data-c="${c}"
+            title="${isZero?'0.000 — no reading (excluded from MIN)':''}"
             onchange="setCellValue('${type}','${_activeGrid.key}',${r},${c},this.value)"
             onpaste="handleGridPaste(event,'${type}','${_activeGrid.key}',${r},${c})"
             oncontextmenu="event.preventDefault();toggleVoid('${type}','${_activeGrid.key}',${r},${c})">
@@ -4644,6 +5007,10 @@ function renderGridModal(type, gridData){
   }
   html += `</tbody></table>`;
   body.innerHTML = html;
+}
+
+function setGridView(v){
+  if(_activeGrid){ _activeGrid.view = v; renderGridModal(_activeGrid.type, _activeGrid.data); }
 }
 
 function setCellValue(type, key, r, c, val){
@@ -4715,6 +5082,7 @@ let _mutSetupMUTRowIdx = null;
 function openMUTSetup(type, vaRowIdx){
   _mutSetupType = type;
   _mutSetupVAIdx = vaRowIdx !== undefined ? vaRowIdx : null;
+  _mutSetupMUTRowIdx = null;
   const joints = state.joints||[];
   const sel = document.getElementById('mut-setup-joint');
   sel.innerHTML = joints.map(j=>`<option value="${j.id}">${j.id}</option>`).join('');
@@ -4731,7 +5099,63 @@ function openMUTSetup(type, vaRowIdx){
       if(jt) sel.value = jt;
     }
   }
+  // Auto-calc grid sizing is for MUT thickness grids only
+  const ac = document.getElementById('mut-autocalc');
+  if(ac) ac.style.display = type==='ec' ? 'none' : '';
+  if(type!=='ec'){
+    const ct=document.getElementById('mut-comp-type'); if(ct) ct.value='pipe';
+    const incr=document.getElementById('mut-incr'); if(incr) incr.value='1';
+    const len=document.getElementById('mut-area-len'); if(len) len.value='';
+    mutPrefillOD();
+    mutCalcGrid();
+  }
   document.getElementById('mut-setup-modal').classList.add('open');
+}
+
+// Prefill the OD field from the selected joint's stored OD (if any)
+function mutPrefillOD(){
+  const jid = document.getElementById('mut-setup-joint')?.value;
+  const j = (state.joints||[]).find(x=>x.id===jid);
+  const odEl = document.getElementById('mut-od');
+  if(odEl && j && (j.od||j.diameter) && !odEl.value){ odEl.value = j.od||j.diameter; }
+}
+
+// Compute rows (circumferential) and columns (axial) from increment + geometry.
+function mutCalcGrid(){
+  mutPrefillOD();
+  const type  = document.getElementById('mut-comp-type')?.value || 'pipe';
+  const incr  = parseFloat(document.getElementById('mut-incr')?.value);
+  const od    = parseFloat(document.getElementById('mut-od')?.value);
+  const len   = parseFloat(document.getElementById('mut-area-len')?.value);
+  const hint  = document.getElementById('mut-calc-hint');
+  const rowsEl= document.getElementById('mut-setup-rows');
+  const colsEl= document.getElementById('mut-setup-cols');
+  if(!incr || incr<=0){ if(hint) hint.innerHTML='Enter a grid increment to auto-size the grid.'; return; }
+
+  // Axial columns apply to every component type (along the MUT area length)
+  let cols=null;
+  if(len && len>0){ cols = Math.max(1, Math.round(len/incr)); colsEl.value = cols; }
+
+  if(type==='pipe'){
+    if(od && od>0){
+      const circ = Math.PI*od;
+      const rows = Math.max(1, Math.round(circ/incr));
+      rowsEl.value = rows;
+      if(hint) hint.innerHTML =
+        `Circumference = π × ${od}" = <b>${circ.toFixed(2)}"</b> → <b>${rows}</b> circumferential rows`+
+        (cols?` · length ${len}" → <b>${cols}</b> axial columns`:'')+
+        ` &nbsp;(@ ${incr}" spacing)`;
+    } else if(hint){
+      hint.innerHTML = 'Enter the pipe OD to compute circumferential rows.'+(cols?` Axial columns set to <b>${cols}</b>.`:'');
+    }
+  } else {
+    // Elbow / reducer / tee / fitting: intrados & extrados differ, so the
+    // circumferential count can't be derived from OD — the tech marks out the
+    // grid on the part. Auto-size only the axial columns; leave rows manual.
+    if(hint) hint.innerHTML =
+      `${type.charAt(0).toUpperCase()+type.slice(1)}: intrados/extrados differ — set <b>rows (circumferential)</b> manually from the marked-out grid.`+
+      (cols?` Axial columns from length = <b>${cols}</b>.`:` Enter the MUT area length to size axial columns.`);
+  }
 }
 
 function createMUTGrid(){
@@ -4741,6 +5165,10 @@ function createMUTGrid(){
   const nwt      = parseFloat(document.getElementById('mut-setup-nwt').value)||0;
   const label    = document.getElementById('mut-setup-label').value.trim()||(_mutSetupType==='ec'?'EC Grid':'MUT Grid');
   const joint    = document.getElementById('mut-setup-joint').value;
+  const compType = document.getElementById('mut-comp-type')?.value || null;
+  const incr     = parseFloat(document.getElementById('mut-incr')?.value)||null;
+  const areaLen  = parseFloat(document.getElementById('mut-area-len')?.value)||null;
+  const od       = parseFloat(document.getElementById('mut-od')?.value)||null;
 
   const key = `${_mutSetupType}_${joint}_${Date.now()}`;
   const gridData = {
@@ -4748,6 +5176,7 @@ function createMUTGrid(){
     cells: Array.from({length:rows},()=>Array(cols).fill('')),
     voids: {},
     vaRowIdx: _mutSetupVAIdx,
+    compType, increment:incr, areaLength:areaLen, od,
     createdAt: new Date().toISOString(),
   };
 
@@ -4835,82 +5264,236 @@ function processAUTImport(){
   showToast(`AUT scan imported — ${data.length} rows × ${data[0]?.length||0} cols`);
 }
 
-// ── AUT heatmap renderer ──────────────────────────────────────────────────────
+// ── MUT grid import (xlsx like the thickness-grid export, or pasted CSV/TSV) ──
+let _mutImportParsed = null;
+
+function openMUTImport(){
+  _mutImportParsed = null;
+  const sel = document.getElementById('mut-import-joint');
+  sel.innerHTML = '<option value="">— Select joint —</option>' +
+    (state.joints||[]).map(j=>`<option value="${j.id}">${j.id}</option>`).join('');
+  ['mut-import-label','mut-import-nwt','mut-paste-area'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  document.getElementById('mut-import-colstart').value = 1;
+  document.getElementById('mut-import-filename').textContent = '';
+  document.getElementById('mut-import-modal').classList.add('open');
+}
+function closeMUTImport(){ document.getElementById('mut-import-modal').classList.remove('open'); }
+
+function handleMUTFile(e){
+  const file = e.target.files[0]; if(!file) return;
+  const ext = (file.name.split('.').pop()||'').toLowerCase();
+  const fn = document.getElementById('mut-import-filename');
+  fn.textContent = 'Reading ' + file.name + '…';
+  const reader = new FileReader();
+  if(ext==='xlsx' || ext==='xls' || ext==='xlsm'){
+    reader.onload = ev=>{ try{ parseMUTWorkbook(ev.target.result, file.name); }
+      catch(err){ fn.textContent=''; showToast('Could not read file: '+err.message,'error'); } };
+    reader.readAsArrayBuffer(file);
+  } else {
+    reader.onload = ev=>{ document.getElementById('mut-paste-area').value = ev.target.result;
+      _mutImportParsed=null; fn.textContent = '✓ '+file.name+' loaded into paste box'; };
+    reader.readAsText(file);
+  }
+  e.target.value='';
+}
+
+// Parse a thickness-grid workbook (Position header row, A/B/C… row labels,
+// numeric readings, metadata rows for NWT / component name).
+function parseMUTWorkbook(arrayBuffer, fname){
+  const wb = XLSX.read(arrayBuffer, {type:'array'});
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const aoa = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:null});
+
+  // Metadata (NWT, component name) from the top rows
+  let nwt = 0, comp = '';
+  aoa.slice(0, 14).forEach(row=>(row||[]).forEach(cell=>{
+    const s = String(cell==null?'':cell);
+    let m = s.match(/Nominal Wall Thickness\s*:?\s*([\d.]+)\s*(mils?|in(?:ch(?:es)?)?|")?/i);
+    if(m){ let v=parseFloat(m[1]); const u=(m[2]||'').toLowerCase(); if(u.startsWith('mil')) v=v/1000; nwt=v; }
+    m = s.match(/Component Name\s*:?\s*(.+)/i); if(m) comp=m[1].trim();
+  }));
+
+  // Locate the header row ("Position" in col A), else first row that looks like a grid row
+  let hr = -1;
+  for(let i=0;i<aoa.length;i++){
+    const c0 = String((aoa[i]||[])[0]==null?'':aoa[i][0]).trim().toLowerCase();
+    if(c0==='position'){ hr=i; break; }
+  }
+  if(hr===-1){
+    for(let i=0;i<aoa.length;i++){
+      const row=aoa[i]||[]; const c0=String(row[0]==null?'':row[0]).trim();
+      const nums=row.slice(1).filter(v=>typeof v==='number' || (v!==null && !isNaN(parseFloat(v))));
+      if(/^[A-Z]{1,2}$/i.test(c0) && nums.length>=3){ hr=i-1; break; }
+    }
+  }
+  if(hr===-1) throw new Error('Could not find the grid header row');
+
+  // Number of data columns = contiguous non-empty cells after col A in the header row
+  const headerRow = aoa[hr]||[];
+  let ncols = 0;
+  for(let c=1;c<headerRow.length;c++){ if(headerRow[c]==null || String(headerRow[c]).trim()==='') break; ncols++; }
+  if(ncols===0) ncols = Math.max(...aoa.slice(hr+1, hr+5).map(r=>(r||[]).length))-1;
+
+  // Read data rows until blank / Minimum / Average / Comments
+  const cells = [], rowLabels = [];
+  for(let i=hr+1;i<aoa.length;i++){
+    const row = aoa[i]||[];
+    const label = String(row[0]==null?'':row[0]).trim();
+    if(!label) break;
+    if(/^(minimum|average|max\b|min\b|comments|notes)/i.test(label)) break;
+    rowLabels.push(label);
+    const vals=[]; for(let c=1;c<=ncols;c++){ const v=row[c]; vals.push(v==null?'':String(v)); }
+    cells.push(vals);
+  }
+  if(!cells.length) throw new Error('No data rows found below the header');
+
+  _mutImportParsed = { cells, ncols, nwt, comp, rowLabels };
+  document.getElementById('mut-import-label').value = comp ? `${comp} MUT Grid` : 'MUT Grid';
+  if(nwt) document.getElementById('mut-import-nwt').value = nwt.toFixed(3);
+  // Try to match a scoped joint by the component name (e.g. "JT-11")
+  const sel = document.getElementById('mut-import-joint');
+  const match = (state.joints||[]).find(j=> comp && comp.toUpperCase().includes(j.id.toUpperCase()));
+  if(match) sel.value = match.id;
+  document.getElementById('mut-import-filename').textContent =
+    `✓ ${fname} — ${cells.length} rows × ${ncols} cols parsed${nwt?` · NWT ${nwt.toFixed(3)}"`:''}`;
+}
+
+function processMUTImport(){
+  const joint    = document.getElementById('mut-import-joint').value;
+  const label    = document.getElementById('mut-import-label').value.trim() || `${joint||''} MUT Grid`.trim();
+  const nwt      = parseFloat(document.getElementById('mut-import-nwt').value)||0;
+  const colStart = parseInt(document.getElementById('mut-import-colstart').value)||1;
+
+  let cells, rowLabels;
+  if(_mutImportParsed && _mutImportParsed.cells.length){
+    cells = _mutImportParsed.cells; rowLabels = _mutImportParsed.rowLabels;
+  } else {
+    const raw = document.getElementById('mut-paste-area').value.trim();
+    if(!raw){ showToast('Import a file or paste data first','error'); return; }
+    const lines = raw.split(/\r?\n/).filter(l=>l.trim());
+    cells = lines.map(l=>{
+      const parts = l.split(/\t|,|;/);
+      // Drop a leading non-numeric row label (A, B, C…) if present
+      if(parts.length>1 && isNaN(parseFloat(parts[0]))) parts.shift();
+      return parts.map(v=>v.trim());
+    }).filter(r=>r.some(v=>v!==''&&!isNaN(parseFloat(v))));
+    // Skip a leading header row of column numbers if non-thickness (e.g. 1,2,3…)
+    rowLabels = cells.map((_,i)=>alphaLabel(i));
+  }
+  if(!cells.length){ showToast('Could not parse any grid data','error'); return; }
+
+  const rows = cells.length;
+  const cols = Math.max(...cells.map(r=>r.length));
+  const key = `mut_${joint||'grid'}_${Date.now()}`;
+  if(!state.mutGrids) state.mutGrids={};
+  state.mutGrids[key] = {
+    key, type:'mut', joint, label, rows, cols, colStart, nwt,
+    cells, rowLabels, voids:{}, imported:true, _defaultView:'cscan',
+    createdAt:new Date().toISOString(),
+  };
+  _mutImportParsed = null;
+  save();
+  closeMUTImport();
+  renderTab(activeTab);
+  setTimeout(()=>openGridModal('mut', key), 100);
+  showToast(`MUT grid imported — ${rows} rows × ${cols} cols`);
+}
+
+// ── Heatmap (C-Scan) renderer — shared by AUT scans and MUT/EC grids ──────────
 function renderAUTHeatmap(container, gridData){
-  const {data, nwt} = gridData;
+  renderHeatmapInto(container, gridData.data, gridData.nwt, {label:gridData.label});
+}
+function renderHeatmapInto(container, data, nwt, opts){
+  opts = opts||{};
   if(!data||!data.length){ container.innerHTML='<div class="empty-state">No data</div>'; return; }
 
   const rows = data.length;
   const cols = Math.max(...data.map(r=>r.length));
 
-  const allVals = data.flat().filter(v=>v!==null&&!isNaN(v));
-  const minV = Math.min(...allVals);
-  const maxV = Math.max(...allVals);
+  // Exclude blacked-out (0.000 / empty) readings from the statistics
+  const allVals = data.flat().filter(v=>!isBlackout(v)).map(Number);
+  const minV = allVals.length ? Math.min(...allVals) : 0;
+  const maxV = allVals.length ? Math.max(...allVals) : (nwt||0.5);
+  const avg  = allVals.length ? allVals.reduce((a,b)=>a+b,0)/allVals.length : 0;
 
-  document.getElementById('grid-stat-min').textContent = `MIN: ${minV.toFixed(3)}"`;
-  document.getElementById('grid-stat-max').textContent = `MAX: ${maxV.toFixed(3)}"`;
-  const avg = allVals.reduce((a,b)=>a+b,0)/allVals.length;
-  document.getElementById('grid-stat-avg').textContent = `AVG: ${avg.toFixed(3)}"`;
+  const setStat=(id,txt)=>{ const e=document.getElementById(id); if(e) e.textContent=txt; };
+  setStat('grid-stat-min', allVals.length?`MIN: ${minV.toFixed(3)}"`:'');
+  setStat('grid-stat-max', allVals.length?`MAX: ${maxV.toFixed(3)}"`:'');
+  setStat('grid-stat-avg', allVals.length?`AVG: ${avg.toFixed(3)}"`:'');
   drawLegend('grid-legend-canvas', 'thickness', minV, nwt||0.5, maxV);
 
-  // Render onto canvas — each cell = cellW × cellH pixels
-  const cellW = Math.max(3, Math.min(12, Math.floor(900/cols)));
+  const cellW = Math.max(3, Math.min(16, Math.floor(900/cols)));
   const cellH = Math.max(6, Math.min(18, Math.floor(500/rows)));
   const cW = cols * cellW, cH = rows * cellH;
 
   container.innerHTML = `
     <div style="overflow:auto">
       <div style="display:flex;align-items:flex-start;gap:10px">
-        <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--color-text-secondary);padding:0 4px;white-space:nowrap;align-self:center">Y-Axis · Scan (Circ.)</div>
+        <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:11px;color:var(--color-text-secondary);padding:0 4px;white-space:nowrap;align-self:center">${opts.axisY||'Scan (Circ.)'}</div>
         <div>
-          <div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:2px">X-Axis · Index (Axial)</div>
+          <div style="font-size:11px;color:var(--color-text-secondary);text-align:center;margin-bottom:2px">${opts.axisX||'Index (Axial)'}</div>
           <canvas id="aut-canvas" width="${cW}" height="${cH}" class="aut-heatmap"></canvas>
           <div id="aut-hover" style="font-size:11px;color:var(--color-text-secondary);margin-top:4px;min-height:16px"></div>
+          <div style="font-size:10px;color:var(--color-text-tertiary);margin-top:2px"><span style="display:inline-block;width:9px;height:9px;background:#000;vertical-align:middle;margin-right:4px"></span>Black = 0.000 (no reading) — excluded from MIN</div>
         </div>
-        <div>
-          <canvas id="aut-scale" width="20" height="${cH}"></canvas>
-        </div>
+        <div><canvas id="aut-scale" width="20" height="${cH}"></canvas></div>
       </div>
     </div>`;
 
   const canvas = document.getElementById('aut-canvas');
   const ctx = canvas.getContext('2d');
-
-  // Draw cells
   data.forEach((row, ri)=>{
-    row.forEach((val, ci)=>{
-      ctx.fillStyle = val===null ? '#333' : thicknessColor(val, minV, nwt||0.5, maxV);
+    for(let ci=0; ci<cols; ci++){
+      const val = row[ci];
+      ctx.fillStyle = isBlackout(val) ? '#000' : thicknessColor(Number(val), minV, nwt||0.5, maxV);
       ctx.fillRect(ci*cellW, ri*cellH, cellW, cellH);
-    });
+    }
   });
 
-  // Draw color scale bar on side canvas
   const sc = document.getElementById('aut-scale');
   const sctx = sc.getContext('2d');
   for(let y=0;y<cH;y++){
     const t = 1 - y/cH;
-    const v = minV + (maxV-minV)*t;
-    sctx.fillStyle = thicknessColor(v, minV, nwt||0.5, maxV);
+    sctx.fillStyle = thicknessColor(minV + (maxV-minV)*t, minV, nwt||0.5, maxV);
     sctx.fillRect(0,y,20,1);
   }
-  // Scale labels
-  sctx.fillStyle = 'var(--color-text, #000)';
-  sctx.font = '9px sans-serif';
 
-  // Hover tooltip
   canvas.onmousemove = (e)=>{
     const rect = canvas.getBoundingClientRect();
-    const ci = Math.floor((e.clientX-rect.left)/cellW);
-    const ri = Math.floor((e.clientY-rect.top)/cellH);
+    const ci = Math.floor((e.clientX-rect.left)/cellW * (canvas.width/rect.width));
+    const ri = Math.floor((e.clientY-rect.top)/cellH * (canvas.height/rect.height));
     const val = data[ri]?.[ci];
     const hover = document.getElementById('aut-hover');
-    if(hover) hover.textContent = val!==null&&val!==undefined
-      ? `Axial ${ci} · Circ row ${ri} · WT: ${val.toFixed(3)}"`
-      : '';
+    if(hover) hover.textContent = (val===undefined) ? ''
+      : isBlackout(val) ? `Col ${ci} · Row ${ri} · 0.000 (no reading)`
+      : `Col ${ci} · Row ${ri} · WT: ${Number(val).toFixed(3)}"`;
   };
 }
 
 // ── EC grid button in VA rows ──────────────────────────────────────────────────
+// MUT grid button shown in each MUT indication row.
+function mutGridBtn(rowIdx){
+  const row = (state.mut||[])[rowIdx];
+  if(!row) return '<span style="font-size:10px;color:var(--color-text-tertiary)">—</span>';
+  const key = row.mutGridKey;
+  if(key && (state.mutGrids||{})[key]){
+    return `<button class="grid-open-btn" onclick="openGridModal('mut','${key}')" title="Open MUT grid">
+      <i class="ti ti-grid-dots"></i> MUT Grid</button>`;
+  }
+  return `<button class="grid-open-btn" style="border-color:var(--color-success-text);color:var(--color-success-text)"
+      onclick="newMUTGridForRow(${rowIdx})" title="Create a MUT grid linked to this indication">
+    <i class="ti ti-plus"></i> New MUT Grid</button>`;
+}
+// Open the MUT grid setup pre-linked to a specific indication row.
+function newMUTGridForRow(rowIdx){
+  openMUTSetup('mut');               // resets row link, populates joints
+  _mutSetupMUTRowIdx = rowIdx;       // link the new grid back to this row
+  const jt = (state.mut||[])[rowIdx]?.jt;
+  if(jt){ const sel=document.getElementById('mut-setup-joint'); if(sel) sel.value=jt; }
+  const lbl = document.getElementById('mut-setup-label');
+  if(lbl && !lbl.value) lbl.value = `MUT Grid — ${jt||''} ${(state.mut||[])[rowIdx]?.indid||''}`.trim();
+}
+
 function ecGridBtn(rowIdx){
   const row = (state.va||[])[rowIdx];
   if(!row) return '<span style="font-size:10px;color:var(--color-text-tertiary)">—</span>';
@@ -4942,6 +5525,7 @@ function mutGridsPanel(){
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);margin-bottom:6px">
       <i class="ti ti-grid-dots" style="color:var(--color-info-text)"></i>
       <strong style="font-size:13px">${g.label}</strong>
+      ${g.imported?'<span style="font-size:10px;background:var(--color-info-bg);color:var(--color-info-text);padding:1px 6px;border-radius:8px">imported</span>':''}
       <span style="font-size:11px;color:var(--color-text-secondary)">${g.joint} · ${g.rows}×${g.cols} · NWT ${g.nwt||'?'}"</span>
       <div style="margin-left:auto;display:flex;gap:5px">
         <button class="btn btn-sm" onclick="openGridModal('mut','${g.key}')"><i class="ti ti-eye"></i> Open</button>
@@ -4951,9 +5535,10 @@ function mutGridsPanel(){
 
   return `<div style="margin-top:12px">
     <div class="section-divider"><i class="ti ti-grid-dots"></i> MUT Wall Thickness Grids</div>
-    <button class="btn btn-primary" style="margin-bottom:8px" onclick="openMUTSetup('mut')">
-      <i class="ti ti-plus"></i> New MUT grid
-    </button>
+    <div style="display:flex;gap:8px;margin-bottom:8px">
+      <button class="btn btn-primary" onclick="openMUTImport()"><i class="ti ti-upload"></i> Import MUT grid</button>
+      <button class="btn" onclick="openMUTSetup('mut')"><i class="ti ti-plus"></i> New MUT grid</button>
+    </div>
     ${html}
   </div>`;
 }
@@ -6073,6 +6658,188 @@ function buildLSCTable(doc, y){
   return doc.lastAutoTable.finalY+4;
 }
 
+// ── LSC Pipe Characterization Data Sheet (PDF) ───────────────────────────────
+function lscPdfText(s){
+  return String(s==null?'':s)
+    .replace(/[\u2018\u2019]/g,"'")
+    .replace(/[\u201C\u201D]/g,'"')
+    .replace(/\u2264/g,'<=').replace(/\u2265/g,'>=')
+    .replace(/\u207D\u00B9\u207E/g,'(1)')
+    .replace(/\u00B2/g,'2');
+}
+// One seam-type category block in a column; returns new y.
+function lscPdfCat(doc, x, y, w, cat, checks){
+  doc.setFillColor(...R_LGRAY); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(x, y, w, 4.6, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(6.8); doc.setTextColor(...R_BLACK);
+  doc.text(lscPdfText(cat.name), x+1.6, y+3.1, {maxWidth:w-3});
+  let yy=y+4.6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.3);
+  cat.items.forEach((txt,i)=>{
+    const on=!!checks[cat.id+'_'+i];
+    const lines=doc.splitTextToSize(lscPdfText(txt), w-5.4);
+    const h=lines.length*2.45+1.4;
+    const bs=2.1, bx=x+1.4, by=yy+1.1;
+    doc.setDrawColor(...R_BLACK); doc.setLineWidth(0.25);
+    doc.setFillColor(...(on?R_DKBLUE:R_WHITE)); doc.rect(bx,by,bs,bs,'FD');
+    if(on){ doc.setDrawColor(...R_WHITE); doc.setLineWidth(0.4);
+      doc.line(bx+0.4,by+1.05,bx+0.8,by+1.6); doc.line(bx+0.8,by+1.6,bx+1.75,by+0.5); }
+    doc.setTextColor(...R_BLACK);
+    doc.text(lines, x+4.6, yy+2.7, {lineHeightFactor:1.05});
+    yy+=h;
+  });
+  if(cat.note){
+    doc.setFontSize(5.5); doc.setTextColor(90,90,90);
+    const nl=doc.splitTextToSize(lscPdfText(cat.note), w-3);
+    doc.text(nl, x+1.6, yy+2); yy+=nl.length*2.1+1.5; doc.setTextColor(...R_BLACK);
+  }
+  return yy+2.5;
+}
+// Flat checkbox grid (Other Features / Methods). Returns new y.
+function lscPdfGrid(doc, y, title, items, prefix, checks, ncol){
+  doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 5, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...R_WHITE);
+  doc.text(title, PW/2, y+3.5, {align:'center'}); y+=5; doc.setTextColor(...R_BLACK);
+  const gap=3, colW=(TW-(ncol-1)*gap)/ncol;
+  doc.setFont('helvetica','normal'); doc.setFontSize(6.8);
+  const rows=Math.ceil(items.length/ncol);
+  for(let r=0;r<rows;r++){
+    let rowH=0; const cells=[];
+    for(let c=0;c<ncol;c++){
+      const idx=r*ncol+c; // row-major to match worksheet column placement
+      if(idx>=items.length){ cells.push(null); continue; }
+      const lines=doc.splitTextToSize(lscPdfText(items[idx]), colW-5.4);
+      cells.push({idx,lines}); rowH=Math.max(rowH, lines.length*2.6+1.8);
+    }
+    for(let c=0;c<ncol;c++){
+      const cell=cells[c]; if(!cell) continue;
+      const x=ML+c*(colW+gap); const on=!!checks[prefix+cell.idx];
+      const bs=2.2, bx=x+1.2, by=y+1.4;
+      doc.setDrawColor(...R_BLACK); doc.setLineWidth(0.25);
+      doc.setFillColor(...(on?R_DKBLUE:R_WHITE)); doc.rect(bx,by,bs,bs,'FD');
+      if(on){ doc.setDrawColor(...R_WHITE); doc.setLineWidth(0.4);
+        doc.line(bx+0.4,by+1.1,bx+0.85,by+1.7); doc.line(bx+0.85,by+1.7,bx+1.85,by+0.5); }
+      doc.setTextColor(...R_BLACK);
+      doc.text(cell.lines, x+4.6, y+3, {lineHeightFactor:1.05});
+    }
+    y+=rowH;
+  }
+  return y+3;
+}
+// Labelled text block. Returns new y.
+function lscPdfTextBlock(doc, y, label, text){
+  doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...R_BLACK);
+  doc.text(label, ML, y+3); y+=4;
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  const lines=doc.splitTextToSize(lscPdfText(text||''), TW-4);
+  const h=Math.max(8, lines.length*3.2+3);
+  doc.setFillColor(...R_WHITE); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+  doc.rect(ML, y, TW, h, 'FD');
+  if(text) doc.text(lines, ML+2, y+4, {lineHeightFactor:1.15});
+  return y+h+3;
+}
+
+function buildLSCWorksheets(doc){
+  const groups=state.lscGroups||[];
+  if(!groups.length) return;
+  const cfg=state.config||{};
+  groups.forEach((g)=>{
+    const ws=ensureLSCWs(g);
+    doc.addPage(); let y=pageHeader(doc);
+
+    // Title
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...R_BLACK);
+    doc.text('Pipe Characterization Data Sheet', PW/2, y+2, {align:'center'}); y+=5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(90,90,90);
+    doc.text('(For Use When I.D. is Not Accessible)', PW/2, y+2, {align:'center'}); y+=5;
+    doc.setTextColor(...R_BLACK); doc.setFontSize(8);
+    doc.setFont('helvetica','bold');
+    doc.text('Joints in group: ', ML, y+2);
+    const jw=doc.getTextWidth('Joints in group: ');
+    doc.setFont('helvetica','normal');
+    doc.text(lscPdfText((g.joints||[]).join(', ')||'—'), ML+jw, y+2, {maxWidth:TW-jw}); y+=5;
+
+    // Seam-type characterization — 3 columns
+    doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...R_WHITE);
+    doc.text('Pipe Characterization — Check All That Apply', PW/2, y+3.5, {align:'center'}); y+=5;
+    doc.setTextColor(...R_BLACK);
+    const gap=3, colW=(TW-2*gap)/3;
+    const colY=[y,y,y];
+    LSC_SEAM_COLUMNS.forEach((col,ci)=>{
+      const x=ML+ci*(colW+gap);
+      col.forEach(catId=>{ colY[ci]=lscPdfCat(doc, x, colY[ci], colW, LSC_CAT_BY_ID[catId], ws.checks||{}); });
+    });
+    y=Math.max(...colY)+2;
+
+    // Other features + methods (new page if low)
+    if(y>PH-60){ doc.addPage(); y=pageHeader(doc); }
+    y=lscPdfGrid(doc, y, 'Other Notable Features', LSC_OTHER_FEATURES, 'feat_', ws.checks||{}, 3);
+    y=lscPdfGrid(doc, y, 'Inspection Methods Used', LSC_METHODS, 'meth_', ws.checks||{}, 3);
+
+    // Determination + results + observations + signatures
+    doc.addPage(); y=pageHeader(doc);
+    doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...R_WHITE);
+    doc.text('Characterization Results', PW/2, y+3.5, {align:'center'}); y+=7; doc.setTextColor(...R_BLACK);
+
+    const kv=(label,val,yy)=>{
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.text(label, ML, yy+2);
+      const lw=doc.getTextWidth(label)+2;
+      doc.setFont('helvetica','normal'); doc.text(lscPdfText(val||'—'), ML+lw, yy+2, {maxWidth:TW-lw});
+      return yy+5.5;
+    };
+    // SEAM TYPE — emphasized
+    doc.setFillColor(...R_LGRAY); doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+    doc.rect(ML, y, TW, 7, 'FD');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.text('SEAM TYPE:', ML+2, y+4.8);
+    doc.setFontSize(9.5); doc.text(lscPdfText(ws.seamType||g.result||'—'), ML+30, y+4.8);
+    y+=10;
+    y=kv('Component Description:', ws.compDesc, y);
+    y=kv('Job / SWIM No.:', cfg.jobNumber||cfg.swim||cfg.projectId, y);
+    y=kv('Seam Characterization Procedure / Rev.:', '345-WSC-01 Rev.3', y);
+    y=kv('Measured Pipe Diameter:', cfg.pipeDiameter||cfg.diameter, y);
+
+    // UT thickness results
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.text('UT Thickness Results (min., max., avg. before buffing):', ML, y+3); y+=5;
+    (ws.utResults||[]).forEach((r,i)=>{
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(`Section ${i+1}:   min ${lscPdfText(r.min||'—')}    max ${lscPdfText(r.max||'—')}    avg ${lscPdfText(r.avg||'—')}`, ML+2, y+2); y+=4.8;
+    });
+    y+=2;
+
+    const blocks=[['Visual O.D. Observations',ws.obsVisual],['Acid Etching Results',ws.obsAcid],
+      ['UT 0° Scanning Results',ws.obsUt0],['UT 45° Scanning Results',ws.obsUt45],['SME Findings (if applicable)',ws.obsSme]];
+    blocks.forEach(([lbl,txt])=>{
+      if(y>PH-26){ doc.addPage(); y=pageHeader(doc); }
+      y=lscPdfTextBlock(doc, y, lbl, txt);
+    });
+
+    // Signatures
+    if(y>PH-40){ doc.addPage(); y=pageHeader(doc); }
+    doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...R_WHITE);
+    doc.text('Signatures', PW/2, y+3.5, {align:'center'}); y+=7; doc.setTextColor(...R_BLACK);
+    const sig=ws.sig||{};
+    const sigRow=(label,nm,dt)=>{
+      const halfW=TW*0.66;
+      doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.text(label, ML, y+3);
+      doc.setFont('helvetica','normal');
+      doc.setDrawColor(...R_MGRAY); doc.setLineWidth(0.2);
+      doc.text(lscPdfText(nm||''), ML+halfW*0.42, y+3);
+      doc.line(ML+halfW*0.40, y+4, ML+halfW, y+4);
+      doc.text('Date: '+lscPdfText(dt||''), ML+halfW+6, y+3);
+      doc.line(ML+halfW+18, y+4, MR, y+4);
+      y+=8;
+    };
+    sigRow('NDE Technician:', sig.tech, sig.techDate);
+    sigRow('Peer Review:', sig.peer, sig.peerDate);
+    sigRow('SME (if applicable):', sig.sme, sig.smeDate);
+    sigRow('Final Review:', sig.final, sig.finalDate);
+  });
+}
+
+
 // ── Joint photos section ───────────────────────────────────────────────────────
 async function buildPhotosSection(doc, tabId, title, inclProjPhotos=true, inclJointOverview=true){
   // ── Project overview photos (always included) ──────────────────────────
@@ -6168,7 +6935,7 @@ async function generatePDF(){
       {id:'uttloc', label:'UTT of Test Locations', calId:'utt',
         build: async(doc,startY)=>{ buildUTTLocTable(doc,startY); }},
       {id:'aelsc',  label:'Long Seam Characterization (LSC)', calId:'aelsc',
-        build: async(doc,startY)=>{ let y=buildScopeTable(doc,'aelsc','AE/LSC',[],startY); doc.addPage(); y=pageHeader(doc); buildLSCTable(doc,y); }},
+        build: async(doc,startY)=>{ let y=buildScopeTable(doc,'aelsc','AE/LSC',[],startY); doc.addPage(); y=pageHeader(doc); buildLSCTable(doc,y); buildLSCWorksheets(doc); }},
       {id:'jointlen',label:'Joint Lengths', calId:null,
         build: async(doc,startY)=>{
           let y=startY;
@@ -6354,15 +7121,16 @@ function gridChunkToCanvas(gridData, type, rowStart, rowEnd, colStartIdx, colEnd
 }
 
 // Render an AUT scan chunk to canvas
-function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx){
+function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx, opts){
+  opts = opts||{};
   const {data, nwt=0.5} = scanData;
-  const allVals = data.flat().filter(v=>v!==null&&!isNaN(v));
+  const allVals = data.flat().filter(v=>!isBlackout(v)).map(Number);
   const minV = allVals.length?Math.min(...allVals):0;
   const maxV = allVals.length?Math.max(...allVals):(nwt||1);
 
   const chunkRows = rowEnd - rowStart;
   const chunkCols = colEndIdx - colStartIdx;
-  const cellW=6, cellH=6;
+  const cellW=opts.cellW||6, cellH=opts.cellH||6;
   const scaleW=20, headerH=16, footerH=14;
   const cW = chunkCols*cellW + scaleW;
   const cH = headerH + chunkRows*cellH + footerH;
@@ -6382,7 +7150,7 @@ function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx){
   for(let ri=0;ri<chunkRows;ri++){
     for(let ci=0;ci<chunkCols;ci++){
       const val=(data[rowStart+ri]||[])[colStartIdx+ci];
-      ctx.fillStyle=val===null?'#444':thicknessColor(val,minV,nwt,maxV);
+      ctx.fillStyle=isBlackout(val)?'#000':thicknessColor(Number(val),minV,nwt,maxV);
       ctx.fillRect(ci*cellW, headerH+ri*cellH, cellW, cellH);
     }
   }
@@ -6487,6 +7255,15 @@ async function buildGridsSection(doc, tabId, startY){
           const lbl=isFirst?null:`(rows ${alphaLabel(rowS)}–${alphaLabel(rowE-1)}, cols ${grid.colStart+colS}–${grid.colStart+colE-1})`;
           y=addCanvasToPDF(doc, chunk, y, lbl);
         }
+      }
+
+      // Color-coded C-Scan (same style as AUT); 0.000 readings are blacked out
+      const matrix=cellsToMatrix(grid);
+      const hasData=matrix.some(r=>r.some(v=>!isBlackout(v)));
+      if(hasData){
+        const cscan=autChunkToCanvas({data:matrix, nwt:grid.nwt||0.5, label:(grid.label||'MUT')+' — C-Scan'},
+          0, grid.rows, 0, grid.cols, {cellW:Math.max(8, Math.min(16, Math.floor(360/grid.cols))), cellH:8});
+        y=addCanvasToPDF(doc, cscan, y, 'Color-coded C-Scan');
       }
     }
   }
@@ -8380,6 +9157,20 @@ function initCollapsibleSections(){
   </div>
 </div>
 
+<div class="app-modal-overlay" id="lsc-ws-modal" onclick="if(event.target===this)closeLSCWorksheet()">
+  <div class="app-modal lscw-modal">
+    <div class="app-modal-title" style="justify-content:space-between">
+      <span><i class="ti ti-clipboard-check" style="color:var(--color-info-text)"></i> LSC Worksheet</span>
+      <span style="font-size:12px;font-weight:500;color:var(--color-text-secondary)">Joints: <b id="lsc-ws-title-joints">—</b></span>
+    </div>
+    <div class="lscw-scroll" id="lsc-ws-body"></div>
+    <div class="app-modal-footer" style="margin-top:10px">
+      <span style="font-size:11px;color:var(--color-text-tertiary)">Saved automatically · applies to all joints in this group</span>
+      <button class="btn btn-primary" onclick="closeLSCWorksheet()"><i class="ti ti-check"></i> Done</button>
+    </div>
+  </div>
+</div>
+
 
 <div class="app-modal-overlay" id="threat-modal" onclick="if(event.target===this)closeThreatModal()">
   <div class="app-modal" style="max-width:520px;border:2px solid var(--color-danger-border)">
@@ -8485,22 +9276,92 @@ function initCollapsibleSections(){
 </div>
 <input type="file" id="aut-file-input" accept=".csv,.txt,.tsv" style="display:none" onchange="handleAUTFile(event)">
 
+<div class="grid-modal-overlay" id="mut-import-modal" onclick="if(event.target===this)closeMUTImport()">
+  <div class="grid-modal" style="max-height:78vh;width:520px">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title"><i class="ti ti-upload"></i> Import MUT Grid</div>
+    </div>
+    <div class="grid-modal-body" style="overflow-y:auto">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:10px">
+        Import a thickness-grid spreadsheet (the <code>.xlsx</code> exported from your MUT software) — it reads the NWT, row labels and readings automatically. Or paste tab/comma-separated readings.
+      </p>
+      <div style="margin-bottom:8px">
+        <button class="btn" onclick="document.getElementById('mut-file-input').click()"><i class="ti ti-file-spreadsheet"></i> Choose .xlsx / .csv file</button>
+        <span id="mut-import-filename" style="font-size:12px;color:var(--color-success-text);margin-left:8px"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+        <div><label class="field-label">Joint</label>
+          <select id="mut-import-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
+        </div>
+        <div><label class="field-label">Label / description</label>
+          <input id="mut-import-label" placeholder="e.g. JT-11 MUT Grid" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">NWT (in.) for color scale</label>
+          <input id="mut-import-nwt" type="number" step="0.001" placeholder="e.g. 0.375" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+        <div><label class="field-label">First col # (axial start)</label>
+          <input id="mut-import-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        </div>
+      </div>
+      <div style="margin-bottom:4px">
+        <label class="field-label">…or paste readings (tab/comma separated)</label>
+        <textarea id="mut-paste-area" rows="6" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste grid rows here (leading A/B/C row labels are handled automatically)…"></textarea>
+      </div>
+      <p style="font-size:11px;color:var(--color-text-tertiary)">Readings of 0.000 are treated as "no reading" — blacked out on the C-Scan and excluded from the minimum.</p>
+    </div>
+    <div class="grid-modal-footer">
+      <button class="btn" onclick="closeMUTImport()">Cancel</button>
+      <button class="btn btn-primary" onclick="processMUTImport()"><i class="ti ti-check"></i> Import &amp; Render</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="mut-file-input" accept=".xlsx,.xls,.xlsm,.csv,.txt,.tsv" style="display:none" onchange="handleMUTFile(event)">
+
 <!-- MUT / EC grid setup modal -->
 <div class="grid-modal-overlay" id="mut-setup-modal" onclick="if(event.target===this)closeMUTSetup()">
   <div class="grid-modal" style="max-height:60vh;width:460px">
     <div class="grid-modal-header">
       <div class="grid-modal-title" id="mut-setup-title"><i class="ti ti-grid-dots"></i> New Grid</div>
     </div>
-    <div class="grid-modal-body">
+    <div class="grid-modal-body" style="overflow-y:auto;max-height:64vh">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label class="field-label">Joint</label>
-          <select id="mut-setup-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
+          <select id="mut-setup-joint" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
         </div>
         <div><label class="field-label">Label / description</label>
           <input id="mut-setup-label" placeholder="e.g. JT-01 MUT Grid" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
+      </div>
+
+      <!-- Auto-calc grid sizing (MUT only) -->
+      <div id="mut-autocalc" style="border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:10px;margin-bottom:10px;background:var(--color-bg-secondary)">
+        <div style="font-size:12px;font-weight:700;margin-bottom:8px"><i class="ti ti-calculator"></i> Size grid from component</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label class="field-label">Component type</label>
+            <select id="mut-comp-type" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+              <option value="pipe">Straight Pipe (auto)</option>
+              <option value="elbow">Elbow (manual circ.)</option>
+              <option value="reducer">Reducer (manual circ.)</option>
+              <option value="tee">Tee (manual circ.)</option>
+              <option value="other">Other / Fitting (manual)</option>
+            </select>
+          </div>
+          <div><label class="field-label">Grid increment (in.)</label>
+            <input id="mut-incr" type="number" step="0.125" value="1" min="0.0625" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          </div>
+          <div><label class="field-label">Pipe OD (in.)</label>
+            <input id="mut-od" type="number" step="0.001" placeholder="e.g. 12.75" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          </div>
+          <div><label class="field-label">MUT area length (axial, in.)</label>
+            <input id="mut-area-len" type="number" step="0.1" placeholder="e.g. 24" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          </div>
+        </div>
+        <div id="mut-calc-hint" style="font-size:11px;color:var(--color-text-secondary);margin-top:8px"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label class="field-label">Rows (circumferential)</label>
-          <input id="mut-setup-rows" type="number" value="20" min="1" max="100" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-rows" type="number" value="20" min="1" max="200" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">Columns (axial)</label>
           <input id="mut-setup-cols" type="number" value="10" min="1" max="200" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
