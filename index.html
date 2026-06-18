@@ -359,6 +359,10 @@ td textarea:placeholder-shown{
 .lscw-instr{font-size:10px;color:#333;line-height:1.4;margin:6px 0 10px}
 .lscw-joints-line{font-size:11px;margin-bottom:10px}
 .lscw-joints-line b{font-weight:700}
+.lscw-seampos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.lscw-seampos{display:flex;align-items:center;gap:8px}
+.lscw-seampos .jt{font-size:11px;font-weight:700;min-width:48px}
+.lscw-seampos select{flex:1;border:1px solid #999;border-radius:4px;background:#fffdf0;padding:3px 4px;font-size:11px;color:#1a1a1a;font-family:inherit}
 .lscw-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:start}
 .lscw-box{border:1px solid #555;border-radius:2px;padding:8px 9px;background:#fff}
 .lscw-box-title{text-align:center;font-weight:700;font-size:11px;border-bottom:1px solid #999;padding-bottom:4px;margin-bottom:5px}
@@ -473,7 +477,9 @@ td textarea:placeholder-shown{
 .grid-table th{background:var(--color-bg-secondary);padding:3px 6px;text-align:center;font-weight:600;border:1px solid var(--color-border);font-size:10px;color:var(--color-text-secondary)}
 .grid-table td{padding:0;border:1px solid var(--color-border);position:relative}
 .grid-table td.row-label{background:var(--color-bg-secondary);padding:2px 6px;font-weight:600;font-size:10px;text-align:center;color:var(--color-text-secondary);cursor:default}
-.grid-cell-input{width:46px;height:26px;border:none;background:transparent;text-align:center;font-size:11px;font-family:inherit;color:inherit;padding:0;outline:none;cursor:pointer}
+.grid-cell-input{width:46px;height:26px;border:none;background:transparent;text-align:center;font-size:11.5px;font-weight:600;font-variant-numeric:tabular-nums;font-family:inherit;color:inherit;padding:0;outline:none;cursor:pointer}
+.scale-row{display:flex;align-items:center;gap:8px}
+.scale-row input[type=number]{padding:5px 6px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px}
 .grid-cell-input:focus{outline:2px solid var(--color-info-border);outline-offset:-2px;background:var(--color-bg) !important;color:var(--color-text) !important;z-index:1;position:relative}
 .grid-cell-void{background:#111 !important;color:#fff;font-size:9px;font-weight:600;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center;height:26px;padding:0 3px}
 .grid-legend{display:flex;align-items:center;gap:6px;font-size:11px}
@@ -3435,6 +3441,7 @@ function ensureLSCWs(g){
   }
   if(!g.ws.utResults || !g.ws.utResults.length) g.ws.utResults=[{min:'',max:'',avg:''}];
   if(!g.ws.sig) g.ws.sig={tech:'',techDate:'',peer:'',peerDate:'',sme:'',smeDate:'',final:'',finalDate:''};
+  if(!g.ws.seamPos) g.ws.seamPos={};   // per-joint seam clock position
   return g.ws;
 }
 
@@ -3478,6 +3485,10 @@ function lscWsField(field, val){
 function lscWsSig(key, val){
   const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
   ensureLSCWs(g); g.ws.sig[key]=val; save();
+}
+function lscWsSeamPos(jid, val){
+  const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
+  ensureLSCWs(g); g.ws.seamPos[jid]=val; save();
 }
 function lscWsResult(idx, key, val){
   const g=(state.lscGroups||[])[_lscWsGroup]; if(!g) return;
@@ -3543,6 +3554,17 @@ function renderLSCWorksheetBody(gi){
   const dLine = ws.lineMP!==undefined ? ws.lineMP : [cfg.line, cfg.mp?('MP: '+cfg.mp):''].filter(Boolean).join(' ');
   const dLatLon = ws.latLong!==undefined ? ws.latLong : [cfg.lat,cfg.lon].filter(Boolean).join(', ');
 
+  // Per-joint long-seam clock position (joints share the characterization but
+  // each can have its own seam position).
+  const seamPosRows = (g.joints||[]).map(jid=>`
+    <div class="lscw-seampos">
+      <span class="jt">${esc(jid)}</span>
+      <select onchange="lscWsSeamPos('${esc(jid)}',this.value)">
+        <option value="" ${!ws.seamPos[jid]?'selected':''}>—</option>
+        ${CLOCK.map(c=>`<option ${c===ws.seamPos[jid]?'selected':''}>${esc(c)}</option>`).join('')}
+      </select>
+    </div>`).join('') || '<span style="font-size:11px;color:#777">No joints in this group yet.</span>';
+
   return `
   <div class="lscw-paper">
     <div class="lscw-doc-head">
@@ -3552,6 +3574,11 @@ function renderLSCWorksheetBody(gi){
     </div>
     <div class="lscw-instr"><b>Instructions:</b> Complete data sheet per 345-WSC-01, Section 9 and the applicable inspection and examination methods. Check all boxes that apply below. After evaluating the results, complete the fields below and document the Seam Type. Where applicable, attach supplementary NDE data sheets to the pipe characterization data sheet or final NDE report.</div>
     <div class="lscw-joints-line">Joints in this group: <b>${esc((g.joints||[]).join(', ')||'—')}</b></div>
+
+    <div class="lscw-sec" style="margin-top:0"><div class="lscw-sec-label">Seam Position — per joint</div>
+      <div class="lscw-seampos-grid">${seamPosRows}</div>
+      <div style="font-size:10px;color:#666;margin-top:6px">These joints share the characterization below, but each can have its own long-seam clock position.</div>
+    </div>
 
     <div class="lscw-grid3">${boxes.join('')}</div>
 
@@ -4839,10 +4866,49 @@ function toggleCalCard(cardId, returnTab){
 /* ===== Grid Engine ===== */
 
 // ── Color utilities ─────────────────────────────────────────────────────────
-// For MUT/AUT: thin=red, NWT=green, thick=blue
+// For MUT/AUT: thin=red, NWT=green, thick=blue (continuous fallback)
 // For EC depth: deep=red, shallow=green
-function thicknessColor(val, minVal, nwt, maxVal){
+// A custom "scale" (discrete bands) can override the continuous gradient.
+
+// Suggested starting bands when a user first opens the scale editor.
+const DEFAULT_SCALE_PCT = { mode:'pct', bands:[
+  {from:0,   color:'#c0392b'},   // < 70% NWT  — red
+  {from:70,  color:'#e67e22'},   // 70–80%     — orange
+  {from:80,  color:'#e6c014'},   // 80–90%     — yellow
+  {from:90,  color:'#3fa635'},   // 90–100%    — green
+  {from:100, color:'#2f6fb0'},   // ≥ 100%     — blue
+]};
+const DEFAULT_SCALE_ABS = { mode:'abs', bands:[
+  {from:0,    color:'#c0392b'},
+  {from:0.25, color:'#e67e22'},
+  {from:0.375,color:'#e6c014'},
+  {from:0.5,  color:'#3fa635'},
+]};
+
+// Resolve the active scale for a grid/scan: per-item override → global default → null.
+function getActiveScale(ctx){
+  if(ctx && ctx.scale && ctx.scale.bands && ctx.scale.bands.length) return ctx.scale;
+  const g = state.colorScaleDefault;
+  if(g && g.bands && g.bands.length) return g;
+  return null;
+}
+
+// Pick the band color for a value. pct-mode thresholds are % of NWT.
+function bandColor(val, nwt, scale){
+  const v = Number(val);
+  if(isNaN(v)) return 'transparent';
+  const bands = [...scale.bands].sort((a,b)=>a.from-b.from);
+  let chosen = bands[0] ? bands[0].color : '#999';
+  for(const b of bands){
+    const thr = scale.mode==='pct' ? (b.from/100)*(nwt||0) : b.from;
+    if(v >= thr) chosen = b.color;
+  }
+  return chosen;
+}
+
+function thicknessColor(val, minVal, nwt, maxVal, scale){
   if(val===null||val===undefined||isNaN(val)) return 'transparent';
+  if(scale && scale.bands && scale.bands.length) return bandColor(val, nwt, scale);
   // Normalize 0-1 across min→max range
   const range = maxVal - minVal || 1;
   const t = Math.max(0, Math.min(1, (val - minVal) / range));
@@ -4896,11 +4962,20 @@ function depthColor(depth, maxDepth){
 }
 
 function textColorFor(bg){
-  // Dark bg → white text, light bg → dark text
-  const m = bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
-  if(!m) return '#000';
-  const lum = (0.299*m[1] + 0.587*m[2] + 0.114*m[3]) / 255;
-  return lum > 0.45 ? '#111' : '#fff';
+  // Pick black or white for maximum WCAG contrast against the cell color.
+  let r,g,b;
+  let m = bg && bg.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+  if(m){ r=+m[1]; g=+m[2]; b=+m[3]; }
+  else if(bg && /^#([0-9a-f]{6})$/i.test(bg.trim())){
+    const x=bg.trim().slice(1); r=parseInt(x.slice(0,2),16); g=parseInt(x.slice(2,4),16); b=parseInt(x.slice(4,6),16);
+  } else if(bg && /^#([0-9a-f]{3})$/i.test(bg.trim())){
+    const x=bg.trim().slice(1); r=parseInt(x[0]+x[0],16); g=parseInt(x[1]+x[1],16); b=parseInt(x[2]+x[2],16);
+  } else return '#111';
+  const toLin = c => { c/=255; return c<=0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4); };
+  const L = 0.2126*toLin(r) + 0.7152*toLin(g) + 0.0722*toLin(b);
+  const contrastWhite = (1.05) / (L + 0.05);
+  const contrastBlack = (L + 0.05) / (0.05);
+  return contrastWhite >= contrastBlack ? '#fff' : '#111';
 }
 
 // Generate alpha row labels: A,B...Z,AA,AB...
@@ -4912,11 +4987,25 @@ function alphaLabel(i){
 }
 
 // ── Legend canvas ────────────────────────────────────────────────────────────
-function drawLegend(canvasId, mode, minV, nwt, maxV){
+function drawLegend(canvasId, mode, minV, nwt, maxV, scale){
   const c = document.getElementById(canvasId);
   if(!c) return;
   const ctx = c.getContext('2d');
   const w = c.width, h = c.height;
+  ctx.clearRect(0,0,w,h);
+  if(scale && scale.bands && scale.bands.length && mode!=='depth'){
+    // Discrete bands: equal-width blocks with threshold labels underneath
+    const bands = [...scale.bands].sort((a,b)=>a.from-b.from);
+    const n = bands.length, bw = w/n, barH = Math.min(h-12, h*0.6);
+    ctx.font = '9px sans-serif'; ctx.textAlign='center';
+    bands.forEach((b,i)=>{
+      ctx.fillStyle = b.color; ctx.fillRect(i*bw, 0, Math.ceil(bw), barH);
+      const lbl = scale.mode==='pct' ? `${b.from}%` : (+b.from).toFixed(3);
+      ctx.fillStyle = '#666';
+      ctx.fillText(lbl, i*bw+2, barH+9);
+    });
+    return;
+  }
   for(let x=0; x<w; x++){
     const v = minV + (maxV-minV)*(x/w);
     ctx.fillStyle = mode==='depth' ? depthColor(v, maxV) : thicknessColor(v, minV, nwt, maxV);
@@ -4970,9 +5059,11 @@ function renderGridModal(type, gridData){
   if(view==='cscan'){
     body.innerHTML = toggle + '<div id="grid-heatmap-host"></div>';
     renderHeatmapInto(document.getElementById('grid-heatmap-host'), cellsToMatrix(gridData), nwt,
-      {axisX:'Column (Axial)', axisY:'Row (Circ.)'});
+      {axisX:'Column (Axial)', axisY:'Row (Circ.)', scale:getActiveScale(gridData)});
     return;
   }
+
+  const scale = isEC ? null : getActiveScale(gridData);
 
   // Compute stats — exclude voids and 0.000 (no-reading) cells
   const vals = [];
@@ -4987,7 +5078,7 @@ function renderGridModal(type, gridData){
   document.getElementById('grid-stat-min').textContent = vals.length ? `MIN: ${minV.toFixed(3)}"` : '';
   document.getElementById('grid-stat-max').textContent = vals.length ? `MAX: ${maxV.toFixed(3)}"` : '';
   document.getElementById('grid-stat-avg').textContent = vals.length ? `AVG: ${avgV.toFixed(3)}"` : '';
-  drawLegend('grid-legend-canvas', isEC?'depth':'thickness', minV, nwt||0.5, maxV);
+  drawLegend('grid-legend-canvas', isEC?'depth':'thickness', minV, nwt||0.5, maxV, scale);
 
   // Build table
   let html = toggle + `<table class="grid-table"><thead><tr><th style="min-width:32px">Row</th>`;
@@ -5005,7 +5096,7 @@ function renderGridModal(type, gridData){
       let bg, fg;
       if(isVoid){ bg=''; fg='#fff'; }
       else if(isZero){ bg='#000'; fg='#888'; }
-      else if(!isNaN(numVal)){ bg = isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt||0.5, maxV); fg = textColorFor(bg); }
+      else if(!isNaN(numVal)){ bg = isEC ? depthColor(numVal, maxV) : thicknessColor(numVal, minV, nwt||0.5, maxV, scale); fg = textColorFor(bg); }
       else { bg='transparent'; fg=textColorFor('transparent'); }
 
       if(isVoid){
@@ -5032,6 +5123,116 @@ function renderGridModal(type, gridData){
 
 function setGridView(v){
   if(_activeGrid){ _activeGrid.view = v; renderGridModal(_activeGrid.type, _activeGrid.data); }
+}
+
+/* ===== Custom color-scale (discrete bands) editor ===== */
+let _scaleEdit = null;  // { target, useNone, scale }
+
+function openScaleEditor(target){
+  // target: 'global' or {type:'mut'|'aut', key}
+  const clone = s => s ? JSON.parse(JSON.stringify(s)) : null;
+  let working, useNone;
+  if(target==='global'){
+    working = clone(state.colorScaleDefault) || clone(DEFAULT_SCALE_PCT);
+    useNone = !state.colorScaleDefault;     // currently continuous gradient
+  } else {
+    const grid = (target.type==='aut'?state.autScans:state.mutGrids)[target.key];
+    working = clone(grid && grid.scale) || clone(state.colorScaleDefault) || clone(DEFAULT_SCALE_PCT);
+    useNone = !(grid && grid.scale);        // currently following global
+  }
+  _scaleEdit = { target, useNone, scale:working };
+  document.getElementById('scale-modal').classList.add('open');
+  renderScaleEditor();
+}
+function closeScaleEditor(){ document.getElementById('scale-modal').classList.remove('open'); _scaleEdit=null; }
+
+function renderScaleEditor(){
+  if(!_scaleEdit) return;
+  const {target, useNone, scale} = _scaleEdit;
+  const isGlobal = target==='global';
+  const title = isGlobal ? 'Color Scale — Global default'
+    : `Color Scale — ${((target.type==='aut'?state.autScans:state.mutGrids)[target.key]||{}).label||'grid'}`;
+  document.getElementById('scale-modal-title').innerHTML = `<i class="ti ti-palette"></i> ${title}`;
+
+  const noneLabel = isGlobal
+    ? 'Use the continuous rainbow gradient (no bands)'
+    : 'Follow the global default scale';
+
+  const bands = [...scale.bands].sort((a,b)=>a.from-b.from);
+  const unit = scale.mode==='pct' ? '%' : 'in';
+  const bandRows = bands.map((b,i)=>`
+    <div class="scale-row">
+      <span style="font-size:11px;color:var(--color-text-secondary)">≥</span>
+      <input type="number" step="${scale.mode==='pct'?'1':'0.001'}" value="${b.from}" style="width:80px"
+             onchange="scaleSetFrom(${i}, this.value)">
+      <span style="font-size:11px;color:var(--color-text-secondary);width:24px">${unit}</span>
+      <input type="color" value="${b.color}" style="width:46px;height:30px;padding:0;border:1px solid var(--color-border)" onchange="scaleSetColor(${i}, this.value)">
+      <span style="flex:1;font-size:11px;color:var(--color-text-tertiary)">${scale.mode==='pct'?`${b.from}% of NWT and above`:`${(+b.from).toFixed(3)}" and above`}</span>
+      <button class="icon-btn" onclick="scaleRemoveBand(${i})" ${bands.length<=1?'disabled':''}><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+
+  // Preview swatches
+  const preview = bands.map(b=>`<div style="flex:1;height:22px;background:${b.color}"></div>`).join('');
+
+  document.getElementById('scale-modal-body').innerHTML = `
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:12px;cursor:pointer">
+      <input type="checkbox" ${useNone?'checked':''} onchange="scaleToggleNone(this.checked)" style="width:15px;height:15px;accent-color:#1F3864">
+      ${noneLabel}
+    </label>
+    <div style="${useNone?'opacity:0.4;pointer-events:none':''}">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <strong style="font-size:12px">Threshold units:</strong>
+        <button class="btn btn-sm${scale.mode==='abs'?' btn-primary':''}" onclick="scaleSetMode('abs')">Absolute (in.)</button>
+        <button class="btn btn-sm${scale.mode==='pct'?' btn-primary':''}" onclick="scaleSetMode('pct')">% of NWT</button>
+      </div>
+      <div style="display:flex;border-radius:6px;overflow:hidden;border:1px solid var(--color-border);margin-bottom:12px">${preview}</div>
+      <div style="display:flex;flex-direction:column;gap:6px">${bandRows}</div>
+      <button class="btn btn-sm" style="margin-top:10px" onclick="scaleAddBand()"><i class="ti ti-plus"></i> Add band</button>
+      <p style="font-size:11px;color:var(--color-text-tertiary);margin-top:10px">Each value is colored by the highest threshold it meets or exceeds. ${scale.mode==='pct'?'Percent thresholds are applied against each grid\u2019s NWT.':'Absolute thresholds are in inches.'}</p>
+    </div>`;
+}
+
+function scaleToggleNone(on){ _scaleEdit.useNone=on; renderScaleEditor(); }
+function scaleSetMode(mode){
+  if(_scaleEdit.scale.mode===mode) return;
+  // Convert thresholds when switching units if we know a reference NWT? Keep values, just relabel.
+  _scaleEdit.scale.mode=mode;
+  // sensible defaults if coming in empty
+  renderScaleEditor();
+}
+function scaleSetFrom(i,val){ const b=[..._scaleEdit.scale.bands].sort((a,b)=>a.from-b.from); if(b[i]){ b[i].from=parseFloat(val)||0; _scaleEdit.scale.bands=b; } renderScaleEditor(); }
+function scaleSetColor(i,val){ const b=[..._scaleEdit.scale.bands].sort((a,b)=>a.from-b.from); if(b[i]){ b[i].color=val; _scaleEdit.scale.bands=b; } renderScaleEditor(); }
+function scaleRemoveBand(i){ const b=[..._scaleEdit.scale.bands].sort((a,b)=>a.from-b.from); b.splice(i,1); _scaleEdit.scale.bands=b; renderScaleEditor(); }
+function scaleAddBand(){
+  const b=[..._scaleEdit.scale.bands].sort((a,b)=>a.from-b.from);
+  const last=b[b.length-1];
+  const nextFrom = _scaleEdit.scale.mode==='pct' ? Math.min(150,(last?last.from:0)+10) : +(((last?last.from:0)+0.05).toFixed(3));
+  b.push({from:nextFrom, color:'#2f6fb0'});
+  _scaleEdit.scale.bands=b; renderScaleEditor();
+}
+
+function openActiveScale(){
+  if(!_activeGrid) return;
+  if(_activeGrid.type==='ec'){ showToast('Color scale applies to MUT/AUT thickness grids'); return; }
+  openScaleEditor({type:_activeGrid.type, key:_activeGrid.key});
+}
+
+function saveScale(){
+  if(!_scaleEdit) return;
+  const {target, useNone, scale} = _scaleEdit;
+  scale.bands = [...scale.bands].sort((a,b)=>a.from-b.from);
+  if(target==='global'){
+    state.colorScaleDefault = useNone ? null : scale;
+  } else {
+    const store = target.type==='aut' ? state.autScans : state.mutGrids;
+    if(store[target.key]) store[target.key].scale = useNone ? null : scale;
+  }
+  save();
+  closeScaleEditor();
+  // Re-render whatever is showing
+  if(_activeGrid) renderGridModal(_activeGrid.type, _activeGrid.data);
+  renderTab(activeTab);
+  showToast('Color scale updated');
 }
 
 function setCellValue(type, key, r, c, val){
@@ -5422,10 +5623,11 @@ function processMUTImport(){
 
 // ── Heatmap (C-Scan) renderer — shared by AUT scans and MUT/EC grids ──────────
 function renderAUTHeatmap(container, gridData){
-  renderHeatmapInto(container, gridData.data, gridData.nwt, {label:gridData.label});
+  renderHeatmapInto(container, gridData.data, gridData.nwt, {label:gridData.label, scale:getActiveScale(gridData)});
 }
 function renderHeatmapInto(container, data, nwt, opts){
   opts = opts||{};
+  const scale = opts.scale || null;
   if(!data||!data.length){ container.innerHTML='<div class="empty-state">No data</div>'; return; }
 
   const rows = data.length;
@@ -5441,7 +5643,7 @@ function renderHeatmapInto(container, data, nwt, opts){
   setStat('grid-stat-min', allVals.length?`MIN: ${minV.toFixed(3)}"`:'');
   setStat('grid-stat-max', allVals.length?`MAX: ${maxV.toFixed(3)}"`:'');
   setStat('grid-stat-avg', allVals.length?`AVG: ${avg.toFixed(3)}"`:'');
-  drawLegend('grid-legend-canvas', 'thickness', minV, nwt||0.5, maxV);
+  drawLegend('grid-legend-canvas', 'thickness', minV, nwt||0.5, maxV, scale);
 
   const cellW = Math.max(3, Math.min(16, Math.floor(900/cols)));
   const cellH = Math.max(6, Math.min(18, Math.floor(500/rows)));
@@ -5466,7 +5668,7 @@ function renderHeatmapInto(container, data, nwt, opts){
   data.forEach((row, ri)=>{
     for(let ci=0; ci<cols; ci++){
       const val = row[ci];
-      ctx.fillStyle = isBlackout(val) ? '#000' : thicknessColor(Number(val), minV, nwt||0.5, maxV);
+      ctx.fillStyle = isBlackout(val) ? '#000' : thicknessColor(Number(val), minV, nwt||0.5, maxV, scale);
       ctx.fillRect(ci*cellW, ri*cellH, cellW, cellH);
     }
   });
@@ -5475,7 +5677,7 @@ function renderHeatmapInto(container, data, nwt, opts){
   const sctx = sc.getContext('2d');
   for(let y=0;y<cH;y++){
     const t = 1 - y/cH;
-    sctx.fillStyle = thicknessColor(minV + (maxV-minV)*t, minV, nwt||0.5, maxV);
+    sctx.fillStyle = thicknessColor(minV + (maxV-minV)*t, minV, nwt||0.5, maxV, scale);
     sctx.fillRect(0,y,20,1);
   }
 
@@ -5550,15 +5752,17 @@ function mutGridsPanel(){
       <span style="font-size:11px;color:var(--color-text-secondary)">${g.joint} · ${g.rows}×${g.cols} · NWT ${g.nwt||'?'}"</span>
       <div style="margin-left:auto;display:flex;gap:5px">
         <button class="btn btn-sm" onclick="openGridModal('mut','${g.key}')"><i class="ti ti-eye"></i> Open</button>
+        <button class="btn btn-sm" onclick="openScaleEditor({type:'mut',key:'${g.key}'})" title="Color scale for this grid"><i class="ti ti-palette"></i></button>
         <button class="icon-btn" onclick="deleteMUTGrid('${g.key}')"><i class="ti ti-trash"></i></button>
       </div>
     </div>`).join('') || `<div class="empty-state"><i class="ti ti-grid-dots"></i>No MUT grids yet</div>`;
 
   return `<div style="margin-top:12px">
     <div class="section-divider"><i class="ti ti-grid-dots"></i> MUT Wall Thickness Grids</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px">
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="openMUTImport()"><i class="ti ti-upload"></i> Import MUT grid</button>
       <button class="btn" onclick="openMUTSetup('mut')"><i class="ti ti-plus"></i> New MUT grid</button>
+      <button class="btn" onclick="openScaleEditor('global')"><i class="ti ti-palette"></i> Color scale</button>
     </div>
     ${html}
   </div>`;
@@ -5573,15 +5777,17 @@ function autScansPanel(){
       <span style="font-size:11px;color:var(--color-text-secondary)">${s.joint} · ${s.data?.length||0} rows × ${s.data?.[0]?.length||0} cols</span>
       <div style="margin-left:auto;display:flex;gap:5px">
         <button class="btn btn-sm" onclick="openGridModal('aut','${s.key}')"><i class="ti ti-eye"></i> View C-scan</button>
+        <button class="btn btn-sm" onclick="openScaleEditor({type:'aut',key:'${s.key}'})" title="Color scale for this scan"><i class="ti ti-palette"></i></button>
         <button class="icon-btn" onclick="deleteAUTScan('${s.key}')"><i class="ti ti-trash"></i></button>
       </div>
     </div>`).join('') || `<div class="empty-state"><i class="ti ti-chart-area"></i>No AUT scans imported yet</div>`;
 
   return `<div style="margin-top:12px">
     <div class="section-divider"><i class="ti ti-chart-area"></i> AUT C-scan Data</div>
-    <button class="btn btn-primary" style="margin-bottom:8px" onclick="openAUTImport()">
-      <i class="ti ti-upload"></i> Import AUT scan
-    </button>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="openAUTImport()"><i class="ti ti-upload"></i> Import AUT scan</button>
+      <button class="btn" onclick="openScaleEditor('global')"><i class="ti ti-palette"></i> Color scale</button>
+    </div>
     ${html}
   </div>`;
 }
@@ -6780,6 +6986,17 @@ function buildLSCWorksheets(doc){
     doc.setFont('helvetica','normal');
     doc.text(lscPdfText((g.joints||[]).join(', ')||'—'), ML+jw, y+2, {maxWidth:TW-jw}); y+=5;
 
+    // Per-joint seam clock position
+    const seamPos = ws.seamPos||{};
+    const posList = (g.joints||[]).filter(jid=>seamPos[jid]).map(jid=>`${jid}: ${seamPos[jid]}`);
+    if(posList.length){
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.text('Seam position: ', ML, y+2);
+      const sw=doc.getTextWidth('Seam position: ');
+      doc.setFont('helvetica','normal');
+      doc.text(lscPdfText(posList.join('   ·   ')), ML+sw, y+2, {maxWidth:TW-sw}); y+=5;
+    }
+
     // Seam-type characterization — 3 columns
     doc.setFillColor(...R_DKBLUE); doc.rect(ML, y, TW, 5, 'F');
     doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...R_WHITE);
@@ -7048,13 +7265,14 @@ async function generatePDF(){
 function gridChunkToCanvas(gridData, type, rowStart, rowEnd, colStartIdx, colEndIdx){
   const {colStart=1, cells=[], voids={}, nwt=0.5} = gridData;
   const isEC = type === 'ec';
+  const scale = isEC ? null : getActiveScale(gridData);
   const chunkRows = rowEnd - rowStart;
   const chunkCols = colEndIdx - colStartIdx;
 
-  // Compute value range across WHOLE grid for consistent color scale
+  // Compute value range across WHOLE grid (excluding 0.000 / voids) for stats
   const allVals = [];
   for(let r=0;r<gridData.rows;r++) for(let c=0;c<gridData.cols;c++){
-    if(!voids[r]?.[c]){ const v=parseFloat(cells[r]?.[c]); if(!isNaN(v)) allVals.push(v); }
+    if(!voids[r]?.[c] && !isBlackout(cells[r]?.[c])) allVals.push(parseFloat(cells[r]?.[c]));
   }
   const minV = allVals.length ? Math.min(...allVals) : 0;
   const maxV = allVals.length ? Math.max(...allVals) : (nwt||1);
@@ -7109,15 +7327,13 @@ function gridChunkToCanvas(gridData, type, rowStart, rowEnd, colStartIdx, colEnd
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText('Void',x+cellW/2,y+cellH/2);
       } else {
-        const bg = !isNaN(numVal)
-          ? (isEC ? depthColor(numVal,maxV) : thicknessColor(numVal,minV,nwt,maxV))
-          : '#f5f5f5';
+        const isZero = (val!==''&&val!=null&&isBlackout(val));
+        const bg = isZero ? '#000'
+          : (!isNaN(numVal) ? (isEC ? depthColor(numVal,maxV) : thicknessColor(numVal,minV,nwt,maxV,scale)) : '#f5f5f5');
         ctx.fillStyle=bg; ctx.fillRect(x,y,cellW,cellH);
         ctx.strokeStyle='#ccc'; ctx.lineWidth=0.5; ctx.strokeRect(x,y,cellW,cellH);
         if(!isNaN(numVal)){
-          const m=bg.match(/rgb\((\d+),(\d+),(\d+)\)/);
-          const lum=m?(0.299*m[1]+0.587*m[2]+0.114*m[3])/255:0.5;
-          ctx.fillStyle=lum>0.45?'#111':'#fff';
+          ctx.fillStyle = isZero ? '#888' : textColorFor(bg);
           ctx.font='9px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
           ctx.fillText(numVal.toFixed(3),x+cellW/2,y+cellH/2);
         }
@@ -7145,6 +7361,7 @@ function gridChunkToCanvas(gridData, type, rowStart, rowEnd, colStartIdx, colEnd
 function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx, opts){
   opts = opts||{};
   const {data, nwt=0.5} = scanData;
+  const scale = getActiveScale(scanData);
   const allVals = data.flat().filter(v=>!isBlackout(v)).map(Number);
   const minV = allVals.length?Math.min(...allVals):0;
   const maxV = allVals.length?Math.max(...allVals):(nwt||1);
@@ -7171,7 +7388,7 @@ function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx, op
   for(let ri=0;ri<chunkRows;ri++){
     for(let ci=0;ci<chunkCols;ci++){
       const val=(data[rowStart+ri]||[])[colStartIdx+ci];
-      ctx.fillStyle=isBlackout(val)?'#000':thicknessColor(Number(val),minV,nwt,maxV);
+      ctx.fillStyle=isBlackout(val)?'#000':thicknessColor(Number(val),minV,nwt,maxV,scale);
       ctx.fillRect(ci*cellW, headerH+ri*cellH, cellW, cellH);
     }
   }
@@ -7180,7 +7397,7 @@ function autChunkToCanvas(scanData, rowStart, rowEnd, colStartIdx, colEndIdx, op
   const sbx=chunkCols*cellW+1;
   for(let y=0;y<chunkRows*cellH;y++){
     const t=1-y/(chunkRows*cellH);
-    ctx.fillStyle=thicknessColor(minV+(maxV-minV)*t,minV,nwt,maxV);
+    ctx.fillStyle=thicknessColor(minV+(maxV-minV)*t,minV,nwt,maxV,scale);
     ctx.fillRect(sbx,headerH+y,scaleW-2,1);
   }
 
@@ -7291,11 +7508,13 @@ async function buildGridsSection(doc, tabId, startY){
         y=addCanvasToPDF(doc, chunk, y, lbl);
       }
 
-      // Color-coded C-Scan (same style as AUT); 0.000 readings are blacked out
+      // Color-coded C-Scan (same style as AUT); 0.000 readings are blacked out.
+      // Optional — controlled by the PDF "Include MUT C-Scan" checkbox.
+      const inclCScan = document.getElementById('pdf-include-mut-cscan')?.checked !== false;
       const matrix=cellsToMatrix(grid);
       const hasData=matrix.some(r=>r.some(v=>!isBlackout(v)));
-      if(hasData){
-        const cscan=autChunkToCanvas({data:matrix, nwt:grid.nwt||0.5, label:(grid.label||'MUT')+' — C-Scan'},
+      if(inclCScan && hasData){
+        const cscan=autChunkToCanvas({data:matrix, nwt:grid.nwt||0.5, label:(grid.label||'MUT')+' — C-Scan', scale:getActiveScale(grid)},
           0, grid.rows, 0, grid.cols, {cellW:Math.max(8, Math.min(16, Math.floor(360/grid.cols))), cellH:8});
         y=addCanvasToPDF(doc, cscan, y, 'Color-coded C-Scan');
       }
@@ -9024,6 +9243,10 @@ function initCollapsibleSections(){
           <input type="checkbox" id="pdf-include-cal" checked style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
           Include NDE parameter / cal records
         </label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13px">
+          <input type="checkbox" id="pdf-include-mut-cscan" checked style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
+          Include MUT C-Scan heatmap (in addition to the numbered grid)
+        </label>
       </div>
     </div>
     <div style="display:flex;gap:8px;margin-top:4px">
@@ -9264,6 +9487,7 @@ function initCollapsibleSections(){
       </div>
       <span class="paste-hint" id="grid-paste-hint"></span>
       <div style="display:flex;gap:6px;margin-left:auto">
+        <button class="btn" onclick="openActiveScale()" title="Customize color scale"><i class="ti ti-palette"></i> Scale</button>
         <button class="btn" onclick="closeGridModal()"><i class="ti ti-x"></i> Close</button>
       </div>
     </div>
@@ -9356,6 +9580,19 @@ function initCollapsibleSections(){
   </div>
 </div>
 <input type="file" id="mut-file-input" accept=".xlsx,.xls,.xlsm,.csv,.txt,.tsv" style="display:none" onchange="handleMUTFile(event)">
+
+<div class="grid-modal-overlay" id="scale-modal" onclick="if(event.target===this)closeScaleEditor()">
+  <div class="grid-modal" style="max-height:82vh;width:560px">
+    <div class="grid-modal-header">
+      <div class="grid-modal-title" id="scale-modal-title"><i class="ti ti-palette"></i> Color Scale</div>
+    </div>
+    <div class="grid-modal-body" id="scale-modal-body" style="overflow-y:auto"></div>
+    <div class="grid-modal-footer">
+      <button class="btn" onclick="closeScaleEditor()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveScale()"><i class="ti ti-check"></i> Save scale</button>
+    </div>
+  </div>
+</div>
 
 <!-- MUT / EC grid setup modal -->
 <div class="grid-modal-overlay" id="mut-setup-modal" onclick="if(event.target===this)closeMUTSetup()">
