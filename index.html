@@ -73,8 +73,14 @@
   }
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;color:var(--color-text);background:var(--color-bg-tertiary);min-height:100vh}
-.app{max-width:960px;margin:0 auto;padding:1rem}
-.header{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.app{max-width:1080px;margin:0 auto;padding:1rem}
+.topbar{position:sticky;top:0;z-index:30;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:10px 16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04)}
+.setup-stack{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.setup-card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden}
+.setup-card>.collapsible-header{margin:0;padding:12px 16px;border-bottom:1px solid var(--color-border);background:var(--color-bg-secondary);border-radius:0;font-size:11.5px}
+.setup-card>.collapsible-header.collapsed{border-bottom-color:transparent}
+.setup-card>.collapsible-body{padding:14px 16px}
+.setup-card .config-grid{margin-top:0}
 .header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .app-title{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
 .app-subtitle{font-size:12px;color:var(--color-text-secondary);margin-top:3px}
@@ -84,10 +90,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 .config-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:1rem}
 .field-group{display:flex;flex-direction:column;gap:3px}
 .field-label{font-size:11px;color:var(--color-text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.04em}
-input,select,textarea{width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px;font-family:inherit}
+input,select,textarea{width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px;font-family:inherit}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--color-info-border);outline-offset:1px}
 textarea{resize:vertical;min-height:52px}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:transparent;color:var(--color-text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:transparent;color:var(--color-text);font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s}
 .btn:hover{background:var(--color-bg-secondary)}
 .btn:active{transform:scale(0.98)}
 .btn-primary{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text)}
@@ -98,7 +104,7 @@ textarea{resize:vertical;min-height:52px}
 .collapsible-section{margin-bottom:8px}
 .collapsible-header{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
   font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;
-  letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border)}
+  letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--color-border)}
 .collapsible-header:hover{color:var(--color-text)}
 .collapsible-header .chev{transition:transform 0.2s;font-size:12px;margin-left:auto}
 .collapsible-header.collapsed .chev{transform:rotate(-90deg)}
@@ -106,9 +112,9 @@ textarea{resize:vertical;min-height:52px}
 .collapsible-body.collapsed{display:none}
 .collapsible-summary{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:none;letter-spacing:normal;margin-left:4px}
 
-.section-divider{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:0.5px solid var(--color-border)}
+.section-divider{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--color-border)}
 .joints-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.joint-chip{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;font-size:12px}
+.joint-chip{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;font-size:12px}
 .joint-chip strong{font-weight:600}
 .joint-chip .chip-meta{color:var(--color-text-secondary)}
 .icon-btn{background:transparent;border:none;cursor:pointer;color:var(--color-text-tertiary);padding:2px 4px;border-radius:4px;line-height:1;font-size:15px;display:inline-flex;align-items:center}
@@ -116,28 +122,28 @@ textarea{resize:vertical;min-height:52px}
 .add-joint-row{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap}
 .add-joint-row input,.add-joint-row select{flex:1;min-width:80px;max-width:140px}
 .tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem}
-.tab{padding:6px 12px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background 0.15s}
+.tab{padding:6px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background 0.15s}
 .tab:hover{background:var(--color-bg-secondary)}
 .tab.active{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text);font-weight:600}
 .tab-badge{display:inline-block;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px;font-weight:600}
-.panel{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem 1.25rem}
+.panel{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1rem 1.25rem}
 .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .panel-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
 .panel-actions{display:flex;gap:6px;flex-wrap:wrap}
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:var(--color-bg-secondary);padding:6px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em}
-td{padding:4px 5px;border-bottom:0.5px solid var(--color-border);vertical-align:middle}
+th{background:var(--color-bg-secondary);padding:6px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em}
+td{padding:4px 5px;border-bottom:1px solid var(--color-border);vertical-align:middle}
 td input,td select{padding:3px 6px;font-size:12px}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:var(--color-bg-secondary)}
 .alert{padding:8px 12px;border-radius:var(--radius-md);font-size:12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:6px}
-.alert-info{background:var(--color-info-bg);color:var(--color-info-text);border:0.5px solid var(--color-info-border)}
-.alert-danger{background:var(--color-danger-bg);color:var(--color-danger-text);border:0.5px solid var(--color-danger-border)}
+.alert-info{background:var(--color-info-bg);color:var(--color-info-text);border:1px solid var(--color-info-border)}
+.alert-danger{background:var(--color-danger-bg);color:var(--color-danger-text);border:1px solid var(--color-danger-border)}
 .val-low{color:var(--color-danger-text);font-weight:600}
 .photo-section{margin-top:14px}
 .photo-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
-.photo-thumb{position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:0.5px solid var(--color-border);flex-shrink:0}
+.photo-thumb{position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:1px solid var(--color-border);flex-shrink:0}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .del-photo{position:absolute;top:3px;right:3px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer;padding:2px 5px;line-height:1.2;font-weight:600}
 .photo-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--radius-md);padding:14px 10px;text-align:center;cursor:pointer;font-size:12px;color:var(--color-text-secondary);transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -145,11 +151,11 @@ tr:hover td{background:var(--color-bg-secondary)}
 .photo-zone i{font-size:20px}
 .stat-cell{font-weight:600;white-space:nowrap;font-size:12px}
 
-.row-cam-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;color:var(--color-text-secondary);padding:3px 6px;font-size:13px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;transition:background 0.15s}
+.row-cam-btn{background:transparent;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;color:var(--color-text-secondary);padding:3px 6px;font-size:13px;display:inline-flex;align-items:center;gap:3px;white-space:nowrap;transition:background 0.15s}
 .row-cam-btn:hover{background:var(--color-bg-secondary);color:var(--color-info-text)}
 .row-cam-btn.has-photos{border-color:#4caf50;color:#2e7d32;background:var(--color-success-bg)}
 .row-photo-strip{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
-.row-photo-thumb{position:relative;width:44px;height:44px;border-radius:5px;overflow:hidden;border:0.5px solid var(--color-border);flex-shrink:0;cursor:pointer}
+.row-photo-thumb{position:relative;width:44px;height:44px;border-radius:5px;overflow:hidden;border:1px solid var(--color-border);flex-shrink:0;cursor:pointer}
 .row-photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .row-photo-thumb .rpt-del{position:absolute;top:1px;right:1px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:3px;font-size:9px;cursor:pointer;padding:1px 3px;line-height:1.2;font-weight:700}
 .photo-lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:10px}
@@ -160,23 +166,23 @@ tr:hover td{background:var(--color-bg-secondary)}
 
 
 .theme-picker{position:relative;display:inline-flex}
-.theme-btn{background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);padding:5px 10px;cursor:pointer;color:var(--color-text);font-size:13px;display:flex;align-items:center;gap:5px;font-family:inherit}
+.theme-btn{background:transparent;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);padding:5px 10px;cursor:pointer;color:var(--color-text);font-size:13px;display:flex;align-items:center;gap:5px;font-family:inherit}
 .theme-btn:hover{background:var(--color-bg-secondary)}
-.theme-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:500;min-width:180px;overflow:hidden}
+.theme-dropdown{display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:500;min-width:180px;overflow:hidden}
 .theme-dropdown.open{display:block}
 .theme-option{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:13px;color:var(--color-text);border:none;background:none;width:100%;text-align:left;font-family:inherit}
 .theme-option:hover{background:var(--color-bg-secondary)}
 .theme-option.active{background:var(--color-info-bg);color:var(--color-info-text)}
-.theme-swatch{width:14px;height:14px;border-radius:3px;border:0.5px solid rgba(0,0,0,0.15);flex-shrink:0}
+.theme-swatch{width:14px;height:14px;border-radius:3px;border:1px solid rgba(0,0,0,0.15);flex-shrink:0}
 
 
 .utt-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .utt-table{border-collapse:collapse;font-size:11.5px;white-space:nowrap}
-.utt-table th{background:var(--color-bg-secondary);padding:5px 6px;text-align:center;font-weight:600;font-size:10.5px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.02em}
-.utt-table td{padding:3px 4px;border-bottom:0.5px solid var(--color-border);border-right:0.5px solid var(--color-border);vertical-align:middle}
+.utt-table th{background:var(--color-bg-secondary);padding:5px 6px;text-align:center;font-weight:600;font-size:10.5px;border-bottom:1px solid var(--color-border);border-right:1px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.02em}
+.utt-table td{padding:3px 4px;border-bottom:1px solid var(--color-border);border-right:1px solid var(--color-border);vertical-align:middle}
 .utt-table tr:hover td{background:var(--color-bg-secondary)}
-.utt-table input[type=number]{width:64px;padding:3px 4px;font-size:11.5px;text-align:center;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
-.utt-table select{padding:3px 4px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:60px;width:auto}
+.utt-table input[type=number]{width:64px;padding:3px 4px;font-size:11.5px;text-align:center;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.utt-table select{padding:3px 4px;font-size:11.5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:60px;width:auto}
 .utt-table td:nth-child(1) select{min-width:72px}
 .utt-table td:nth-child(2) select{min-width:52px}
 .utt-table td:nth-child(4) select{min-width:52px}
@@ -184,32 +190,32 @@ tr:hover td{background:var(--color-bg-secondary)}
 .utt-table .val-low{color:var(--color-danger-text);font-weight:700}
 
 
-.date-input{width:110px;padding:3px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.date-input{width:110px;padding:3px 5px;font-size:11px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
 .date-input::-webkit-calendar-picker-indicator{opacity:0.5;cursor:pointer}
 
 
 .scope-section{margin-bottom:16px}
-.scope-banner{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.scope-banner{background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .scope-banner i{font-size:13px}
-.ind-banner{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+.ind-banner{background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:6px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);margin:14px 0 6px;display:flex;align-items:center;gap:6px}
 .scope-table{width:100%;border-collapse:collapse;font-size:12px}
-.scope-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap}
-.scope-table td{padding:4px 8px;border-bottom:0.5px solid var(--color-border);font-size:12px;vertical-align:middle}
+.scope-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap}
+.scope-table td{padding:4px 8px;border-bottom:1px solid var(--color-border);font-size:12px;vertical-align:middle}
 .scope-table tr:last-child td{border-bottom:none}
 .scope-table tr:hover td{background:var(--color-bg-secondary)}
 .done-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-success-bg);color:var(--color-success-text);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600;white-space:nowrap}
 .pending-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:20px;padding:2px 8px;font-size:11px;white-space:nowrap}
-.scope-date{width:110px;padding:3px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
+.scope-date{width:110px;padding:3px 5px;font-size:11px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)}
 
 
-.tech-chip{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;border:0.5px solid var(--color-border)}
+.tech-chip{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:500;border:1px solid var(--color-border)}
 .tech-chip .tc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .tech-chip .chip-meta{color:var(--color-text-secondary);font-size:11px}
-.tech-select{padding:2px 5px;font-size:11.5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:80px;max-width:130px;width:auto}
+.tech-select{padding:2px 5px;font-size:11.5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);min-width:80px;max-width:130px;width:auto}
 
 
 .install-banner{display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-  background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);
+  background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);
   box-shadow:0 8px 32px rgba(0,0,0,0.2);padding:12px 16px;z-index:9999;
   width:calc(100% - 32px);max-width:420px;align-items:center;gap:12px;flex-wrap:wrap}
 .install-banner.show{display:flex}
@@ -254,10 +260,10 @@ td textarea:placeholder-shown{
 }
 
 
-.jt-notes-row{display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding:8px 0;border-top:0.5px solid var(--color-border);flex-wrap:wrap}
+.jt-notes-row{display:flex;align-items:flex-start;gap:8px;margin-top:8px;padding:8px 0;border-top:1px solid var(--color-border);flex-wrap:wrap}
 .jt-notes-label{font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;padding-top:2px}
 .jt-notes-thumbs{display:flex;flex-wrap:wrap;gap:5px;flex:1}
-.jt-notes-thumb{position:relative;width:52px;height:52px;border-radius:6px;overflow:hidden;border:0.5px solid var(--color-border);cursor:pointer}
+.jt-notes-thumb{position:relative;width:52px;height:52px;border-radius:6px;overflow:hidden;border:1px solid var(--color-border);cursor:pointer}
 .jt-notes-thumb img{width:100%;height:100%;object-fit:cover}
 .jt-notes-thumb .del-note{position:absolute;top:2px;right:2px;background:rgba(0,0,0,0.65);color:#fff;border:none;border-radius:3px;font-size:9px;cursor:pointer;padding:1px 3px;line-height:1.4;font-weight:700}
 .jt-notes-add{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border:1px dashed var(--color-border-secondary);border-radius:var(--radius-md);cursor:pointer;font-size:11px;color:var(--color-text-secondary);background:transparent;white-space:nowrap}
@@ -266,28 +272,28 @@ td textarea:placeholder-shown{
 
 .app-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1001;align-items:center;justify-content:center}
 .app-modal-overlay.open{display:flex}
-.app-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:90%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;gap:10px}
+.app-modal{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:90%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;gap:10px}
 .app-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
 .app-modal-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 
 
 .roster-table{width:100%;border-collapse:collapse;font-size:13px}
-.roster-table th{background:var(--color-bg-secondary);padding:6px 10px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
-.roster-table td{padding:4px 6px;border-bottom:0.5px solid var(--color-border);vertical-align:middle}
+.roster-table th{background:var(--color-bg-secondary);padding:6px 10px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--color-border);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
+.roster-table td{padding:4px 6px;border-bottom:1px solid var(--color-border);vertical-align:middle}
 .roster-table tr:last-child td{border-bottom:none}
 .roster-table tr:hover td{background:var(--color-bg-secondary)}
-.roster-table input,.roster-table select{width:100%;padding:4px 7px;font-size:12px;border:0.5px solid transparent;border-radius:5px;background:transparent;color:var(--color-text);font-family:inherit}
+.roster-table input,.roster-table select{width:100%;padding:4px 7px;font-size:12px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--color-text);font-family:inherit}
 .roster-table input:hover,.roster-table select:hover,
 .roster-table input:focus,.roster-table select:focus{border-color:var(--color-border-secondary);background:var(--color-bg)}
 .roster-table input:focus,.roster-table select:focus{outline:2px solid var(--color-info-border);outline-offset:1px}
 .color-dot-btn{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;display:inline-block;vertical-align:middle}
-.roster-wrap{border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:8px}
+.roster-wrap{border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:8px}
 .roster-empty{padding:14px;text-align:center;font-size:12px;color:var(--color-text-tertiary)}
 
 
 .tp-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1002;align-items:center;justify-content:center}
 .tp-modal-overlay.open{display:flex}
-.tp-modal{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:95%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;gap:10px}
+.tp-modal{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.25rem;width:95%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;gap:10px}
 .tp-modal-title{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .tp-drop-zone{border:2px dashed var(--color-border-secondary);border-radius:var(--radius-lg);padding:2rem;text-align:center;cursor:pointer;transition:all 0.15s;flex-shrink:0}
 .tp-drop-zone:hover,.tp-drop-zone.drag-over{border-color:var(--color-info-border);background:var(--color-info-bg)}
@@ -297,8 +303,8 @@ td textarea:placeholder-shown{
 .tp-preview{flex:1;overflow-y:auto;min-height:0;display:none}
 .tp-preview.show{display:block}
 .tp-preview-table{width:100%;border-collapse:collapse;font-size:12px}
-.tp-preview-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:0.5px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase}
-.tp-preview-table td{padding:4px 8px;border-bottom:0.5px solid var(--color-border);font-size:12px;white-space:nowrap}
+.tp-preview-table th{background:var(--color-bg-secondary);padding:5px 8px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--color-border);white-space:nowrap;color:var(--color-text-secondary);text-transform:uppercase}
+.tp-preview-table td{padding:4px 8px;border-bottom:1px solid var(--color-border);font-size:12px;white-space:nowrap}
 .tp-preview-table tr:hover td{background:var(--color-bg-secondary)}
 .tp-check-col{width:32px;text-align:center}
 .tp-preview-table input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--color-info-text)}
@@ -308,14 +314,14 @@ td textarea:placeholder-shown{
 .tp-existing-badge{display:inline-block;background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:500}
 
 
-.lsc-group-card{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden}
-.lsc-group-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border)}
+.lsc-group-card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:12px;overflow:hidden}
+.lsc-group-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--color-border)}
 .lsc-group-joints{display:flex;flex-wrap:wrap;gap:5px}
-.lsc-joint-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-info-bg);color:var(--color-info-text);border:0.5px solid var(--color-info-border);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600}
+.lsc-joint-badge{display:inline-flex;align-items:center;gap:4px;background:var(--color-info-bg);color:var(--color-info-text);border:1px solid var(--color-info-border);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600}
 .lsc-group-body{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:640px){.lsc-group-body{grid-template-columns:1fr}}
 .lsc-checklist{grid-column:1/-1;margin-top:4px}
-.lsc-check-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border)}
+.lsc-check-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid var(--color-border)}
 .lsc-check-item:last-child{border-bottom:none}
 .lsc-check-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#2e7d32;flex-shrink:0;margin-top:1px}
 .lsc-check-item label{font-size:12px;cursor:pointer;flex:1;line-height:1.4}
@@ -329,13 +335,13 @@ td textarea:placeholder-shown{
 .lsc-group-actions{display:flex;gap:5px;margin-left:auto;flex-shrink:0}
 .lsc-field-label{font-size:10.5px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px}
 .lsc-field{display:flex;flex-direction:column;gap:2px}
-.lsc-field input,.lsc-field select,.lsc-field textarea{padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
+.lsc-field input,.lsc-field select,.lsc-field textarea{padding:5px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
 .lsc-field textarea{resize:vertical;min-height:52px}
 /* Group builder */
-.lsc-builder{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:14px}
+.lsc-builder{background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:14px}
 .lsc-builder-title{font-size:13px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 .lsc-joint-selector{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.lsc-joint-check{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500}
+.lsc-joint-check{display:inline-flex;align-items:center;gap:5px;background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-md);padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500}
 .lsc-joint-check:hover{background:var(--color-info-bg);border-color:var(--color-info-border)}
 .lsc-joint-check.selected{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text)}
 .lsc-joint-check input{display:none}
@@ -388,7 +394,7 @@ td textarea:placeholder-shown{
 @media(max-width:820px){.lscw-grid3{grid-template-columns:1fr}.lscw-sig{grid-template-columns:1fr}}
 
 
-.jt-card{background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s}
+.jt-card{background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s}
 .jt-card:hover{border-color:var(--color-border-secondary)}
 .jt-card-header{padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;user-select:none}
 .jt-card-header:hover .jt-edit-hint{opacity:1}
@@ -396,18 +402,18 @@ td textarea:placeholder-shown{
 .jt-summary{font-size:12px;color:var(--color-text-secondary);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jt-edit-hint{font-size:10px;color:var(--color-info-text);opacity:0;transition:opacity 0.15s;white-space:nowrap;display:flex;align-items:center;gap:3px}
 .jt-unknown-badge{background:var(--color-warning-bg);color:var(--color-warning-text);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:600;margin-left:2px}
-.jt-card-body{display:none;border-top:0.5px solid var(--color-border);background:var(--color-bg);padding:10px 12px}
+.jt-card-body{display:none;border-top:1px solid var(--color-border);background:var(--color-bg);padding:10px 12px}
 .jt-card-body.open{display:block}
 .jt-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
 .jt-edit-field{display:flex;flex-direction:column;gap:3px}
 .jt-edit-label{font-size:10.5px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em}
-.jt-edit-field input,.jt-edit-field select{padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;width:100%}
+.jt-edit-field input,.jt-edit-field select{padding:5px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;width:100%}
 .jt-edit-field input:focus,.jt-edit-field select:focus{outline:2px solid var(--color-info-border);border-color:transparent}
 .jt-edit-field input.was-unknown{border-color:#f0a000;background:var(--color-warning-bg)}
 .jt-changed-tag{font-size:10px;color:var(--color-success-text);font-weight:600;display:inline-flex;align-items:center;gap:3px;margin-top:2px}
 
 
-.threat-flag-btn{background:transparent;border:0.5px solid var(--color-border);border-radius:5px;
+.threat-flag-btn{background:transparent;border:1px solid var(--color-border);border-radius:5px;
   padding:2px 6px;cursor:pointer;font-size:11px;color:var(--color-text-tertiary);
   display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
 .threat-flag-btn:hover{border-color:var(--color-danger-border);color:var(--color-danger-text)}
@@ -416,27 +422,27 @@ td textarea:placeholder-shown{
 .pct-warn{color:var(--color-danger-text);font-weight:700}
 
 
-.nde-card{background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden}
-.nde-card-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:0.5px solid var(--color-border)}
-.nde-card-method{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);background:var(--color-bg);border:0.5px solid var(--color-border);border-radius:20px;padding:2px 10px}
+.nde-card{background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-lg);margin-bottom:14px;overflow:hidden}
+.nde-card-header{background:var(--color-bg-secondary);padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--color-border)}
+.nde-card-method{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);background:var(--color-bg);border:1px solid var(--color-border);border-radius:20px;padding:2px 10px}
 .nde-card-title{font-size:13px;font-weight:600;flex:1}
 .nde-card-body{padding:12px 14px}
 .nde-param-section{margin-bottom:12px}
-.nde-param-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border);padding-bottom:4px;margin-bottom:8px}
+.nde-param-title{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary);border-bottom:1px solid var(--color-border);padding-bottom:4px;margin-bottom:8px}
 .nde-param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
 .nde-param-grid.wide{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
 .nde-param-field{display:flex;flex-direction:column;gap:2px}
 .nde-param-label{font-size:10px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em}
-.nde-param-field input,.nde-param-field select{padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
+.nde-param-field input,.nde-param-field select{padding:4px 7px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit}
 .nde-param-field input:focus,.nde-param-field select:focus{outline:2px solid var(--color-info-border);border-color:transparent}
 .nde-param-field input.cal-expired{border-color:var(--color-danger-text);background:var(--color-danger-bg)}
 .nde-card-actions{display:flex;gap:5px;margin-left:auto}
-.nde-tech-autofill{background:var(--color-info-bg);border:0.5px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:3px 8px;font-size:11px;cursor:pointer;white-space:nowrap}
+.nde-tech-autofill{background:var(--color-info-bg);border:1px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:3px 8px;font-size:11px;cursor:pointer;white-space:nowrap}
 .nde-tech-autofill:hover{opacity:0.85}
 .nde-add-card-btn{display:flex;align-items:center;gap:6px;width:100%;padding:10px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:13px;cursor:pointer;justify-content:center;margin-bottom:10px}
 .nde-add-card-btn:hover{background:var(--color-bg-secondary);border-color:var(--color-info-border);color:var(--color-info-text)}
 .nde-method-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
-.nde-method-tab{padding:5px 12px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;font-family:inherit}
+.nde-method-tab{padding:5px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:transparent;color:var(--color-text-secondary);font-size:12px;cursor:pointer;font-family:inherit}
 .nde-method-tab:hover{background:var(--color-bg-secondary)}
 .nde-method-tab.active{background:var(--color-info-bg);border-color:var(--color-info-border);color:var(--color-info-text);font-weight:600}
 .cal-ok{color:var(--color-success-text);font-size:10px}
@@ -446,7 +452,7 @@ td textarea:placeholder-shown{
 
 .cal-inline-row td{padding:0 !important;border-bottom:none !important}
 .cal-inline-wrap{background:var(--color-bg);border-left:3px solid var(--color-info-border);margin:0 0 8px 0}
-.cal-inline-toggle{display:flex;align-items:center;gap:7px;padding:6px 12px;cursor:pointer;font-size:12px;color:var(--color-info-text);border-bottom:0.5px solid var(--color-border);background:var(--color-info-bg);user-select:none}
+.cal-inline-toggle{display:flex;align-items:center;gap:7px;padding:6px 12px;cursor:pointer;font-size:12px;color:var(--color-info-text);border-bottom:1px solid var(--color-border);background:var(--color-info-bg);user-select:none}
 .cal-inline-toggle:hover{opacity:0.85}
 .cal-inline-toggle i.toggle-arrow{transition:transform 0.2s;font-size:11px}
 .cal-inline-toggle.open i.toggle-arrow{transform:rotate(90deg)}
@@ -458,22 +464,22 @@ td textarea:placeholder-shown{
 /* ── Grid styles ─────────────────────────── */
 .grid-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center}
 .grid-modal-overlay.open{display:flex}
-.grid-modal{background:var(--color-bg);border-radius:var(--radius-lg);border:0.5px solid var(--color-border);display:flex;flex-direction:column;width:96vw;max-width:1100px;height:90vh;overflow:hidden}
-.grid-modal-header{padding:10px 16px;border-bottom:0.5px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
+.grid-modal{background:var(--color-bg);border-radius:var(--radius-lg);border:1px solid var(--color-border);display:flex;flex-direction:column;width:96vw;max-width:1100px;height:90vh;overflow:hidden}
+.grid-modal-header{padding:10px 16px;border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
 .grid-modal-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:7px}
 .grid-modal-body{flex:1;overflow:auto;padding:12px 16px}
-.grid-modal-footer{padding:8px 16px;border-top:0.5px solid var(--color-border);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
+.grid-modal-footer{padding:8px 16px;border-top:1px solid var(--color-border);display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;background:var(--color-bg-secondary)}
 .grid-table{border-collapse:collapse;font-size:11px;white-space:nowrap}
-.grid-table th{background:var(--color-bg-secondary);padding:3px 6px;text-align:center;font-weight:600;border:0.5px solid var(--color-border);font-size:10px;color:var(--color-text-secondary)}
-.grid-table td{padding:0;border:0.5px solid var(--color-border);position:relative}
+.grid-table th{background:var(--color-bg-secondary);padding:3px 6px;text-align:center;font-weight:600;border:1px solid var(--color-border);font-size:10px;color:var(--color-text-secondary)}
+.grid-table td{padding:0;border:1px solid var(--color-border);position:relative}
 .grid-table td.row-label{background:var(--color-bg-secondary);padding:2px 6px;font-weight:600;font-size:10px;text-align:center;color:var(--color-text-secondary);cursor:default}
 .grid-cell-input{width:46px;height:26px;border:none;background:transparent;text-align:center;font-size:11px;font-family:inherit;color:inherit;padding:0;outline:none;cursor:pointer}
 .grid-cell-input:focus{outline:2px solid var(--color-info-border);outline-offset:-2px;background:var(--color-bg) !important;color:var(--color-text) !important;z-index:1;position:relative}
 .grid-cell-void{background:#111 !important;color:#fff;font-size:9px;font-weight:600;text-align:center;cursor:pointer;display:flex;align-items:center;justify-content:center;height:26px;padding:0 3px}
 .grid-legend{display:flex;align-items:center;gap:6px;font-size:11px}
-.grid-legend-bar{width:120px;height:14px;border-radius:3px;border:0.5px solid var(--color-border)}
+.grid-legend-bar{width:120px;height:14px;border-radius:3px;border:1px solid var(--color-border)}
 .grid-stat{font-size:12px;font-weight:600;padding:3px 8px;border-radius:var(--radius-md);background:var(--color-bg-secondary)}
-.grid-open-btn{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border:0.5px solid var(--color-info-border);border-radius:var(--radius-md);background:var(--color-info-bg);color:var(--color-info-text);font-size:11px;cursor:pointer;white-space:nowrap}
+.grid-open-btn{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border:1px solid var(--color-info-border);border-radius:var(--radius-md);background:var(--color-info-bg);color:var(--color-info-text);font-size:11px;cursor:pointer;white-space:nowrap}
 .grid-open-btn:hover{opacity:0.85}
 .aut-heatmap{display:block;border-radius:4px;cursor:crosshair}
 .paste-hint{font-size:11px;color:var(--color-text-secondary);font-style:italic}
@@ -481,7 +487,7 @@ td textarea:placeholder-shown{
 
 /* ── Sidebar navigation ─────────────────────────────────────── */
 .app-body{display:flex;align-items:flex-start;gap:0;min-height:0;flex:1}
-.sidebar{width:175px;flex-shrink:0;background:var(--color-bg-secondary);border-right:0.5px solid var(--color-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
+.sidebar{width:175px;flex-shrink:0;background:var(--color-bg-secondary);border-right:1px solid var(--color-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:10}
 .sidebar-category{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--color-text-tertiary);padding:10px 12px 4px;margin-top:4px}
 .sidebar-category:first-child{margin-top:0}
 .sidebar .tab{display:flex;align-items:center;gap:6px;width:100%;padding:7px 10px;border:none;border-radius:0;background:transparent;color:var(--color-text-secondary);font-size:11.5px;font-weight:500;cursor:pointer;text-align:left;position:relative;transition:background 0.1s,color 0.1s;white-space:nowrap;font-family:inherit}
@@ -496,7 +502,7 @@ td textarea:placeholder-shown{
 /* Mobile: sidebar collapses to top bar */
 @media(max-width:640px){
   .app-body{flex-direction:column}
-  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:0.5px solid var(--color-border)}
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--color-border)}
   .sidebar-category{display:none}
   .sidebar .tab{flex-direction:column;gap:2px;padding:6px 8px;font-size:10px;white-space:nowrap;border-right:none;border-bottom:2.5px solid transparent}
   .sidebar .tab.active{border-right:none;border-bottom:2.5px solid var(--color-info-text)}
@@ -529,7 +535,7 @@ button input { background-color: transparent !important; }
 
 .empty-state{text-align:center;padding:2rem;color:var(--color-text-tertiary);font-size:13px}
 .empty-state i{font-size:32px;display:block;margin-bottom:8px;opacity:0.4}
-.nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:0.5px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
+.nri-bar{display:flex;align-items:flex-start;gap:12px;background:var(--color-success-bg);border:1px solid #4caf5055;border-radius:var(--radius-md);padding:10px 14px;margin-bottom:12px;flex-wrap:wrap}
 .nri-bar.inactive{background:var(--color-bg-secondary);border-color:var(--color-border)}
 .nri-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .nri-toggle input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#3b6d11}
@@ -575,19 +581,19 @@ button input { background-color: transparent !important; }
 .btn-pdf:hover{background:#ffcdd2}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal-box{background:var(--color-bg);border-radius:var(--radius-lg);border:0.5px solid var(--color-border);padding:1.5rem;max-width:560px;width:90%;max-height:90vh;overflow-y:auto}
+.modal-box{background:var(--color-bg);border-radius:var(--radius-lg);border:1px solid var(--color-border);padding:1.5rem;max-width:560px;width:90%;max-height:90vh;overflow-y:auto}
 .modal-title{font-size:15px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .modal-step{background:var(--color-bg-secondary);border-radius:var(--radius-md);padding:10px 14px;margin-bottom:8px;font-size:13px}
 .modal-step code{background:var(--color-bg-tertiary);border-radius:4px;padding:2px 6px;font-family:monospace;font-size:12px;display:block;margin-top:6px;word-break:break-all}
 .modal-close{margin-top:14px;width:100%}
-.progress-banner{background:var(--color-info-bg);border:0.5px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
+.progress-banner{background:var(--color-info-bg);border:1px solid var(--color-info-border);color:var(--color-info-text);border-radius:var(--radius-md);padding:8px 12px;font-size:12px;margin-bottom:10px;display:none}
 .progress-banner.show{display:block}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="app">
-  <div class="header">
+  <div class="topbar">
     <div class="header-top">
       <div>
         <div class="app-title"><i class="ti ti-file-check"></i> NDE Field Report</div>
@@ -615,7 +621,10 @@ button input { background-color: transparent !important; }
         <button class="btn btn-danger" onclick="clearAll()" title="Clear all data"><i class="ti ti-trash"></i><span class="btn-label"> Clear all</span></button>
       </div>
     </div>
+  </div><!-- /topbar -->
 
+  <div class="setup-stack">
+    <div class="setup-card">
     <div class="collapsible-header" id="config-header" onclick="toggleSection('config')">
       <i class="ti ti-settings" style="font-size:12px"></i> Project Configuration
       <span class="collapsible-summary" id="config-summary"></span>
@@ -637,7 +646,9 @@ button input { background-color: transparent !important; }
     </div>
 
     </div><!-- /config-body -->
+    </div><!-- /setup-card -->
 
+    <div class="setup-card">
     <div class="collapsible-header" id="tech-header" onclick="toggleSection('tech')">
       <i class="ti ti-users" style="font-size:12px"></i> Technicians &amp; Signatures
       <span class="collapsible-summary" id="tech-summary"></span>
@@ -669,7 +680,15 @@ button input { background-color: transparent !important; }
     </div>
 
     </div><!-- /tech-body -->
+    </div><!-- /setup-card -->
 
+    <div class="setup-card">
+    <div class="collapsible-header" id="joints-header" onclick="toggleSection('joints')">
+      <i class="ti ti-vector" style="font-size:12px"></i> Joints &amp; Photos
+      <span class="collapsible-summary" id="joints-summary"></span>
+      <i class="ti ti-chevron-down chev"></i>
+    </div>
+    <div class="collapsible-body" id="joints-body">
     <div class="section-divider">Project overview photos</div>
     <div id="project-photo-strip" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px"></div>
     <div class="photo-zone" onclick="openProjectPhoto()" style="margin-bottom:12px">
@@ -709,7 +728,9 @@ button input { background-color: transparent !important; }
       </div>
       <div class="field-group" style="justify-content:flex-end"><label class="field-label">&nbsp;</label><button class="btn btn-primary" onclick="addJoint()"><i class="ti ti-plus"></i> Add joint</button></div>
     </div>
-  </div>
+    </div><!-- /joints-body -->
+    </div><!-- /setup-card -->
+  </div><!-- /setup-stack -->
 
   <div class="app-body">
     <nav class="sidebar" id="tab-bar"></nav>
@@ -1020,7 +1041,7 @@ function renderJoints(){
           </div>
         </div>
 
-        <div class="jt-notes-row" style="border-top:0.5px solid var(--color-border);margin-top:4px">
+        <div class="jt-notes-row" style="border-top:1px solid var(--color-border);margin-top:4px">
           <span class="jt-notes-label"><i class="ti ti-notes" style="font-size:12px;vertical-align:-1px"></i> Field notes and Overview Photos</span>
           <div class="jt-notes-thumbs">${thumbs}</div>
           <button class="jt-notes-add" onclick="openJointNotes('${j.id}')">
@@ -1206,7 +1227,7 @@ function renderUTT12(){
       </tr>`;
     }).join('');
 
-    return `<div style="margin-bottom:6px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
+    return `<div style="margin-bottom:6px;border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
       <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--color-bg-secondary);cursor:pointer;user-select:none"
            onclick="toggleUTTJoint('${jtId}')">
         <strong style="font-size:13px;min-width:60px">${jtId}</strong>
@@ -1259,7 +1280,7 @@ function renderUTTLoc(){
       <td><input value="${r.ndtid||''}" placeholder="LSC-001" onchange="rowUpdate('uttloc',${i},'ndtid',this.value)" style="width:75px"></td>
       <td><select onchange="rowUpdate('uttloc',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.1" value="${r.dist||''}" onchange="rowUpdate('uttloc',${i},'dist',this.value)" style="width:55px"></td>
-      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('uttloc',${i},'clock',this.value)"></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('uttloc',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.1" value="${r.alen||''}" onchange="rowUpdate('uttloc',${i},'alen',this.value)" style="width:52px"></td>
       <td><input type="number" step="0.1" value="${r.awid||''}" onchange="rowUpdate('uttloc',${i},'awid',this.value)" style="width:52px"></td>
       <td><input type="number" step="0.001" value="${r.bfgmin||''}" onchange="rowUpdate('uttloc',${i},'bfgmin',this.value)" style="width:60px"></td>
@@ -1281,7 +1302,7 @@ function renderUTTLoc(){
     </div>
     ${nriBar('uttloc')}
     ${scopeSummaryTable('uttloc','UTT of Test Locations')}
-    ${indBannerWithBulk('uttloc','UTT of Test Locations')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('uttloc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('uttloc','UTT of Test Locations')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('uttloc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('uttloc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>NDT #</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Area L</th><th>Area W</th><th>BFG Min</th><th>BFG Max</th><th>AFG Min</th><th>AFG Max</th><th>% Removed</th><th>Result</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1380,7 +1401,7 @@ function renderVA(){
     <td><select onchange="rowUpdate('va',${i},'char',this.value);renderTab('va')">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('va',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('va',${i},'dist',this.value)" style="width:55px"></td>
-    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('va',${i},'clock',this.value)"></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('va',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('va',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('va',${i},'wid',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('va',${i},'dep',this.value)" style="width:55px"></td>
@@ -1400,7 +1421,7 @@ function renderVA(){
     </div>
     ${nriBar('va')}
     ${scopeSummaryTable('va','Visual Assessment (VA)')}
-    ${indBannerWithBulk('va','Visual Assessment (VA)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('va',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('va','Visual Assessment (VA)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('va',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('va')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Depth (in)</th><th>Wall WT (in)</th><th>N/L</th><th>WL Photo?</th><th>Notes</th><th>EC Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1422,7 +1443,7 @@ function renderMT(){
     <td><select onchange="rowUpdate('mt',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('mt',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mt',${i},'dist',this.value)" style="width:55px"></td>
-    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mt',${i},'clock',this.value)"></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mt',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mt',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mt',${i},'wid',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('mt',${i},'ht',this.value)" style="width:55px"></td>
@@ -1443,7 +1464,7 @@ function renderMT(){
     </div>
     ${nriBar('mt')}
     ${scopeSummaryTable('mt','Magnetic Particle Testing (MT)')}
-    ${indBannerWithBulk('mt','Magnetic Particle Testing (MT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mt',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('mt','Magnetic Particle Testing (MT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mt',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mt')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>BL Photo?</th><th>WL Photo?</th><th>PAUT Photo?</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1467,7 +1488,7 @@ function renderAUT(){
       <td><select onchange="rowUpdate('aut',${i},'char',this.value)">${charo(r.char)}</select></td>
       <td><select onchange="rowUpdate('aut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('aut',${i},'dist',this.value)" style="width:55px"></td>
-      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aut',${i},'clock',this.value)"></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aut',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('aut',${i},'len',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('aut',${i},'wid',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('aut',${i},'minwt',this.value);renderTab('aut')" style="width:60px"></td>
@@ -1487,7 +1508,7 @@ function renderAUT(){
     </div>
     ${nriBar('aut')}
     ${scopeSummaryTable('aut','Automated UT (AUT)')}
-    ${indBannerWithBulk('aut','Automated UT (AUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('aut','Automated UT (AUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('aut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1511,7 +1532,7 @@ function renderGW(){
       <td><select onchange="rowUpdate('gw',${i},'char',this.value)">${charo(r.char)}</select></td>
       <td><select onchange="rowUpdate('gw',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('gw',${i},'dist',this.value)" style="width:55px"></td>
-      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('gw',${i},'clock',this.value)"></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('gw',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('gw',${i},'len',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('gw',${i},'wid',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('gw',${i},'minwt',this.value);renderTab('gw')" style="width:60px"></td>
@@ -1531,7 +1552,7 @@ function renderGW(){
     </div>
     ${nriBar('gw')}
     ${scopeSummaryTable('gw','Guided Wave (GW)')}
-    ${indBannerWithBulk('gw','Guided Wave (GW)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('gw',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('gw','Guided Wave (GW)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('gw',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('gw')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1554,7 +1575,7 @@ function renderMUT(){
       <td><select onchange="rowUpdate('mut',${i},'char',this.value)">${charo(r.char)}</select></td>
       <td><select onchange="rowUpdate('mut',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
       <td><input type="number" step="0.01" value="${r.dist||''}" onchange="rowUpdate('mut',${i},'dist',this.value)" style="width:55px"></td>
-      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mut',${i},'clock',this.value)"></td>
+      <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('mut',${i},'clock',this.value)"></td>
       <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('mut',${i},'len',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.wid||''}" onchange="rowUpdate('mut',${i},'wid',this.value)" style="width:55px"></td>
       <td><input type="number" step="0.001" value="${r.minwt||''}" onchange="rowUpdate('mut',${i},'minwt',this.value);renderTab('mut')" style="width:60px"></td>
@@ -1574,7 +1595,7 @@ function renderMUT(){
     </div>
     ${nriBar('mut')}
     ${scopeSummaryTable('mut','Manual UT (MUT)')}
-    ${indBannerWithBulk('mut','Manual UT (MUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('mut','Manual UT (MUT)')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('mut',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('mut')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Width (in)</th><th>Min WT (in)</th><th>Wall WT (in)</th><th>N/L</th><th>% Wall Loss</th><th>MUT Grid</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1609,7 +1630,7 @@ function renderMUTHand(){
     </div>
     ${nriBar('muthand')}
     ${scopeSummaryTable('muthand','MUT Hand Scans')}
-    ${indBannerWithBulk('muthand','MUT Hand Scans')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('muthand',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('muthand','MUT Hand Scans')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('muthand',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('muthand')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Start X,Y (Axial,Circ) in.</th><th>End X,Y (Axial,Circ) in.</th><th>Min WT (in)</th><th>Indications?</th><th>Notes</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1631,7 +1652,7 @@ function renderPAUTBM(){
     <td><select onchange="rowUpdate('pautbm',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('pautbm',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautbm',${i},'dist',this.value)" style="width:60px"></td>
-    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautbm',${i},'clock',this.value)"></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautbm',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautbm',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautbm',${i},'dep',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautbm',${i},'ht',this.value)" style="width:55px"></td>
@@ -1649,7 +1670,7 @@ function renderPAUTBM(){
     </div>
     ${nriBar('pautbm')}
     ${scopeSummaryTable('pautbm','PAUT Base Metal')}
-    ${indBannerWithBulk('pautbm','PAUT Base Metal')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautbm',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('pautbm','PAUT Base Metal')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautbm',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautbm')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1671,7 +1692,7 @@ function renderPAUTLS(){
     <td><select onchange="rowUpdate('pautls',${i},'char',this.value)">${charo(r.char)}</select></td>
     <td><select onchange="rowUpdate('pautls',${i},'ref',this.value)">${rgo(r.ref)}</select></td>
     <td><input type="number" step="0.001" value="${r.dist||''}" onchange="rowUpdate('pautls',${i},'dist',this.value)" style="width:60px"></td>
-    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautls',${i},'clock',this.value)"></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('pautls',${i},'clock',this.value)"></td>
     <td><input type="number" step="0.001" value="${r.len||''}" onchange="rowUpdate('pautls',${i},'len',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.dep||''}" onchange="rowUpdate('pautls',${i},'dep',this.value)" style="width:55px"></td>
     <td><input type="number" step="0.001" value="${r.ht||''}" onchange="rowUpdate('pautls',${i},'ht',this.value)" style="width:55px"></td>
@@ -1689,7 +1710,7 @@ function renderPAUTLS(){
     </div>
     ${nriBar('pautls')}
     ${scopeSummaryTable('pautls','PAUT Long Seam')}
-    ${indBannerWithBulk('pautls','PAUT Long Seam')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautls',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    ${indBannerWithBulk('pautls','PAUT Long Seam')}<span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('pautls',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('pautls')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>Ind. ID</th><th>Characterization</th><th>Ref GW</th><th>Dist (in)</th><th>Clock</th><th>Length (in)</th><th>Depth (in)</th><th>Height (in)</th><th>Wall WT (in)</th><th>N/L</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -1830,7 +1851,7 @@ function renderSupervisorSection(){
   if(!el) return;
   const sup = state.supervisorSig||{};
   const div = document.createElement('div');
-  div.style.cssText = 'margin-top:10px;padding:10px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);border:0.5px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-wrap:wrap';
+  div.style.cssText = 'margin-top:10px;padding:10px 12px;background:var(--color-bg-secondary);border-radius:var(--radius-md);border:1px solid var(--color-border);display:flex;align-items:center;gap:10px;flex-wrap:wrap';
 
   const icon = document.createElement('i');
   icon.className = 'ti ti-user-check';
@@ -1848,14 +1869,14 @@ function renderSupervisorSection(){
   const nameInput = document.createElement('input');
   nameInput.value = sup.name||'';
   nameInput.placeholder = 'Supervisor name';
-  nameInput.style.cssText = 'width:170px;padding:4px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);margin-right:6px';
+  nameInput.style.cssText = 'width:170px;padding:4px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);margin-right:6px';
   nameInput.onchange = function(){ updateSupervisor('name', this.value); };
   info.appendChild(nameInput);
 
   const titleInput = document.createElement('input');
   titleInput.value = sup.title||'NDE Operations Manager';
   titleInput.placeholder = 'Title';
-  titleInput.style.cssText = 'width:200px;padding:4px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)';
+  titleInput.style.cssText = 'width:200px;padding:4px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)';
   titleInput.onchange = function(){ updateSupervisor('title', this.value); };
   info.appendChild(titleInput);
   div.appendChild(info);
@@ -1866,7 +1887,7 @@ function renderSupervisorSection(){
   if(sup.sig){
     const img = document.createElement('img');
     img.src = sup.sig;
-    img.style.cssText = 'height:38px;border:0.5px solid var(--color-border);border-radius:4px;background:#fff;padding:2px';
+    img.style.cssText = 'height:38px;border:1px solid var(--color-border);border-radius:4px;background:#fff;padding:2px';
     actions.appendChild(img);
   }
 
@@ -2051,7 +2072,7 @@ function scopeSummaryTable(tabId, methodLabel){
           })()}
         </td>
         ${(tabId==='pautbm'||tabId==='pautls')?`
-        <td><input style="width:90px;padding:3px 6px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)"
+        <td><input style="width:90px;padding:3px 6px;font-size:11px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)"
             value="${((state.pautSpacing||{})[tabId]||{})[j.id]||''}"
             placeholder="e.g. 0.5&quot;" title="PAUT scan spacing interval (in.)"
             onchange="updatePAUTSpacing('${tabId}','${jtId}',this.value)"></td>
@@ -2087,7 +2108,7 @@ function scopeSummaryTable(tabId, methodLabel){
             <i class="ti ti-certificate" style="font-size:10px"></i> Add cal
           </span>`;
       tableHtml += `<tr class="cal-inline-row">
-        <td colspan="${colSpan}" style="padding:3px 10px;border-bottom:0.5px solid var(--color-border);text-align:right">
+        <td colspan="${colSpan}" style="padding:3px 10px;border-bottom:1px solid var(--color-border);text-align:right">
           ${badge}
         </td>
       </tr>`;
@@ -2106,7 +2127,7 @@ function scopeSummaryTable(tabId, methodLabel){
       <span><i class="ti ti-list-check"></i> Joints in Scope — ${methodLabel}</span>
       <span style="display:flex;align-items:center;gap:6px">
         <span style="font-size:11px;color:var(--color-text-secondary)">Apply tech to all:</span>
-        <select style="font-size:11px;padding:2px 6px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:140px"
+        <select style="font-size:11px;padding:2px 6px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:140px"
           onchange="if(this.value) bulkSetScopeTech('${tabId}',this.value);this.value=''">
           <option value="">— select —</option>
           ${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}
@@ -2252,7 +2273,7 @@ function renderNDECardFields(card){
 
   const notesSection = `<div class="nde-param-section">
     <div class="nde-param-title">Notes / Comments</div>
-    <textarea style="width:100%;min-height:48px;padding:6px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
+    <textarea style="width:100%;min-height:48px;padding:6px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
       onchange="updateNDECard('${id}','notes',this.value)">${card.notes||''}</textarea>
   </div>`;
 
@@ -2287,7 +2308,7 @@ function renderAELSC(){
       <option${r.aemethod==='DE Only'?' selected':''}>DE Only</option>
       <option${r.aemethod==='N/A'?' selected':''}>N/A</option>
     </select></td>
-    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aelsc',${i},'clock',this.value)"></td>
+    <td><input list="clock-options" value="${r.clock||'N/A'}" style="width:70px;padding:3px 5px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text)" placeholder="e.g. 11:32" autocomplete="off" onchange="rowUpdate('aelsc',${i},'clock',this.value)"></td>
     <td><select onchange="rowUpdate('aelsc',${i},'lsresult',this.value)">
       <option value="">—</option>
       <option${r.lsresult==='Confirmed ERW'?' selected':''}>Confirmed ERW</option>
@@ -2322,7 +2343,7 @@ function renderAELSC(){
     </div>
     ${nriBar('aelsc')}
     ${scopeSummaryTable('aelsc','Acid Etch / LSC')}
-    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aelsc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
+    <div class="ind-banner" style="display:flex;justify-content:space-between;align-items:center"><span><i class="ti ti-alert-triangle"></i> Indications / Data — Acid Etch / LSC</span><span style="display:flex;align-items:center;gap:5px"><span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span><select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-bg);color:var(--color-text);max-width:130px" onchange="if(this.value)bulkSetRowTech('aelsc',this.value);this.value=''"><option value="">— all rows —</option>${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}</select></span></div>
     <div class="${nriLocked('aelsc')?'nri-locked':''}">  
     <div class="table-wrap"><table>
       <thead><tr><th>Joint</th><th>LSC Type</th><th>AE Method</th><th>Clock Position</th><th>LS Result / Confirmation</th><th>AE Depth (in)</th><th>Photo?</th><th>Comments</th><th>Tech</th><th>Date</th><th>📷</th><th>⚠</th><th></th></tr></thead>
@@ -4017,10 +4038,10 @@ function renderProcedureSettings(){
     return `<tr>
       <td style="font-weight:600;font-size:12px;padding:5px 8px;white-space:nowrap">${m.label}</td>
       <td><input value="${p.proc||''}" placeholder="e.g. BP-4190P-507"
-        style="width:100%;padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+        style="width:100%;padding:4px 7px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
         onchange="setProcedure('${m.id}','proc',this.value)"></td>
       <td><input value="${p.rev||''}" placeholder="e.g. Rev. 1"
-        style="width:100%;padding:4px 7px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+        style="width:100%;padding:4px 7px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
         onchange="setProcedure('${m.id}','rev',this.value)"></td>
       <td><button class="btn btn-sm" onclick="resetProcedure('${m.id}')" title="Reset to default" style="font-size:11px">↺ Default</button></td>
     </tr>`;
@@ -4031,14 +4052,14 @@ function renderProcedureSettings(){
       <i class="ti ti-settings" style="font-size:12px"></i> Procedure Defaults
       <i class="ti ti-chevron-right" id="proc-settings-arrow" style="font-size:11px;margin-left:auto;transition:transform 0.2s"></i>
     </div>
-    <div id="proc-settings-body" style="display:none;background:var(--color-bg-secondary);border:0.5px solid var(--color-border);border-radius:0 0 var(--radius-md) var(--radius-md);padding:10px">
+    <div id="proc-settings-body" style="display:none;background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:0 0 var(--radius-md) var(--radius-md);padding:10px">
       <p style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Set default procedure numbers used when creating new NDE parameter records.</p>
       <div class="table-wrap"><table style="width:100%;border-collapse:collapse">
         <thead><tr>
-          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Method</th>
-          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Procedure Number</th>
-          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:0.5px solid var(--color-border);text-align:left">Revision</th>
-          <th style="border-bottom:0.5px solid var(--color-border)"></th>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--color-border);text-align:left">Method</th>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--color-border);text-align:left">Procedure Number</th>
+          <th style="font-size:11px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;padding:4px 8px;border-bottom:1px solid var(--color-border);text-align:left">Revision</th>
+          <th style="border-bottom:1px solid var(--color-border)"></th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table></div>
@@ -4273,7 +4294,7 @@ function promptPropagateField(sourceCardId, field, val, targets){
         You set <strong>${label}</strong> to <strong>${val}</strong> for ${tech}.
         ${targets.length} other record${targets.length!==1?'s':''} for ${tech} ${targets.length!==1?'are':'is'} missing this field:
       </p>
-      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md)">
+      <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:12px;padding:8px 10px;border:1px solid var(--color-border);border-radius:var(--radius-md)">
         ${rows}
       </div>
       <div class="app-modal-footer">
@@ -4524,7 +4545,7 @@ function renderNDECardBody(card){
   const notesField = `
     <div class="nde-param-section">
       <div class="nde-param-title">Notes</div>
-      <textarea style="width:100%;min-height:52px;padding:6px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
+      <textarea style="width:100%;min-height:52px;padding:6px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-family:inherit;resize:vertical"
         onchange="updateNDECard('${id}','notes',this.value)">${card.notes||''}</textarea>
     </div>`;
 
@@ -4589,7 +4610,7 @@ function methodCalPanel(tabId){
   const cardsHtml = cards.length ? cards.map(card=>{
     const comp = cardCompletionLabel(card);
     const isOpen = card._open||false;
-    return `<div id="cal-card-${card.id}" style="margin-bottom:6px;border:0.5px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
+    return `<div id="cal-card-${card.id}" style="margin-bottom:6px;border:1px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
                  border-radius:var(--radius-md);overflow:hidden;
                  border-left:3px solid ${comp.complete?'var(--color-success-text)':'var(--color-info-border)'}">
       <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
@@ -4618,7 +4639,7 @@ function methodCalPanel(tabId){
           <i class="ti ti-chevron-${isOpen?'down':'right'}" style="font-size:13px;color:var(--color-text-tertiary)"></i>
         </div>
       </div>
-      ${isOpen?`<div style="padding:12px 14px;border-top:0.5px solid var(--color-border)">
+      ${isOpen?`<div style="padding:12px 14px;border-top:1px solid var(--color-border)">
         ${renderNDECardFields(card)}
       </div>`:''}
     </div>`;
@@ -4706,14 +4727,14 @@ function renderCalRec(){
   const calCards = cards.length ? Object.entries(byDate).map(([date, dayCards])=>`
     <div style="margin-bottom:18px">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
-           color:var(--color-text-tertiary);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+           color:var(--color-text-tertiary);padding:4px 0;border-bottom:1px solid var(--color-border);margin-bottom:6px">
         ${date}
       </div>
       ${dayCards.map(card=>{
         const comp = cardCompletionLabel(card);
         const mInfo = NDE_METHODS.find(m=>m.id===card.method)||{label:card.method,icon:'ti-certificate'};
         const editTab = METHOD_TO_TAB[card.method];
-        return `<div style="margin-bottom:6px;border:0.5px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
+        return `<div style="margin-bottom:6px;border:1px solid ${comp.complete?'var(--color-success-text)':'var(--color-border)'};
                      border-radius:var(--radius-md);overflow:hidden;
                      border-left:3px solid ${comp.complete?'var(--color-success-text)':'var(--color-info-border)'}">
           <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;
@@ -4762,11 +4783,11 @@ function renderCalRec(){
   const awaitingSection = awaiting.length ? `
     <div style="margin-bottom:18px">
       <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
-           color:var(--color-warning-text);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+           color:var(--color-warning-text);padding:4px 0;border-bottom:1px solid var(--color-border);margin-bottom:6px">
         <i class="ti ti-circle-dashed"></i> Joints Awaiting an NDE Sheet
       </div>
       ${awaiting.map(({mInfo, tabId, items})=>`
-        <div style="margin-bottom:6px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);
+        <div style="margin-bottom:6px;border:1px solid var(--color-border);border-radius:var(--radius-md);
              overflow:hidden;border-left:3px solid var(--color-warning-border)">
           <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-bg-secondary)">
             <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;
@@ -4799,7 +4820,7 @@ function renderCalRec(){
     <div style="padding:0 12px 12px">
       ${awaitingSection}
       ${cards.length ? `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
-           color:var(--color-success-text);padding:4px 0;border-bottom:0.5px solid var(--color-border);margin-bottom:6px">
+           color:var(--color-success-text);padding:4px 0;border-bottom:1px solid var(--color-border);margin-bottom:6px">
         <i class="ti ti-circle-check"></i> NDE Sheets Started
       </div>`:''}
       ${calCards}
@@ -7183,10 +7204,14 @@ function addCanvasToPDF(doc, chunk, y, label){
   const mmPerPx = 25.4/96;  // 96dpi
   let imgW = chunk.pxW * mmPerPx;
   let imgH = chunk.pxH * mmPerPx;
-  // Scale down if wider than page
+  // Scale down if wider than the text column
   if(imgW > TW){ const s=TW/imgW; imgW=TW; imgH*=s; }
-  // New page if needed
-  if(y + imgH + (label?6:0) + 4 > PH-15){
+  // Cap to a single page's printable height so a grid never splits across pages
+  const labelH = label?6:0;
+  const usableH = (PH-15) - 16 - labelH - 4;   // 16 ≈ header band, 4 ≈ padding
+  if(imgH > usableH){ const s=usableH/imgH; imgH=usableH; imgW*=s; }
+  // New page if it won't fit in the remaining space on this page
+  if(y + imgH + labelH + 4 > PH-15){
     doc.addPage(); y=pageHeader(doc);
   }
   if(label){
@@ -7237,7 +7262,17 @@ async function buildGridsSection(doc, tabId, startY){
     const mutGrids=Object.values(state.mutGrids||{});
     for(const grid of mutGrids){
       if(!grid.rows||!grid.cols) continue;
-      if(y+20>PH-15){ doc.addPage(); y=pageHeader(doc); }
+      // Estimate the scaled grid height and page-break first so the title
+      // stays on the same page as the grid it labels.
+      {
+        const cols=Math.min(grid.cols,28);
+        const mmPerPx=25.4/96;
+        let w=(30+cols*38)*mmPerPx, h=(20+grid.rows*18+22)*mmPerPx;
+        if(w>TW){ h*=TW/w; w=TW; }
+        const usableH=(PH-15)-16-4;
+        if(h>usableH){ h=usableH; }
+        if(y+9+h+4 > PH-15){ doc.addPage(); y=pageHeader(doc); }
+      }
       doc.setFillColor(...R_DKBLUE); doc.rect(ML,y,TW,7,'F');
       doc.setTextColor(...R_WHITE); doc.setFontSize(9); doc.setFont('helvetica','bold');
       const mutRow=(state.mut||[]).find(r=>r.mutGridKey===grid.key);
@@ -7245,16 +7280,15 @@ async function buildGridsSection(doc, tabId, startY){
       doc.text(title, PW/2, y+5, {align:'center'});
       doc.setTextColor(...R_BLACK); y+=9;
 
-      const maxCols=12;
-      for(let rowS=0; rowS<grid.rows; rowS+=50){
-        const rowE=Math.min(rowS+50, grid.rows);
-        for(let colS=0; colS<grid.cols; colS+=maxCols){
-          const colE=Math.min(colS+maxCols, grid.cols);
-          const isFirst=rowS===0&&colS===0;
-          const chunk=gridChunkToCanvas(grid,'mut',rowS,rowE,colS,colE);
-          const lbl=isFirst?null:`(rows ${alphaLabel(rowS)}–${alphaLabel(rowE-1)}, cols ${grid.colStart+colS}–${grid.colStart+colE-1})`;
-          y=addCanvasToPDF(doc, chunk, y, lbl);
-        }
+      // Render the whole grid as ONE image (scaled to fit a single page) so it
+      // never splits across pages. Column-chunk only if extremely wide.
+      const maxCols = grid.cols>28 ? 28 : grid.cols;
+      for(let colS=0; colS<grid.cols; colS+=maxCols){
+        const colE=Math.min(colS+maxCols, grid.cols);
+        const isFirst=colS===0;
+        const chunk=gridChunkToCanvas(grid,'mut',0,grid.rows,colS,colE);
+        const lbl=isFirst?null:`(cols ${grid.colStart+colS}–${grid.colStart+colE-1})`;
+        y=addCanvasToPDF(doc, chunk, y, lbl);
       }
 
       // Color-coded C-Scan (same style as AUT); 0.000 readings are blacked out
@@ -8305,7 +8339,7 @@ function showEquipPicker(needPicker, currentChoices, cardId, card, inUse){
     return `<div>
       <div style="font-size:12px;font-weight:600;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${label}</div>
       <select onchange="equipPickerSelect('${type}',parseInt(this.value))"
-        style="width:100%;padding:7px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
+        style="width:100%;padding:7px 10px;font-size:13px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-input-bg);color:var(--color-text)">
         ${options}
       </select>
       ${anyDup?`<div style="font-size:11px;color:var(--color-warning-text);margin-top:3px"><i class="ti ti-alert-triangle"></i> One or more options are already assigned to another record for this technician today</div>`:''}
@@ -8423,7 +8457,7 @@ function showEquipConflictModal(tech, conflicts){
     const card = (state.ndeCards||{})[c.cardId];
     const mInfo = NDE_METHODS.find(m=>m.id===card?.method) || {label:card?.method||'?'};
     const cardLabel = `${mInfo.label}${card?.date?' · '+card.date:''}`;
-    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:6px">
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--color-border);border-radius:var(--radius-md);margin-bottom:6px">
       <div style="flex:1;font-size:12px">
         <div style="font-weight:600">${cardLabel}</div>
         <div style="color:var(--color-text-secondary)">${c.label}: currently S/N ${c.current} → new S/N ${c.item.serial||'?'}</div>
@@ -8769,7 +8803,7 @@ function fieldNotesSection(tabId){
   return `<div style="margin:10px 0 4px">
     <div class="section-divider" style="margin-bottom:4px"><i class="ti ti-notes"></i> Field Notes</div>
     <textarea style="width:100%;min-height:56px;padding:7px 10px;font-size:12px;
-      border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);
+      border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);
       background:var(--color-input-bg);color:var(--color-text);font-family:inherit;resize:vertical"
       placeholder="Enter field notes for this method..."
       onchange="setFieldNotes('${tabId}',this.value)">${val}</textarea>
@@ -8790,10 +8824,10 @@ function indBannerWithBulk(tabId, methodLabel){
     <span><i class="ti ti-alert-triangle"></i> Indications / Data — ${methodLabel}</span>
     <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
       <span style="font-size:10px;color:var(--color-text-tertiary)">Fill date:</span>
-      <input type="date" style="padding:2px 5px;font-size:11px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
+      <input type="date" style="padding:2px 5px;font-size:11px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text)"
         onchange="if(this.value)bulkSetRowDate('${tabId}',this.value)">
       <span style="font-size:10px;color:var(--color-text-tertiary)">Fill tech:</span>
-      <select style="font-size:11px;padding:2px 5px;border:0.5px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);max-width:130px"
+      <select style="font-size:11px;padding:2px 5px;border:1px solid var(--color-border-secondary);border-radius:5px;background:var(--color-input-bg);color:var(--color-text);max-width:130px"
         onchange="if(this.value)bulkSetRowTech('${tabId}',this.value);this.value=''">
         <option value="">— all rows —</option>
         ${(state.technicians||[]).map(t=>`<option value="${t.name}">${t.name}</option>`).join('')}
@@ -8921,6 +8955,13 @@ function updateSectionSummaries(){
       techSummary.textContent = '';
     }
   }
+
+  const jointsSummary = document.getElementById('joints-summary');
+  if(jointsSummary){
+    const n = (state.joints||[]).length;
+    const photos = (state.projectPhotos||[]).length;
+    jointsSummary.textContent = n ? `— ${n} joint${n!==1?'s':''}${photos?` · ${photos} photo${photos!==1?'s':''}`:''}` : '';
+  }
 }
 
 // Collapse config + tech sections by default if they already have data (returning user)
@@ -8928,15 +8969,14 @@ function initCollapsibleSections(){
   const cfg = state.config||{};
   const hasConfig = !!(cfg.project || cfg.sap || cfg.job);
   const hasTechs  = (state.technicians||[]).length > 0;
-
-  if(hasConfig){
-    document.getElementById('config-body')?.classList.add('collapsed');
-    document.getElementById('config-header')?.classList.add('collapsed');
-  }
-  if(hasTechs){
-    document.getElementById('tech-body')?.classList.add('collapsed');
-    document.getElementById('tech-header')?.classList.add('collapsed');
-  }
+  const hasJoints = (state.joints||[]).length > 0;
+  const collapse = (name)=>{
+    document.getElementById(name+'-body')?.classList.add('collapsed');
+    document.getElementById(name+'-header')?.classList.add('collapsed');
+  };
+  if(hasConfig) collapse('config');
+  if(hasTechs)  collapse('tech');
+  if(hasJoints) collapse('joints');
   updateSectionSummaries();
 }
 
@@ -8959,7 +8999,7 @@ function initCollapsibleSections(){
           <input type="radio" name="pdf-scope" value="method" style="accent-color:#1F3864;width:15px;height:15px;flex-shrink:0;cursor:pointer">
           <strong>Single method</strong>&nbsp;— select below
         </label>
-        <select id="pdf-method-select" style="margin-left:25px;padding:5px 8px;font-size:12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);width:calc(100% - 25px)">
+        <select id="pdf-method-select" style="margin-left:25px;padding:5px 8px;font-size:12px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);width:calc(100% - 25px)">
           <option value="utt12">12-Point UTT</option>
           <option value="uttloc">UTT of Test Locations</option>
           <option value="aelsc">AE / Long Seam Characterization</option>
@@ -9018,11 +9058,11 @@ function initCollapsibleSections(){
     <div class="modal-step" style="margin-bottom:12px">
       <strong>Direction</strong>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
+        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
           <input type="radio" name="dfpr-dir" value="fill" checked style="accent-color:#1F3864">
           <span><strong>Fill DFPR</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">App data → xlsx</span></span>
         </label>
-        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
+        <label style="flex:1;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;padding:8px 10px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:var(--color-bg)">
           <input type="radio" name="dfpr-dir" value="import" style="accent-color:#1F3864">
           <span><strong>Import from DFPR</strong><br><span style="font-size:11px;color:var(--color-text-secondary)">xlsx → App data</span></span>
         </label>
@@ -9178,7 +9218,7 @@ function initCollapsibleSections(){
       <i class="ti ti-alert-triangle" style="font-size:20px"></i>
       ⚠ IMMEDIATE THREAT — STOP WORK
     </div>
-    <div style="background:var(--color-danger-bg);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;color:var(--color-danger-text);margin-bottom:12px;border:0.5px solid var(--color-danger-border)">
+    <div style="background:var(--color-danger-bg);border-radius:var(--radius-md);padding:10px 14px;font-size:13px;color:var(--color-danger-text);margin-bottom:12px;border:1px solid var(--color-danger-border)">
       This indication has been flagged as a potential immediate threat per PG&E procedure TD-4820S.
       <strong>Stop work immediately and notify the PG&E project team.</strong>
     </div>
@@ -9193,7 +9233,7 @@ function initCollapsibleSections(){
     </div>
     <div style="font-size:12px;margin-bottom:10px">
       <strong>Contact:</strong>
-      <input id="threat-contact-notes" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:12px;margin-top:4px" placeholder="Notes on who was notified, time, response...">
+      <input id="threat-contact-notes" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:12px;margin-top:4px" placeholder="Notes on who was notified, time, response...">
     </div>
     <div style="display:flex;gap:6px;justify-content:flex-end">
       <button class="btn btn-danger" onclick="closeThreatModal()"><i class="ti ti-check"></i> Acknowledged — will notify team</button>
@@ -9242,24 +9282,24 @@ function initCollapsibleSections(){
       </p>
       <div style="margin-bottom:8px">
         <label class="field-label">Joint</label>
-        <select id="aut-import-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        <select id="aut-import-joint" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
           <option value="">— Select joint —</option>
         </select>
       </div>
       <div style="margin-bottom:8px">
         <label class="field-label">Label / description</label>
-        <input id="aut-import-label" placeholder="e.g. JT-02 AUT Scan 4/10/26" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+        <input id="aut-import-label" placeholder="e.g. JT-02 AUT Scan 4/10/26" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
       </div>
       <div style="margin-bottom:8px">
         <label class="field-label">Paste data (tab or comma separated) or <button class="btn btn-sm" onclick="document.getElementById('aut-file-input').click()"><i class="ti ti-upload"></i> Import CSV file</button></label>
-        <textarea id="aut-paste-area" rows="8" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste CSV/TSV data here..."></textarea>
+        <textarea id="aut-paste-area" rows="8" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste CSV/TSV data here..."></textarea>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:8px">
         <div style="flex:1"><label class="field-label">NWT (in.) for color scale</label>
-          <input id="aut-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="aut-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div style="flex:1"><label class="field-label">Delimiter</label>
-          <select id="aut-delim" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <select id="aut-delim" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
             <option value="auto">Auto-detect</option>
             <option value="	">Tab</option>
             <option value=",">Comma</option>
@@ -9291,21 +9331,21 @@ function initCollapsibleSections(){
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
         <div><label class="field-label">Joint</label>
-          <select id="mut-import-joint" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
+          <select id="mut-import-joint" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
         </div>
         <div><label class="field-label">Label / description</label>
-          <input id="mut-import-label" placeholder="e.g. JT-11 MUT Grid" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-import-label" placeholder="e.g. JT-11 MUT Grid" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">NWT (in.) for color scale</label>
-          <input id="mut-import-nwt" type="number" step="0.001" placeholder="e.g. 0.375" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-import-nwt" type="number" step="0.001" placeholder="e.g. 0.375" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">First col # (axial start)</label>
-          <input id="mut-import-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-import-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
       </div>
       <div style="margin-bottom:4px">
         <label class="field-label">…or paste readings (tab/comma separated)</label>
-        <textarea id="mut-paste-area" rows="6" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste grid rows here (leading A/B/C row labels are handled automatically)…"></textarea>
+        <textarea id="mut-paste-area" rows="6" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:11px;font-family:monospace;resize:vertical" placeholder="Paste grid rows here (leading A/B/C row labels are handled automatically)…"></textarea>
       </div>
       <p style="font-size:11px;color:var(--color-text-tertiary)">Readings of 0.000 are treated as "no reading" — blacked out on the C-Scan and excluded from the minimum.</p>
     </div>
@@ -9326,19 +9366,19 @@ function initCollapsibleSections(){
     <div class="grid-modal-body" style="overflow-y:auto;max-height:64vh">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label class="field-label">Joint</label>
-          <select id="mut-setup-joint" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
+          <select id="mut-setup-joint" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px"></select>
         </div>
         <div><label class="field-label">Label / description</label>
-          <input id="mut-setup-label" placeholder="e.g. JT-01 MUT Grid" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-label" placeholder="e.g. JT-01 MUT Grid" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
       </div>
 
       <!-- Auto-calc grid sizing (MUT only) -->
-      <div id="mut-autocalc" style="border:0.5px solid var(--color-border);border-radius:var(--radius-md);padding:10px;margin-bottom:10px;background:var(--color-bg-secondary)">
+      <div id="mut-autocalc" style="border:1px solid var(--color-border);border-radius:var(--radius-md);padding:10px;margin-bottom:10px;background:var(--color-bg-secondary)">
         <div style="font-size:12px;font-weight:700;margin-bottom:8px"><i class="ti ti-calculator"></i> Size grid from component</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div><label class="field-label">Component type</label>
-            <select id="mut-comp-type" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+            <select id="mut-comp-type" onchange="mutCalcGrid()" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
               <option value="pipe">Straight Pipe (auto)</option>
               <option value="elbow">Elbow (manual circ.)</option>
               <option value="reducer">Reducer (manual circ.)</option>
@@ -9347,13 +9387,13 @@ function initCollapsibleSections(){
             </select>
           </div>
           <div><label class="field-label">Grid increment (in.)</label>
-            <input id="mut-incr" type="number" step="0.125" value="1" min="0.0625" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+            <input id="mut-incr" type="number" step="0.125" value="1" min="0.0625" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
           </div>
           <div><label class="field-label">Pipe OD (in.)</label>
-            <input id="mut-od" type="number" step="0.001" placeholder="e.g. 12.75" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+            <input id="mut-od" type="number" step="0.001" placeholder="e.g. 12.75" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
           </div>
           <div><label class="field-label">MUT area length (axial, in.)</label>
-            <input id="mut-area-len" type="number" step="0.1" placeholder="e.g. 24" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+            <input id="mut-area-len" type="number" step="0.1" placeholder="e.g. 24" oninput="mutCalcGrid()" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
           </div>
         </div>
         <div id="mut-calc-hint" style="font-size:11px;color:var(--color-text-secondary);margin-top:8px"></div>
@@ -9361,16 +9401,16 @@ function initCollapsibleSections(){
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
         <div><label class="field-label">Rows (circumferential)</label>
-          <input id="mut-setup-rows" type="number" value="20" min="1" max="200" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-rows" type="number" value="20" min="1" max="200" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">Columns (axial)</label>
-          <input id="mut-setup-cols" type="number" value="10" min="1" max="200" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-cols" type="number" value="10" min="1" max="200" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">First col # (axial start)</label>
-          <input id="mut-setup-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-colstart" type="number" value="1" min="0" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
         <div><label class="field-label">NWT (in.) for color scale</label>
-          <input id="mut-setup-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
+          <input id="mut-setup-nwt" type="number" step="0.001" placeholder="e.g. 0.500" style="width:100%;padding:6px 8px;border:1px solid var(--color-border-secondary);border-radius:var(--radius-md);background:var(--color-bg);color:var(--color-text);font-size:13px">
         </div>
       </div>
       <p style="font-size:12px;color:var(--color-text-secondary)">Row labels will be A, B, C... Z, AA, AB... Right-click any cell to mark as Void Due to Shape.</p>
@@ -9420,7 +9460,7 @@ function initCollapsibleSections(){
   <div class="modal-box" style="max-width:480px">
     <div class="modal-title"><i class="ti ti-signature"></i> <span id="sig-modal-title">Signature</span></div>
     <!-- Tab switcher -->
-    <div style="display:flex;gap:0;margin-bottom:10px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
+    <div style="display:flex;gap:0;margin-bottom:10px;border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden">
       <button id="sig-tab-draw" onclick="switchSigTab('draw')"
         style="flex:1;padding:7px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:var(--color-info-bg);color:var(--color-info-text);font-family:inherit">
         <i class="ti ti-pencil"></i> Draw
@@ -9454,7 +9494,7 @@ function initCollapsibleSections(){
         <small style="color:var(--color-text-tertiary);font-size:11px">PNG, JPG — white background works best</small>
       </div>
       <div id="sig-upload-preview" style="display:none;margin-bottom:10px;text-align:center">
-        <img id="sig-preview-img" style="max-height:120px;border:0.5px solid var(--color-border);border-radius:var(--radius-md);background:#fff;padding:4px">
+        <img id="sig-preview-img" style="max-height:120px;border:1px solid var(--color-border);border-radius:var(--radius-md);background:#fff;padding:4px">
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-primary" style="flex:1" onclick="saveUploadedSig()"><i class="ti ti-check"></i> Save signature</button>
